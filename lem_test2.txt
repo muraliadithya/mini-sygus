@@ -1,0 +1,21 @@
+(synth-fun lemma ((x Int) (y Int)) Bool
+           ((Start Bool) (B1 Bool) (B2 Bool) (I Int) (Loc Int))
+
+           ((Start Bool (
+                  B1
+                  (=> B1 B2)))
+           (B1 Bool (
+                  (<= I I)
+                  (bst Loc)))
+           (B2 Bool (
+                  (= x k)))
+           (I Int (
+                  (minr Loc)
+                  (maxr Loc)
+                  k))
+           (Loc Int (
+                  x
+                  y
+                  (lft x)
+                  (rght x))))
+)
