@@ -1,0 +1,271 @@
+import re
+
+class grammar():
+    def __init__(self, filename='', p=True, w=True):
+        self.filename = filename
+        self.arguments = {}
+        self.symbols = {}
+        self.replacements = []
+        self.rules = {}
+        self.counts = {}
+        self.lemma = ''
+        self.bools = 1
+        self.functions = {}
+
+        if self.filename:
+            self.read_input()
+            self.process_rules()
+            self.compute_parameters('Start')
+            self.compute_height('Start')
+            self.compute_lemma()
+            self.compute_functions()
+            if p:
+                self.print_output()
+            if w:
+                self.write_output()
+    
+    def read_input(self):
+        with open(self.filename) as f:
+            d = 0
+            predec = False
+            rules = False
+            for line in f:
+                if line.isspace():
+                    continue
+                d += depth(line)
+                if predec:
+                    d_rules = d + 1
+                    predec = False
+                    self.symbols = parse_arguments(line)
+                    rules = True
+                    rule_curr = []
+                elif rules:
+                    rule_curr.extend([s for s in re.split(' |\n', line) if s])
+                    if d <= d_rules and len(rule_curr) > 0:
+                        if len(rule_curr[0]) > 1 and rule_curr[0][1] == '(':
+                            rule_curr[0] = rule_curr[0][1:]
+                        r = ' '.join(rule_curr)
+                        if set(r) - {'(',')'}:
+                            self.replacements.append(r)
+                        rule_curr = []
+                    if d < d_rules:
+                        rules = False
+                        # End of grammar; need to allow for multiple grammars in one input
+                        # So might need to specify for creation from nth (synth-fun appearance
+                elif '(synth-fun lemma' == line[:16]:
+                    self.arguments = parse_arguments(line[1:])
+                    predec = True
+    
+    def process_rules(self):
+        symbols = set(self.symbols.keys())
+        for rule in self.replacements:
+            rule = rule.split(' ', 1)
+            symbol = rule[0][1:]
+            replacements = rule[-1].split('(',1)[-1][:-2]
+            keys = get_keywords(replacements)
+            self.rules[symbol] = {
+                'replacements': parse_rules(replacements),
+                'dependents': set(self.symbols.keys()).intersection(keys),
+                'arguments': [var for var in self.arguments
+                              if var in keys],
+            }
+    
+    def compute_parameters(self, symbol):
+        if not self.rules[symbol]['dependents']:
+            self.rules[symbol]['parameters'] = set(self.rules[symbol]['arguments'])
+        else:
+            self.rules[symbol]['parameters'] = set().union(*[
+                self.rules[s]['parameters'] if 'parameters' in self.rules[s] else self.compute_parameters(s)
+                for s in self.rules[symbol]['dependents']
+            ])
+        return self.rules[symbol]['parameters']
+    
+    def compute_height(self, symbol):
+        if not self.rules[symbol]['dependents']:
+            self.rules[symbol]['height'] = 1
+        else:
+            self.rules[symbol]['height'] = 1 + max([
+                self.rules[s]['height'] if 'height' in self.rules[s] else self.compute_height(s)
+                for s in self.rules[symbol]['dependents']
+            ])
+        return self.rules[symbol]['height']
+    
+    def compute_lemma(self):
+        self.counts = {symbol: 0 for symbol in self.symbols}
+        self.lemma = self.translate(self.function_gen('Start'))
+    
+    def compute_functions(self):
+        for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height'], reverse=True):
+            self.functions[symbol] = []
+            for f in range(self.counts[symbol]):
+                self.functions[symbol].append(
+                    '(define-fun {}{} ({}) {}\n{}\n)'.format(
+                        symbol,
+                        f+1 if not symbol[-1].isdigit() else ''.join(['_',str(f+1)]),
+                        ' '.join(['({} {})'.format(arg, self.arguments[arg])
+                                  for arg in self.arguments
+                                  if arg in self.rules[symbol]['parameters']]),
+                        self.symbols[symbol],
+                        self.translate(self.function_gen(symbol)),
+                    )
+                )
+    
+    def translate(self, statement):
+        dependents = [symbol for symbol in self.symbols if symbol in statement]
+        nonterminals = sorted(dependents, key=lambda s: self.rules[s]['height'], reverse=True)
+        while nonterminals:
+            symbol = nonterminals.pop(0)
+            m = len(symbol)
+            indices = find_unreplaced(statement, symbol) + [len(statement)]
+            S = statement[:indices[0]]
+            for i in range(len(indices)-1):
+                S += self.expand_symbol(symbol) + statement[indices[i]+m:indices[i+1]]
+            statement = S
+            nonterminals.extend(self.rules[symbol]['dependents'])
+            for sym in self.rules[symbol]['dependents']:
+                for i in range(len(nonterminals)):
+                    if self.rules[sym]['height'] >= self.rules[nonterminals[i]]['height']:
+                        break
+                nonterminals.insert(i, sym)
+        return statement
+    
+    def function_gen(self, symbol):
+        rules = self.rules[symbol]['replacements']
+        n = len(rules)
+        if n == 1:
+            statement = rules[0]
+        elif n > 1:
+            # Could improve from n-1 to log_2 n many conditionals
+            statement = ' '.join(['(ite b{} {}'.format(
+                self.bools + j,
+                rule,
+            ) for j,rule in enumerate(rules[:-1])])
+            statement += ' {}{}'.format(rules[-1], ')'*(n-1))
+            self.bools += n-1
+        return statement
+    
+    def expand_symbol(self, symbol):
+        rules = self.rules[symbol]['replacements']
+        n = len(rules)
+        if n == 1:
+            replacement = rules[0]
+        elif n > 1:
+            self.counts[symbol] += 1
+            replacement = ''.join([
+                '(', symbol, '_' if symbol[-1].isdigit() else '',
+                str(self.counts[symbol]), ' ',
+                ' '.join([arg for arg in self.arguments
+                          if arg in self.rules[symbol]['parameters']]),
+                ')',
+            ])
+        return replacement
+    
+    def print_bools(self):
+        for b in range(self.bools - 1):
+            print('(declare-const b{} Bool)'.format(b+1))
+    
+    def print_functions(self):
+        for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height']):
+            for func in self.functions[symbol]:
+                print(func)
+    
+    def print_lemma(self):
+        print('(define-fun lemma ({}) Bool\n{})'.format(
+            ' '.join(['({} {})'.format(arg, self.arguments[arg])
+                      for arg in self.arguments]),
+            indent(self.lemma),
+        ))
+    
+    def print_output(self):
+        self.print_bools()
+        print('')
+        self.print_functions()
+        print('')
+        self.print_lemma()
+    
+    def write_output(self, outfile=None):
+        if not outfile:
+            outfile = self.filename[:-4] + '_syn.txt'
+        with open(outfile, 'w') as file:
+            for b in range(self.bools - 1):
+                file.write('(declare-const b{} Bool)\n'.format(b+1))
+            file.write('\n')
+            for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height']):
+                for func in self.functions[symbol]:
+                    file.write(func)
+                    file.write('\n')
+            file.write('\n')
+            file.write('(define-fun lemma ({}) Bool\n{})'.format(
+                ' '.join(['({} {})'.format(arg, self.arguments[arg])
+                          for arg in self.arguments]),
+                indent(self.lemma),
+            ))
+    
+def find_unreplaced(line, symbol):
+    m = len(symbol)
+    return [w.start() for w in re.finditer(symbol, line)
+            if not line[w.start()+m].isdigit() and line[w.start()+m] != '_']
+    
+def parse_arguments(line):
+    line = line[line.find('(', 2)+1:]
+    i = 0
+    d = 0
+    args = []
+    arg_curr = ''
+    while d >= 0 and i < len(line):
+        c = line[i]
+        d += depth(c)
+        arg_curr += c
+        if d == 0:
+            if not arg_curr.isspace():
+                args.append(arg_curr[1:-1])
+            arg_curr = ''
+        i += 1
+    args_dict = {}
+    for arg in args:
+        s = arg.split(' ', 1)
+        args_dict[s[0]] = s[1]
+    return args_dict
+
+def parse_rules(replacement):
+    rules = []
+    rule_curr = ''
+    d = 0
+    for w in replacement.split(' '):
+        d += depth(w)
+        rule_curr += w + ' '
+        if d <= 0:
+            if not rule_curr.isspace():
+                while len(rule_curr) > 0 and (depth(rule_curr) < 0 or rule_curr[-1].isspace()):
+                    rule_curr = rule_curr[:-1]
+                rules.append(rule_curr)
+            rule_curr = ''
+    return rules
+
+def get_keywords(words):
+    return set([w for w in re.split('\(|\)|\n| ', ''.join(words)) if w not in {'', ' '}])
+
+def depth(line):
+    return line.count('(') - line.count(')')
+
+def indent(output):
+    output = output.split(' ')
+    d = 0
+    d_ref = [0]
+    ind_ref = [0]
+    ind_curr = 0
+    for i,word in enumerate(output):
+        d += depth(word)
+        ind_curr += len(word) + 1
+        if d <= d_ref[-1]:
+            if d < d_ref[-1]:
+                while d < d_ref[-1]:
+                    d_ref.pop(-1)
+                    ind_ref.pop(-1)
+            output[i] += '\n' + ' '*(ind_ref[-1]-1)
+            ind_curr = 0
+        if word in {'(=>', '(ite', '(and', '(or', '(<='}:
+            d_ref.append(d)
+            ind_ref.append(ind_ref[-1]+ind_curr)
+            ind_curr = 0
+    return ' '.join(output)
