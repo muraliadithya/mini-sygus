@@ -1,8 +1,9 @@
 import re
 
 class grammar():
-    def __init__(self, filename='', p=True, w=True,
-                 grammar_count=1, line_delay=0, counts_init={}):
+    def __init__(self, filename='', p=True, w=True, r=False,
+                 grammar_count=1, line_delay=0, counts_init={},
+                 outfile=None):
         self.filename = filename
         self.success = False
         self.line_start = 0
@@ -23,9 +24,15 @@ class grammar():
             self.success = self.read_input(grammar_count, line_delay)
             if self.success:
                 self.process_rules()
-                self.compute(p, w)
+                self.compute()
+                if p:
+                    self.print_output()
+                if w:
+                    self.write_output(outfile)
+                if r:
+                    self.replace_output()
             elif p:
-                print('Unsuccessful read; verify grammar count in file')     
+                print('Unsuccessful read; verify grammar count in file')
     
     def read_input(self, count, delay):
         with open(self.filename) as f:
@@ -64,7 +71,7 @@ class grammar():
                         predec = True
         return count == 0
     
-    def compute(self, p, w):
+    def compute(self):
         self.recount()
         self.compute_parameters('Start')
         self.compute_height('Start')
@@ -73,10 +80,6 @@ class grammar():
         self.counts['bools'] = self.bools
         self.counts = {symbol: self.counts[symbol] for symbol in self.counts
                        if self.counts[symbol] != 0}
-        if p:
-            self.print_output()
-        if w:
-            self.write_output()
     
     def recount(self):
         self.counts = self.counts_init.copy()
@@ -244,7 +247,7 @@ class grammar():
         rule = ''
         if symbol in self.rules and num < len(self.rules[symbol]['replacements']):
             rule = self.rules[symbol]['replacements'].pop(num)
-            self.compute(p=False, w=False)
+            self.compute()
             print('Deleted rule: {} to {}'.format(symbol, rule))
         else:
             print('Invalid symbol/rule.')
@@ -255,7 +258,7 @@ class grammar():
         if symbol in self.rules and num < len(self.rules[symbol]['replacements']):
             rule = self.rules[symbol]['replacements'][num]
             self.rules[symbol]['replacements'] = [rule]
-            self.compute(p=False, w=False)
+            self.compute()
             print('Enforced rule: {} to {}'.format(symbol, rule))
             print('Deleted all other rules for symbol {}'.format(symbol))
         else:
@@ -265,7 +268,7 @@ class grammar():
     def add_rule(self, symbol, rule):
         if symbol in self.rules and depth(rule) == 0:
             self.rules[symbol]['replacements'].append(rule)
-            self.compute(p=False, w=False)
+            self.compute()
             print('Added rule: {} to {}'.format(symbol, rule))
         else:
             print('Invalid symbol/rule.')
@@ -307,10 +310,10 @@ class grammar():
         ))
         return out
     
-    def write_output(self, outfile=None):
+    def write_output(self, outfile, mode='w'):
         if not outfile:
             outfile = self.filename[:-4] + '_syn.txt'
-        with open(outfile, 'w') as file:
+        with open(outfile, mode) as file:
             for b in range(self.counts_init['bools'], self.bools):
                 file.write('(declare-const b{} Bool)\n'.format(b+1))
             file.write('\n')
@@ -325,6 +328,35 @@ class grammar():
                 indent(self.lemma),
             ))
     
+    def replace_output(self, repfile=None, mode='w'):
+        if not repfile:
+            repfile = self.filename[:-4] + '_repl.txt'
+        with open(repfile, mode) as file:
+            with open(self.filename) as infile:
+                for c,line in enumerate(infile):
+                    if c < self.line_start:
+                        file.write(line)
+                    elif c == self.line_start:
+                        for b in range(self.counts_init['bools'], self.bools):
+                            file.write('(declare-const b{} Bool)\n'.format(b+1))
+                        file.write('\n')
+                        for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height']):
+                            for func in self.functions[symbol]:
+                                file.write(func)
+                                file.write('\n')
+                        file.write('\n')
+                        file.write('(define-fun lemma ({}) Bool\n{})'.format(
+                            ' '.join(['({} {})'.format(arg, self.arguments[arg])
+                                      for arg in self.arguments]),
+                            indent(self.lemma),
+                        ))
+                        file.write('\n')
+                    elif c <= self.line_end:
+                        continue
+                    else:
+                        file.write(line)
+    
+
 def find_unreplaced(line, symbol):
     m = len(symbol)
     return [w.start() for w in re.finditer(symbol, line)

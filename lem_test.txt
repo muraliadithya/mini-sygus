@@ -1,7 +1,10 @@
-do not print !
+other
+misc
 ; comment
 
-
+constraints still up to here possibly
+if replaced...
+; should have everything before lemma
 (synth-fun lemma ((x Int) (y Int)) Bool
            ((Start Bool) (B1 Bool) (B2 Bool) (B3 Bool) (Loc Int))
 
@@ -17,6 +20,6 @@ do not print !
                      y))
 
 ))
+... and should show everything after
 
 ( testing )
-this should not appear
