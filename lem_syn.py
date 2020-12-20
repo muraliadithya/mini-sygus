@@ -160,6 +160,52 @@ class grammar():
             ])
         return replacement
     
+    def eliminate_bool(self, statement, model, symbol='Start'):
+        i = statement.find('ite b') + 5
+        j = i + 1
+        while statement[j].isdigit():
+            j += 1
+        num = int(statement[i:j])
+        k = 0
+        while k < len(self.rules[symbol]['replacements']) - 2 and not model['b'+str(num+k)]:
+            k += 1
+        delay = not model['b'+str(num+k)]
+        j += 1
+        choice = statement[j]
+        d = depth(statement[j])
+        while d > 0:
+            j += 1
+            choice += statement[j]
+            d += depth(statement[j])
+            if delay and d == 0:
+                delay = False
+                j += 2
+                choice = statement[j]
+                d += depth(statement[j])
+        return choice
+    
+    def apply_model(self, model, line='', symbol='Start', num=1):
+        if line == '':
+            statement = self.lemma
+        else:
+            statement = self.functions[symbol][num-1]
+        while 'ite b' in statement:
+            statement = self.eliminate_bool(statement, model, symbol)
+        for symb, n in set().union(*[find_replaced(statement, symb) for symb in self.symbols]):
+            statement = self.apply_model(model, statement, symb, n)
+        if line == '':
+            line = statement
+        else:
+            line = line.replace(self.func_name(symbol, num), statement)
+        return line
+    
+    def func_name(self, symbol, num):
+        func = ''.join([symbol, '_' if symbol[-1].isdigit() else '', str(num)])
+        name =  ''.join(['(', func, ' ', ' '.join([arg for arg in self.arguments
+                                                   if arg in self.rules[symbol]['parameters']]),
+                         ')'])
+        return name
+    
     def print_bools(self):
         for b in range(self.bools - 1):
             print('(declare-const b{} Bool)'.format(b+1))
@@ -182,6 +228,18 @@ class grammar():
         self.print_functions()
         print('')
         self.print_lemma()
+        
+    def return_output(self):
+        out = ['(declare-const b{} Bool)'.format(b+1) for b in range(self.bools - 1)]
+        out.extend([' '.join(func.split('\n'))
+                    for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height'])
+                    for func in self.functions[symbol]])
+        out.append('(define-fun lemma ({}) Bool {})'.format(
+            ' '.join(['({} {})'.format(arg, self.arguments[arg])
+                      for arg in self.arguments]),
+            ' '.join(self.lemma.split('\n')),
+        ))
+        return out
     
     def write_output(self, outfile=None):
         if not outfile:
@@ -205,7 +263,22 @@ def find_unreplaced(line, symbol):
     m = len(symbol)
     return [w.start() for w in re.finditer(symbol, line)
             if not line[w.start()+m].isdigit() and line[w.start()+m] != '_']
-    
+
+def find_replaced(line, symbol):
+    m = len(symbol)
+    repl = []
+    for w in [w.start() for w in re.finditer(symbol, line)
+              if line[w.start()+m].isdigit() or line[w.start()+m] == '_']:
+        num = ''
+        s = w + m
+        while s < len(line) and (line[s].isdigit() or line[s] == '_'):
+            num += line[s]
+            s += 1
+        if num[0] == '_':
+            num = num[1:]
+        repl.append((symbol, int(num)))
+    return repl
+
 def parse_arguments(line):
     line = line[line.find('(', 2)+1:]
     i = 0
