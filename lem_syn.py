@@ -220,6 +220,18 @@ class grammar():
             print('Invalid symbol/rule.')
         return rule
     
+    def enf_rule(self, symbol, num):
+        rule = ''
+        if symbol in self.rules and num < len(self.rules[symbol]['replacements']):
+            rule = self.rules[symbol]['replacements'][num]
+            self.rules[symbol]['replacements'] = [rule]
+            self.compute(p=False, w=False)
+            print('Enforced rule: {} to {}'.format(symbol, rule))
+            print('Deleted all other rules for symbol {}'.format(symbol))
+        else:
+            print('Invalid symbol/rule.')
+        return rule
+    
     def add_rule(self, symbol, rule):
         if symbol in self.rules and depth(rule) == 0:
             self.rules[symbol]['replacements'].append(rule)
