@@ -1,29 +1,40 @@
 import re
 
 class grammar():
-    def __init__(self, filename='', p=True, w=True):
+    def __init__(self, filename='', p=True, w=True,
+                 grammar_count=1, line_delay=0, counts_init={}):
         self.filename = filename
+        self.success = False
+        self.line_start = 0
+        self.line_end = 0
         self.arguments = {}
         self.symbols = {}
         self.replacements = []
         self.rules = {}
+        self.counts_init = counts_init
+        if 'bools' not in self.counts_init:
+            self.counts_init['bools'] = 0
         self.counts = {}
         self.lemma = ''
-        self.bools = 1
+        self.bools = 0
         self.functions = {}
 
         if self.filename:
-            self.read_input()
-            self.process_rules()
-            self.compute(p, w)
+            self.success = self.read_input(grammar_count, line_delay)
+            if self.success:
+                self.process_rules()
+                self.compute(p, w)
+            elif p:
+                print('Unsuccessful read; verify grammar count in file')     
     
-    def read_input(self):
+    def read_input(self, count, delay):
         with open(self.filename) as f:
             d = 0
             predec = False
             rules = False
-            for line in f:
-                if line.isspace():
+            for c,line in enumerate(f):
+                if delay > 0 or line.isspace():
+                    delay -= 1
                     continue
                 d += depth(line)
                 if predec:
@@ -41,24 +52,38 @@ class grammar():
                         if set(r) - {'(',')'}:
                             self.replacements.append(r)
                         rule_curr = []
-                    if d < d_rules:
+                    if d < d_rules - 1:
+                        self.line_end = c
                         rules = False
-                        # End of grammar; need to allow for multiple grammars in one input
-                        # So might need to specify for creation from nth (synth-fun appearance
+                        break
                 elif '(synth-fun lemma' == line[:16]:
-                    self.arguments = parse_arguments(line[1:])
-                    predec = True
+                    count -= 1
+                    if count == 0:
+                        self.line_start = c
+                        self.arguments = parse_arguments(line[1:])
+                        predec = True
+        return count == 0
     
     def compute(self, p, w):
-        self.bools = 1
+        self.recount()
         self.compute_parameters('Start')
         self.compute_height('Start')
         self.compute_lemma()
         self.compute_functions()
+        self.counts['bools'] = self.bools
+        self.counts = {symbol: self.counts[symbol] for symbol in self.counts
+                       if self.counts[symbol] != 0}
         if p:
             self.print_output()
         if w:
             self.write_output()
+    
+    def recount(self):
+        self.counts = self.counts_init.copy()
+        for symbol in self.symbols:
+            if symbol not in self.counts:
+                self.counts[symbol] = 0
+        self.bools = self.counts_init['bools']
     
     def process_rules(self):
         symbols = set(self.symbols.keys())
@@ -95,13 +120,15 @@ class grammar():
         return self.rules[symbol]['height']
     
     def compute_lemma(self):
-        self.counts = {symbol: 0 for symbol in self.symbols}
         self.lemma = self.translate(self.function_gen('Start'))
     
     def compute_functions(self):
         for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height'], reverse=True):
             self.functions[symbol] = []
-            for f in range(self.counts[symbol]):
+            init = 0
+            if symbol in self.counts_init:
+                init = self.counts_init[symbol]
+            for f in range(init, self.counts[symbol]):
                 self.functions[symbol].append(
                     '(define-fun {}{} ({}) {}\n{}\n)'.format(
                         symbol,
@@ -141,7 +168,7 @@ class grammar():
         elif n > 1:
             # Could improve from n-1 to log_2 n many conditionals
             statement = ' '.join(['(ite b{} {}'.format(
-                self.bools + j,
+                self.bools + j + 1,
                 rule,
             ) for j,rule in enumerate(rules[:-1])])
             statement += ' {}{}'.format(rules[-1], ')'*(n-1))
@@ -192,7 +219,10 @@ class grammar():
         if line == '':
             statement = self.lemma
         else:
-            statement = self.functions[symbol][num-1]
+            index = num - 1
+            if symbol in self.counts_init:
+                index -= self.counts_init[symbol]
+            statement = self.functions[symbol][index]
         while 'ite b' in statement:
             statement = self.eliminate_bool(statement, model, symbol)
         for symb, n in set().union(*[find_replaced(statement, symb) for symb in self.symbols]):
@@ -242,7 +272,7 @@ class grammar():
         return rule
     
     def print_bools(self):
-        for b in range(self.bools - 1):
+        for b in range(self.counts_init['bools'], self.bools):
             print('(declare-const b{} Bool)'.format(b+1))
     
     def print_functions(self):
@@ -265,7 +295,8 @@ class grammar():
         self.print_lemma()
         
     def return_output(self):
-        out = ['(declare-const b{} Bool)'.format(b+1) for b in range(self.bools - 1)]
+        out = ['(declare-const b{} Bool)'.format(b+1)
+               for b in range(self.counts_init['bools'], self.bools)]
         out.extend([' '.join(func.split('\n'))
                     for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height'])
                     for func in self.functions[symbol]])
@@ -280,7 +311,7 @@ class grammar():
         if not outfile:
             outfile = self.filename[:-4] + '_syn.txt'
         with open(outfile, 'w') as file:
-            for b in range(self.bools - 1):
+            for b in range(self.counts_init['bools'], self.bools):
                 file.write('(declare-const b{} Bool)\n'.format(b+1))
             file.write('\n')
             for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height']):
@@ -377,3 +408,16 @@ def indent(output):
             ind_ref.append(ind_ref[-1]+ind_curr)
             ind_curr = 0
     return ' '.join(output)
+
+def read_grammars(filename):
+    grammars = []
+    i = 0
+    counts_init = {}
+    while i == 0 or G.success:
+        i += 1
+        G = grammar('lem_multiple.txt', grammar_count=i, counts_init=counts_init,
+                    p=False, w=False)
+        counts_init = G.counts
+        if G.success:
+            grammars.append(G)
+    return grammars
