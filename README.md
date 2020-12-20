@@ -1,7 +1,7 @@
 # lemma-synthesis
 a constraint-based syntax-guided synthesis (SyGuS) engine
 
-See `test_driver.ipynb` for examples on useful features of `lem_syn` module.
+See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas.
 
 Generally, `lem_syn` creates a `grammar` object sourced from the input file description of a finite, context-free grammar in SyGuS format. This `grammar` object is then able to compute a set of boolean flow variables, auxiliary functions, and a synthesized lemma detailing the expanded form of the grammar. This lemma (with variables and functions) can then replace the originating grammar; the resulting file (in SMT-Lib format) should then be ported to an SMT solver like CVC4 or Z3.
 
