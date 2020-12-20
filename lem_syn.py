@@ -15,14 +15,7 @@ class grammar():
         if self.filename:
             self.read_input()
             self.process_rules()
-            self.compute_parameters('Start')
-            self.compute_height('Start')
-            self.compute_lemma()
-            self.compute_functions()
-            if p:
-                self.print_output()
-            if w:
-                self.write_output()
+            self.compute(p, w)
     
     def read_input(self):
         with open(self.filename) as f:
@@ -55,6 +48,17 @@ class grammar():
                 elif '(synth-fun lemma' == line[:16]:
                     self.arguments = parse_arguments(line[1:])
                     predec = True
+    
+    def compute(self, p, w):
+        self.bools = 1
+        self.compute_parameters('Start')
+        self.compute_height('Start')
+        self.compute_lemma()
+        self.compute_functions()
+        if p:
+            self.print_output()
+        if w:
+            self.write_output()
     
     def process_rules(self):
         symbols = set(self.symbols.keys())
@@ -205,6 +209,25 @@ class grammar():
                                                    if arg in self.rules[symbol]['parameters']]),
                          ')'])
         return name
+    
+    def del_rule(self, symbol, num):
+        rule = ''
+        if symbol in self.rules and num < len(self.rules[symbol]['replacements']):
+            rule = self.rules[symbol]['replacements'].pop(num)
+            self.compute(p=False, w=False)
+            print('Deleted rule: {} to {}'.format(symbol, rule))
+        else:
+            print('Invalid symbol/rule.')
+        return rule
+    
+    def add_rule(self, symbol, rule):
+        if symbol in self.rules and depth(rule) == 0:
+            self.rules[symbol]['replacements'].append(rule)
+            self.compute(p=False, w=False)
+            print('Added rule: {} to {}'.format(symbol, rule))
+        else:
+            print('Invalid symbol/rule.')
+        return rule
     
     def print_bools(self):
         for b in range(self.bools - 1):
