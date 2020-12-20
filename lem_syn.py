@@ -312,7 +312,8 @@ class grammar():
     
     def write_output(self, outfile, mode='w'):
         if not outfile:
-            outfile = self.filename[:-4] + '_syn.txt'
+            index = self.filename.rfind('/')
+            outfile = self.filename[:index] + '/output' + self.filename[index:-4] + '_syn.txt'
         with open(outfile, mode) as file:
             for b in range(self.counts_init['bools'], self.bools):
                 file.write('(declare-const b{} Bool)\n'.format(b+1))
@@ -330,7 +331,8 @@ class grammar():
     
     def replace_output(self, repfile=None, mode='w'):
         if not repfile:
-            repfile = self.filename[:-4] + '_repl.txt'
+            index = self.filename.rfind('/')
+            repfile = self.filename[:index] + '/output' + self.filename[index:-4] + '_repl.txt'
         with open(repfile, mode) as file:
             with open(self.filename) as infile:
                 for c,line in enumerate(infile):
@@ -447,7 +449,7 @@ def read_grammars(filename):
     counts_init = {}
     while i == 0 or G.success:
         i += 1
-        G = grammar('lem_multiple.txt', grammar_count=i, counts_init=counts_init,
+        G = grammar(filename, grammar_count=i, counts_init=counts_init,
                     p=False, w=False)
         counts_init = G.counts
         if G.success:
