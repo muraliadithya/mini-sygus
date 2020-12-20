@@ -1,5 +1,49 @@
 (set-logic ALL)
 
+(define-fun hbst ((x!0 Int)) (Set Int)
+  (ite (and (= x!0 1140984)) (insert 1140984 (as emptyset (Set Int)))
+  (ite (and (= x!0 1140983)) (as emptyset (Set Int))
+  (ite (and (= x!0 1140986)) (as emptyset (Set Int))
+  (ite (and (= x!0 1140985)) (insert 1140985 (insert 1141018 (as emptyset (Set Int))))
+  (ite (and (= x!0 1140993)) (insert 1141018 (as emptyset (Set Int)))
+  (ite (and (= x!0 1140992)) (as emptyset (Set Int))
+  (ite (and (= x!0 1169087)) (insert 1169087 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176820)) (insert 1176846 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176847)) (insert 1176807 (insert 1176846 (insert 1176847 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1176819)) (insert 1176807 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176808)) (as emptyset (Set Int))
+  (ite (and (= x!0 1176807)) (insert 1169088 (insert 1176849 (insert 1176807 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1176824)) (insert 1176849 (as emptyset (Set Int)))
+  (ite (and (= x!0 1169088)) (insert 1169088 (insert 1176849 (as emptyset (Set Int))))
+  (ite (and (= x!0 1176825)) (as emptyset (Set Int))
+  (ite (and (= x!0 1176856)) (insert 1176873 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176851)) (insert 1176873 (insert 1176850 (insert 1176851 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1176850)) (as emptyset (Set Int))
+  (ite (and (= x!0 1176855)) (insert 1176850 (as emptyset (Set Int)))
+  (ite (and (= x!0 1184593)) (insert 1184593 (insert 1176918 (as emptyset (Set Int))))
+  (ite (and (= x!0 1176874)) (as emptyset (Set Int))
+  (ite (and (= x!0 1176888)) (insert 1184595 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176889)) (insert 1176913 (as emptyset (Set Int)))
+  (ite (and (= x!0 1176893)) (insert 1176918 (as emptyset (Set Int)))
+  (ite (and (= x!0 1184595)) (insert 1184593 (insert 1184595 (insert 1176918 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1184594)) (insert 1176913 (insert 1184594 (insert 1184595 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1176894)) (as emptyset (Set Int))
+  (ite (and (= x!0 1184604)) (as emptyset (Set Int))
+  (ite (and (= x!0 1184597)) (insert 1184619 (insert 1184596 (insert 1184597 (as emptyset (Set Int)))))
+  (ite (and (= x!0 1184596)) (as emptyset (Set Int))
+  (ite (and (= x!0 1184605)) (insert 1184619 (insert 1184596 (as emptyset (Set Int))))
+  (ite (and (= x!0 1140967)) (insert 1140976 (insert 1140979 (insert 1140980 (insert 1140967 (insert 1140969 (insert 174 (insert 1140958 (insert 1140975 (as emptyset (Set Int))))))))))
+  (ite (and (= x!0 1140965)) (insert 1140956 (insert 1140957 (insert 1140958 (insert 1140959 (insert 1140960 (insert 1140963 (insert 1140964 (insert 1140965 (insert 1140966 (insert 1140967 (insert 1140968 (insert 1140969 (insert 1140972 (insert 1140973 (insert 174 (insert 1140975 (insert 1140976 (insert 1140977 (insert 1140978 (insert 1140979 (insert 179 (insert 1140980 (insert 1140982 (as emptyset (Set Int)))))))))))))))))))))))))
+  (ite (and (= x!0 1140971)) (insert 1140961 (insert 1140962 (insert 1140970 (insert 171 (insert 1140972 (insert 1140971 (insert 1140974 (insert 1140976 (insert 154 (insert 158 (as emptyset (Set Int))))))))))))
+  (ite (and (= x!0 1140972)) (insert 1140962 (insert 158 (insert 171 (insert 1140972 (insert 1140974 (as emptyset (Set Int)))))))
+  (ite (and (= x!0 1140968)) (as emptyset (Set Int))
+  (ite (and (= x!0 1140957)) (insert 1140960 (insert 1140963 (insert 1140964 (insert 1140966 (insert 1140968 (insert 1140972 (insert 1140973 (insert 1140977 (insert 1140978 (insert 179 (insert 1140982 (insert 1140956 (insert 1140957 (insert 1140959 (as emptyset (Set Int))))))))))))))))
+  (ite (and (= x!0 1140964)) (insert 1140977 (insert 179 (insert 1140972 (insert 1140964 (insert 1140968 (insert 1140956 (insert 1140973 (as emptyset (Set Int)))))))))
+  (ite (and (= x!0 1140976)) (insert 1140961 (insert 1140962 (insert 1140970 (insert 171 (insert 1140972 (insert 1140971 (insert 1140974 (insert 1140976 (insert 154 (insert 158 (as emptyset (Set Int))))))))))))
+  (ite (and (= x!0 1140960)) (insert 1140960 (insert 1140978 (insert 1140963 (insert 1140982 (insert 1140966 (insert 1140959 (as emptyset (Set Int))))))))
+  (ite (and (= x!0 1140975)) (insert 1140976 (insert 1140979 (insert 1140980 (insert 1140969 (insert 174 (insert 1140958 (insert 1140975 (as emptyset (Set Int)))))))))
+  (as emptyset (Set Int))))))))))))))))))))))))))))))))))))))))))))
+
 (define-fun rght ((x!0 Int)) Int
   (ite (= x!0 1140984) 1140983
   (ite (= x!0 1140983) 1140983
@@ -259,6 +303,7 @@
   (ite (= x!0 1140975) true
     true))))))))))))))))))))))))))))))))))))))))))
 
+
 (declare-const b1 Bool)
 (declare-const b2 Bool)
 (declare-const b3 Bool)
@@ -285,17 +330,16 @@
 (ite b6 x y)
 )
 
+
 (define-fun lemma ((x Int) (y Int)) Bool
-(=> (<= (Loc1 x y) (lft (Loc2 x y)))
-    (and (<= (key (Loc3 x y))
-             (maxr (Loc4 x y)))
-         (<= (minr (Loc5 x y))
-             (key (Loc6 x y)))))
-)
+(=> (member (Loc1 x y) (hbst (Loc2 x y))) 
+     (and (<= (key (Loc3 x y)) (maxr (Loc4 x y)))
+          (<= (minr (Loc5 x y)) (key (Loc6 x y)))
+     )
+))
+
 
 (define-fun rswitch () Int 0)
-
-
 
 (assert (and (=> (= rswitch 0) (let ((a!1 (and (> (key 1140984) 0)
                 (< (key 1140984) 100)
@@ -554,7 +598,6 @@
 (and (=> (= rswitch 0) (not (=> (bst 1140957) (lemma 1140957 1140957 ))))
 )
 ))
-
 
 (check-sat)
 (get-value (b1 b2 b3 b4 b5 b6))
