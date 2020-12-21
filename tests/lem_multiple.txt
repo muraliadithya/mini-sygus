@@ -71,4 +71,4 @@ this should not appear
 
 
 
-(check-sat)
+; (check-sat)

@@ -1,4 +1,6 @@
-import re
+import re, time
+import subprocess, itertools, warnings
+from utils import *
 
 class grammar():
     def __init__(self, filename='', p=True, w=True, r=False,
@@ -8,6 +10,7 @@ class grammar():
         self.success = False
         self.line_start = 0
         self.line_end = 0
+        self.lemma_name = ''
         self.arguments = {}
         self.symbols = {}
         self.replacements = []
@@ -40,7 +43,8 @@ class grammar():
             predec = False
             rules = False
             for c,line in enumerate(f):
-                if delay > 0 or line.isspace():
+                if (delay > 0 or line.isspace() or
+                    (';' in line and line[:line.find(';')].isspace())):
                     delay -= 1
                     continue
                 d += depth(line)
@@ -63,7 +67,8 @@ class grammar():
                         self.line_end = c
                         rules = False
                         break
-                elif '(synth-fun lemma' == line[:16]:
+                elif '(synth-fun ' == line[:11]:
+                    self.lemma_name = line.split(' ')[1]
                     count -= 1
                     if count == 0:
                         self.line_start = c
@@ -201,9 +206,10 @@ class grammar():
             j += 1
         num = int(statement[i:j])
         k = 0
-        while k < len(self.rules[symbol]['replacements']) - 2 and not model['b'+str(num+k)]:
+        while (k < len(self.rules[symbol]['replacements']) - 2 and
+               not self.check_model(model, num+k)):
             k += 1
-        delay = not model['b'+str(num+k)]
+        delay = not self.check_model(model, num+k)
         j += 1
         choice = statement[j]
         d = depth(statement[j])
@@ -217,6 +223,10 @@ class grammar():
                 choice = statement[j]
                 d += depth(statement[j])
         return choice
+    
+    def check_model(self, model, b):
+        var = 'b' + str(b)
+        return var in model and model[var]
     
     def apply_model(self, model, line='', symbol='Start', num=1):
         if line == '':
@@ -284,7 +294,8 @@ class grammar():
                 print(func)
     
     def print_lemma(self):
-        print('(define-fun lemma ({}) Bool\n{})'.format(
+        print('(define-fun {} ({}) Bool\n{})'.format(
+            self.lemma_name,
             ' '.join(['({} {})'.format(arg, self.arguments[arg])
                       for arg in self.arguments]),
             indent(self.lemma),
@@ -303,7 +314,8 @@ class grammar():
         out.extend([' '.join(func.split('\n'))
                     for symbol in sorted(self.symbols, key=lambda s: self.rules[s]['height'])
                     for func in self.functions[symbol]])
-        out.append('(define-fun lemma ({}) Bool {})'.format(
+        out.append('(define-fun {} ({}) Bool {})'.format(
+            self.lemma_name,
             ' '.join(['({} {})'.format(arg, self.arguments[arg])
                       for arg in self.arguments]),
             ' '.join(self.lemma.split('\n')),
@@ -323,7 +335,8 @@ class grammar():
                     file.write(func)
                     file.write('\n')
             file.write('\n')
-            file.write('(define-fun lemma ({}) Bool\n{})'.format(
+            file.write('(define-fun {} ({}) Bool\n{})'.format(
+                self.lemma_name,
                 ' '.join(['({} {})'.format(arg, self.arguments[arg])
                           for arg in self.arguments]),
                 indent(self.lemma),
@@ -347,7 +360,8 @@ class grammar():
                                 file.write(func)
                                 file.write('\n')
                         file.write('\n')
-                        file.write('(define-fun lemma ({}) Bool\n{})'.format(
+                        file.write('(define-fun {} ({}) Bool\n{})'.format(
+                            self.lemma_name,
                             ' '.join(['({} {})'.format(arg, self.arguments[arg])
                                       for arg in self.arguments]),
                             indent(self.lemma),
@@ -359,89 +373,6 @@ class grammar():
                         file.write(line)
     
 
-def find_unreplaced(line, symbol):
-    m = len(symbol)
-    return [w.start() for w in re.finditer(symbol, line)
-            if not line[w.start()+m].isdigit() and line[w.start()+m] != '_']
-
-def find_replaced(line, symbol):
-    m = len(symbol)
-    repl = []
-    for w in [w.start() for w in re.finditer(symbol, line)
-              if line[w.start()+m].isdigit() or line[w.start()+m] == '_']:
-        num = ''
-        s = w + m
-        while s < len(line) and (line[s].isdigit() or line[s] == '_'):
-            num += line[s]
-            s += 1
-        if num[0] == '_':
-            num = num[1:]
-        repl.append((symbol, int(num)))
-    return repl
-
-def parse_arguments(line):
-    line = line[line.find('(', 2)+1:]
-    i = 0
-    d = 0
-    args = []
-    arg_curr = ''
-    while d >= 0 and i < len(line):
-        c = line[i]
-        d += depth(c)
-        arg_curr += c
-        if d == 0:
-            if not arg_curr.isspace():
-                args.append(arg_curr[1:-1])
-            arg_curr = ''
-        i += 1
-    args_dict = {}
-    for arg in args:
-        s = arg.split(' ', 1)
-        args_dict[s[0]] = s[1]
-    return args_dict
-
-def parse_rules(replacement):
-    rules = []
-    rule_curr = ''
-    d = 0
-    for w in replacement.split(' '):
-        d += depth(w)
-        rule_curr += w + ' '
-        if d <= 0:
-            if not rule_curr.isspace():
-                while len(rule_curr) > 0 and (depth(rule_curr) < 0 or rule_curr[-1].isspace()):
-                    rule_curr = rule_curr[:-1]
-                rules.append(rule_curr)
-            rule_curr = ''
-    return rules
-
-def get_keywords(words):
-    return set([w for w in re.split('\(|\)|\n| ', ''.join(words)) if w not in {'', ' '}])
-
-def depth(line):
-    return line.count('(') - line.count(')')
-
-def indent(output):
-    output = output.split(' ')
-    d = 0
-    d_ref = [0]
-    ind_ref = [0]
-    ind_curr = 0
-    for i,word in enumerate(output):
-        d += depth(word)
-        ind_curr += len(word) + 1
-        if d <= d_ref[-1]:
-            if d < d_ref[-1]:
-                while d < d_ref[-1]:
-                    d_ref.pop(-1)
-                    ind_ref.pop(-1)
-            output[i] += '\n' + ' '*(ind_ref[-1]-1)
-            ind_curr = 0
-        if word in {'(=>', '(ite', '(and', '(or', '(<='}:
-            d_ref.append(d)
-            ind_ref.append(ind_ref[-1]+ind_curr)
-            ind_curr = 0
-    return ' '.join(output)
 
 def read_grammars(filename):
     grammars = []
@@ -455,3 +386,71 @@ def read_grammars(filename):
         if G.success:
             grammars.append(G)
     return grammars
+
+def replace_grammars(filename, repfile=None, mode='w'):
+    grammars = read_grammars(filename)
+    if len(grammars) == 0:
+        return
+    if not repfile:
+        index = filename.rfind('/')
+        repfile = filename[:index] + '/output' + filename[index:-4] + '_repl.txt'
+    with open(repfile, mode) as file:
+        with open(filename) as infile:
+            i = 0
+            G = grammars[i]
+            for c,line in enumerate(infile):
+                if c < G.line_start:
+                    file.write(line)
+                elif c == G.line_start:
+                    for b in range(G.counts_init['bools'], G.bools):
+                        file.write('(declare-const b{} Bool)\n'.format(b+1))
+                    file.write('\n')
+                    for symbol in sorted(G.symbols, key=lambda s: G.rules[s]['height']):
+                        for func in G.functions[symbol]:
+                            file.write(func)
+                            file.write('\n')
+                    file.write('\n')
+                    file.write('(define-fun {} ({}) Bool\n{})'.format(
+                        G.lemma_name,
+                        ' '.join(['({} {})'.format(arg, G.arguments[arg])
+                                  for arg in G.arguments]),
+                        indent(G.lemma),
+                    ))
+                    file.write('\n')
+                elif c <= G.line_end:
+                    continue
+                else:
+                    i += 1
+                    if i < len(grammars):
+                        G = grammars[i]
+                    file.write(line)
+    return grammars, repfile
+
+def operate(filename, p=True):
+    grammars, smt_file = replace_grammars(filename)
+    start = time.time()
+    proc = subprocess.Popen('cvc4 {} -m --lang=smt2'.format(smt_file), shell=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    cvc4_out, err = proc.communicate()
+    if p:
+        print('runtime: {:.2f}s'.format(time.time()-start))
+        print(cvc4_out)
+    if cvc4_out == '':
+        if p:
+            print(err)
+    else:
+        cvc4_lines = cvc4_out.split('\n')
+        if cvc4_lines[0] == 'sat':
+            model = {}
+            for line in cvc4_lines:
+                if 'define-fun' in line:
+                    line = line.split(' ')
+                    model[line[1]] = line[4][:-1] == 'true'
+            if p:
+                print('sat')
+                for G in grammars:
+                    print('\nsynth {}:\n{}'.format(G.lemma_name, G.lemma))
+                    print('model {}:\n{}'.format(G.lemma_name, G.apply_model(model)))
+        elif p:
+            print('unsat')
+    
