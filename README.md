@@ -6,7 +6,7 @@ a constraint-based syntax-guided synthesis (SyGuS) engine
 - [Python 3.5 or above](https://www.python.org/downloads/)
 - [CVC4 1.9](https://cvc4.github.io/downloads.html)
 
-# info
+## info
 
 See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas. The first example of `test_driver.ipynb` reveals to current extend of this program: multiple grammars are read from an input text file, replaced by respective (and disjoint) synthesized lemmas, ported to CVC4 in order to verify satisfiability and generate a satisfying model, then applies the reported model to the synthesized lemmas to instantiate the particular lemmas which satisfy the other constraints in the given file.
 
