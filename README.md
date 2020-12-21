@@ -1,7 +1,14 @@
 # lemma-synthesis
 a constraint-based syntax-guided synthesis (SyGuS) engine
 
-See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas.
+## requirements
+
+- [Python 3.5 or above](https://www.python.org/downloads/)
+- [CVC4 1.9](https://cvc4.github.io/downloads.html)
+
+# info
+
+See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas. The first example of `test_driver.ipynb` reveals to current extend of this program: multiple grammars are read from an input text file, replaced by respective (and disjoint) synthesized lemmas, ported to CVC4 in order to verify satisfiability and generate a satisfying model, then applies the reported model to the synthesized lemmas to instantiate the particular lemmas which satisfy the other constraints in the given file.
 
 Generally, `lem_syn` creates a `grammar` object sourced from the input file description of a finite, context-free grammar in SyGuS format. This `grammar` object is then able to compute a set of boolean flow variables, auxiliary functions, and a synthesized lemma detailing the expanded form of the grammar. This lemma (with variables and functions) can then replace the originating grammar; the resulting file (in SMT-Lib format) should then be ported to an SMT solver like CVC4 or Z3.
 
@@ -11,8 +18,6 @@ Feature summary:
 - print/write boolean variables, auxiliary functions, and synthesized lemma in SMT-Lib format
 - replace grammar description by synthesized lines in copy of input file
 - edit grammar after initial read (deleting, enforce, and add replacement rules for existing symbols)
-- apply model (given as dictionary) to synthesized lemma and collapse down output into a single 'instantiated lemma' statement without boolean variables or auxiliary functions
-- read/maintain multiple grammars within a single input file
-
-Features-in-development:
-- correct calls of file (after grammar is replaced by synthesized lemma) to CVC4 (or Z3) for checking satisfiability and obtaining a model (if `sat`); currently, this satisfying model is provided by the user
+- maintain multiple grammars within a single input file
+- call CVC4 on synthesized lemma and given constraints to check satisfiability and, if satisfiable, generate a model
+- apply model to synthesized lemma and collapse down output into a single 'instantiated lemma' statement without boolean variables or auxiliary functions
