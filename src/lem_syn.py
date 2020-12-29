@@ -1,8 +1,10 @@
-import re, time
-import subprocess, itertools, warnings
-from utils import *
+import time
+import subprocess
 
-class grammar():
+from src.utils import *
+
+
+class Grammar:
     def __init__(self, filename='', p=True, w=True, r=False,
                  grammar_count=1, line_delay=0, counts_init={},
                  outfile=None):
@@ -380,7 +382,7 @@ def read_grammars(filename):
     counts_init = {}
     while i == 0 or G.success:
         i += 1
-        G = grammar(filename, grammar_count=i, counts_init=counts_init,
+        G = Grammar(filename, grammar_count=i, counts_init=counts_init,
                     p=False, w=False)
         counts_init = G.counts
         if G.success:
