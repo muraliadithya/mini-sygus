@@ -1,4 +1,4 @@
-from src.SyGuSGrammar import parse_synthfun_command
+from src.SyGuSGrammar import load_from_string
 
 synthfun_str = """
 (synth-fun lemma ((x Int) (y (Set Int))  ) Bool
@@ -18,7 +18,7 @@ synthfun_str = """
 ))
 """
 
-grammar = parse_synthfun_command(synthfun_str)
+grammar = load_from_string(synthfun_str)
 for key in grammar.__dict__:
     print('{}: {}'.format(key, getattr(grammar, key)))
 
