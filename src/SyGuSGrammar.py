@@ -8,15 +8,21 @@ class SyGuSGrammar:
     Class representing arguments to a synth-fun command (refer SyGuS 2.0 format: https://sygus.org/language/).  
     Attribute variables are explained in the documentation for the respective getter functions.  
     """
+
     def __init__(self):
         # Attributes defining the function to be synthesised
         self.name = None
         self.parameters = None
         self.range_type = None
+
         # Attributes defining the grammar
         self.nonterminals = dict()
         self.start_symbol = None
         self.rules = dict()
+
+        # Attributes for caching useful values
+        # Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal
+        self._post = None
 
     def name_synth_fun(self, name):
         """
@@ -51,7 +57,8 @@ class SyGuSGrammar:
         :param smt_type: lisplike.is_lisplike_repr  
         """
         if nonterminal in self.nonterminals and smt_type != self.nonterminals[nonterminal]:
-            raise ValueError('Nonterminal {} already declared with type {}.'.format(nonterminal, self.nonterminals[nonterminal]))
+            raise ValueError(
+                'Nonterminal {} already declared with type {}.'.format(nonterminal, self.nonterminals[nonterminal]))
         self.nonterminals[nonterminal] = smt_type
 
     def add_nonterminals(self, typed_nonterminals_list):
@@ -84,6 +91,8 @@ class SyGuSGrammar:
         :param nonterminal: string  
         :param rule: lisplike.is_lisplike_repr  
         """
+        # TODO (medium): store rules for each nonterminal not in a list, but indexed by some name in order 
+        #  to correspond and track rules to rule-specific attributes (such as the occurrence of a particular symbol)
         if nonterminal not in self.rules:
             self.rules[nonterminal] = []
         self.rules[nonterminal].append(rule)
@@ -138,6 +147,28 @@ class SyGuSGrammar:
             nonterminals = self.nonterminals.keys()
         return {nonterminal: sorted(self.rules[nonterminal]) for nonterminal in nonterminals}
 
+    def is_finite(self):
+        """
+        Check whether the grammar only has finite productions.  
+        A grammar has an infinite production if there is a sequence of nonterminals B_1, B_2, ... B_n 
+        such that B_i has a rule that contains B_i+1 in its expansion, and B_n contains B_1.  
+        :return: bool  
+        """
+        # Compute the set of nonterminals that occur in each production rule for each nonterminal.
+        # See if the relevant caching attribute holds a valid value
+        if self._post is None:
+            self._post = track_nonterminals_one_step(self)
+        ordered_post_dict = self._post
+        worklist = {self.get_start_symbol()}
+        seen_nonterminals = worklist
+        while worklist:
+            nonterminal = worklist.pop()
+            if nonterminal in seen_nonterminals:
+                return False
+            worklist.union({symbol for symbols_in_rule in ordered_post_dict[nonterminal] for symbol in symbols_in_rule})
+        # Entire grammar has been traversed without a cycle. Grammar is finite.
+        return True
+
 
 def load_from_string(synthfun_str):
     """
@@ -149,11 +180,11 @@ def load_from_string(synthfun_str):
     # Parse string into nested lists of atomic strings.
     nested_list = lisplike.parser(synthfun_str)
     # Construct SyGuSGrammar object from nested list representation.
-    if nested_list[0] != 'synth-fun':
-        raise ValueError('Input does not contain a synth-fun command.')
-    elif len(nested_list) != 6:
+    if len(nested_list) != 6:
         raise ValueError('Must have the form (synth-fun name arguments return-type predeclarations grouped-rule-list)')
-    _, name, parameters, range_type, predeclarations, grouped_rule_list = nested_list
+    command, name, parameters, range_type, predeclarations, grouped_rule_list = nested_list
+    if command != 'synth-fun':
+        raise ValueError('Input does not contain a synth-fun command.')
     grammar = SyGuSGrammar()
     grammar.name_synth_fun(name)
     try:
@@ -170,9 +201,35 @@ def load_from_string(synthfun_str):
         declared_type = next(predecl[1] for predecl in predeclarations if predecl[0] == nonterminal)
         if nonterminal_type != declared_type:
             raise ValueError('Nonterminal {} was declared to be of type {} but '
-                             'rule list contains {}'.format(nonterminal, 
-                                                            lisplike.pretty_string(declared_type, noindent=True), 
+                             'rule list contains {}'.format(nonterminal,
+                                                            lisplike.pretty_string(declared_type, noindent=True),
                                                             lisplike.pretty_string(nonterminal_type, noindent=True)))
         for rule in rule_list:
             grammar.add_rule(nonterminal, rule)
     return grammar
+
+
+# Helper function for SMTGrammar class
+# Implemented here in order to not expose the internals of the class
+def track_nonterminals_one_step(sygus_grammar):
+    """
+    Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal.  
+    The keys are nonterminals and the values are a list of lists of nonterminals. The order of the outer 
+    list is the same as the order of the rules given by get_ordered_rule_list. The order of nonterminals in the 
+    inner list is arbitrary but deterministic.  
+    :param sygus_grammar: SyGuSGrammar  
+    :return: dict {string: list of list of string}  
+    """
+    ordered_rule_dict = sygus_grammar.get_ordered_rule_list()
+    post = dict()
+    nonterminals = {typed_nonterminal[0] for typed_nonterminal in sygus_grammar.get_typed_nonterminal_set()}
+    for nonterminal in nonterminals:
+        # For each nonterminal, for each of its production rules in the order in which they appear in the rule
+        # list, store the nonterminals produced by the rule expansion.
+        ordered_post_list = []
+        for rule in ordered_rule_dict[nonterminal]:
+            # Sort the list before adding it in order to make the computation deterministic.
+            ordered_post_list.append(
+                sorted([nonterminal for nonterminal in nonterminals if lisplike.is_subexpr_repr(nonterminal, rule)]))
+        post[nonterminal] = ordered_post_list
+    return post
