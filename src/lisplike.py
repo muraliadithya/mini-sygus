@@ -163,3 +163,40 @@ def is_lisplike_repr(value):
         return all(is_lisplike_repr(v) for v in value)
     else:
         return False
+
+
+def is_subexpr_string(subexpr_string, expr_string):
+    """
+    Check if the first argument is a sub-expression of the second. The expressions are given 
+    as strings.  
+    :param subexpr_string: string  
+    :param expr_string: string  
+    :return: bool  
+    """
+    if not is_lisplike_string(subexpr_string):
+        raise ValueError('The arguments need to be a lisp-like string: check first argument.')
+    elif not is_lisplike_string(expr_string):
+        raise ValueError('The arguments need to be a lisp-like string: check second argument.')
+    return subexpr_string in expr_string
+
+
+def is_subexpr_repr(subexpr_repr, expr_repr):
+    """
+    Check if the first argument is a sub-expression of the second. The expressions are in the form 
+    of the read in representations.  
+    :param subexpr_repr: is_lisplike_repr  
+    :param expr_repr: is_lisplike_repr  
+    :return: bool  
+    """
+    if not is_lisplike_repr(subexpr_repr):
+        raise ValueError('The arguments need to be a lisp-like representation: check first argument.')
+    elif not is_lisplike_repr(expr_repr):
+        raise ValueError('The arguments need to be a lisp-like representations: check second argument.')
+    return is_subexpr_repr_aux(subexpr_repr, expr_repr)
+
+
+def is_subexpr_repr_aux(subexpr_repr, expr_repr):
+    if isinstance(expr_repr, str):
+        return subexpr_repr == expr_repr
+    elif isinstance(expr_repr, list):
+        return subexpr_repr == expr_repr or any(is_subexpr_repr(subexpr_repr, e) for e in expr_repr)
