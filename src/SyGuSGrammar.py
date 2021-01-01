@@ -26,7 +26,7 @@ class SyGuSGrammar:
         self.rules = dict()
 
         # Attributes for caching useful values/values that are expensive to compute
-        self.nonterminals = self.typed_nonterminals.keys()
+        # IMPORTANT: No support for checking whether cached values are correct. Use with caution.
         # Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal
         self.post = None
 
@@ -62,7 +62,7 @@ class SyGuSGrammar:
         :param nonterminal: string  
         :param smt_type: lisplike.is_lisplike  
         """
-        if nonterminal in self.nonterminals and smt_type != self.typed_nonterminals[nonterminal]:
+        if nonterminal in self.typed_nonterminals and smt_type != self.typed_nonterminals[nonterminal]:
             raise ValueError('Nonterminal {} already declared '
                              'with type {}.'.format(nonterminal, self.typed_nonterminals[nonterminal]))
         self.typed_nonterminals[nonterminal] = smt_type
@@ -84,7 +84,7 @@ class SyGuSGrammar:
         Name of starting nonterminal from which productions will be considered for synthesis.  
         :param start_symbol_name: string  
         """
-        if start_symbol_name not in self.nonterminals:
+        if start_symbol_name not in self.typed_nonterminals:
             raise ValueError('{} is not a valid nonterminal'.format(start_symbol_name))
         current_start_symbol = self.start_symbol
         if current_start_symbol is not None and start_symbol_name != current_start_symbol:
@@ -130,7 +130,15 @@ class SyGuSGrammar:
         Return the set of nonterminals in the grammar with their types.  
         :return: list of (string, lisplike.is_lisplike)  
         """
-        return set((nonterminal, self.typed_nonterminals[nonterminal]) for nonterminal in self.nonterminals)
+        return set(self.typed_nonterminals.items())
+
+    def get_nonterminal_set(self):
+        """
+        Return the set of nonterminals in the grammar.  
+        :return: set of string  
+        """
+        # TODO (low): cache this value in a class attribute in a way that can be updated when the value becomes stale.
+        return {nonterminal for nonterminal in self.typed_nonterminals}
 
     def get_start_symbol(self):
         """
@@ -150,7 +158,7 @@ class SyGuSGrammar:
         nonterminals = list(nonterminals)
         if not nonterminals:
             # No nonterminals specified
-            nonterminals = self.nonterminals
+            nonterminals = self.get_nonterminal_set()
         return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than)) 
                 for nonterminal in nonterminals}
 
@@ -166,7 +174,8 @@ class SyGuSGrammar:
         if self.post is None:
             self.post = track_nonterminals_one_step(self)
         one_step_dict = dict()
-        for nt in self.nonterminals:
+        nonterminals = self.get_nonterminal_set()
+        for nt in nonterminals:
             one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
             one_step_dict[nt] = one_step_set
 
@@ -238,9 +247,12 @@ def track_nonterminals_one_step(sygus_grammar):
     :param sygus_grammar: SyGuSGrammar  
     :return: dict {string: list of list of string}  
     """
+    cached_post = sygus_grammar.post
+    if cached_post is not None:
+        return cached_post
     ordered_rule_dict = sygus_grammar.get_ordered_rule_list()
     post = dict()
-    nonterminals = {typed_nonterminal[0] for typed_nonterminal in sygus_grammar.get_typed_nonterminal_set()}
+    nonterminals = sygus_grammar.get_nonterminal_set()
     for nonterminal in nonterminals:
         # For each nonterminal, for each of its production rules in the order in which they appear in the rule
         # list, store the nonterminals produced by the rule expansion.
@@ -254,4 +266,6 @@ def track_nonterminals_one_step(sygus_grammar):
         # Sort the inner lists in order to make the computation deterministic.
         ordered_sorted_post_list = [sorted(occurring_nonterminals) for occurring_nonterminals in ordered_post_list]
         post[nonterminal] = ordered_sorted_post_list
+    # Cache the post for next time
+    sygus_grammar.post = post
     return post
