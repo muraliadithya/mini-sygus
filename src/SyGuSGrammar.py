@@ -1,8 +1,13 @@
+import functools
+
 import src.lisplike as lisplike
 
 
-# NOTE: Some argument/output types are written as lisplike.is_lisplike_repr. This is currently enforced nowhere.
+# NOTE: Some argument/output types are written as lisplike.is_lisplike. This is currently enforced nowhere.
 # Need to provide tighter integration with lisplike data types and checking in a way that can be clearly inferred.
+# This is complicated by the fact that the nested list data structure is deconstructed very often, which makes a 
+# solution to encapsulate in order to provide abstraction difficult to use, and possibly pointless.
+
 class SyGuSGrammar:
     """
     Class representing arguments to a synth-fun command (refer SyGuS 2.0 format: https://sygus.org/language/).  
@@ -16,13 +21,14 @@ class SyGuSGrammar:
         self.range_type = None
 
         # Attributes defining the grammar
-        self.nonterminals = dict()
+        self.typed_nonterminals = dict()
         self.start_symbol = None
         self.rules = dict()
 
-        # Attributes for caching useful values
+        # Attributes for caching useful values/values that are expensive to compute
+        self.nonterminals = self.typed_nonterminals.keys()
         # Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal
-        self._post = None
+        self.post = None
 
     def name_synth_fun(self, name):
         """
@@ -34,7 +40,7 @@ class SyGuSGrammar:
     def specify_parameters(self, typed_params_list):
         """
         Ordered list of input parameter names and types for the synthesised function.  
-        :param typed_params_list: list of (string, lisplike.is_lisplike_repr)  
+        :param typed_params_list: list of (string, lisplike.is_lisplike)  
         """
         self.parameters = dict()
         for typed_param in typed_params_list:
@@ -46,7 +52,7 @@ class SyGuSGrammar:
     def define_range(self, smt_type):
         """
         Range of the synthesised function.  
-        :param smt_type: lisplike.is_lisplike_repr  
+        :param smt_type: lisplike.is_lisplike  
         """
         self.range_type = smt_type
 
@@ -54,18 +60,18 @@ class SyGuSGrammar:
         """
         Nonterminal in the grammar.  
         :param nonterminal: string  
-        :param smt_type: lisplike.is_lisplike_repr  
+        :param smt_type: lisplike.is_lisplike  
         """
-        if nonterminal in self.nonterminals and smt_type != self.nonterminals[nonterminal]:
-            raise ValueError(
-                'Nonterminal {} already declared with type {}.'.format(nonterminal, self.nonterminals[nonterminal]))
-        self.nonterminals[nonterminal] = smt_type
+        if nonterminal in self.nonterminals and smt_type != self.typed_nonterminals[nonterminal]:
+            raise ValueError('Nonterminal {} already declared '
+                             'with type {}.'.format(nonterminal, self.typed_nonterminals[nonterminal]))
+        self.typed_nonterminals[nonterminal] = smt_type
 
     def add_nonterminals(self, typed_nonterminals_list):
         """
         Nonterminals in the grammar. The first nonterminal in the list is assumed to be the start symbol if one 
         is not defined already.  
-        :param typed_nonterminals_list: list of (string, lisplike.is_lisplike_repr)  
+        :param typed_nonterminals_list: list of (string, lisplike.is_lisplike)  
         """
         for typed_nonterminal in typed_nonterminals_list:
             nonterminal, smt_type = typed_nonterminal
@@ -89,7 +95,7 @@ class SyGuSGrammar:
         """
         Add a production rule for a nonterminal.  
         :param nonterminal: string  
-        :param rule: lisplike.is_lisplike_repr  
+        :param rule: lisplike.is_lisplike  
         """
         # TODO (medium): store rules for each nonterminal not in a list, but indexed by some name in order 
         #  to correspond and track rules to rule-specific attributes (such as the occurrence of a particular symbol)
@@ -108,23 +114,23 @@ class SyGuSGrammar:
         """
         Return list of input parameter names and types for the synthesised function. The order of elements in the 
         list is the same as the order of parameters.    
-        :return: list of (string, lisplike.is_lisplike_repr)  
+        :return: list of (string, lisplike.is_lisplike)  
         """
         return self.parameters
 
     def get_range_type(self):
         """
         Return the range of the function to be synthesised as an smt type in lisp-like representation.  
-        :return: lisplike.is_lisplike_repr  
+        :return: lisplike.is_lisplike  
         """
         return self.range_type
 
     def get_typed_nonterminal_set(self):
         """
         Return the set of nonterminals in the grammar with their types.  
-        :return: list of (string, lisplike.is_lisplike_repr)  
+        :return: list of (string, lisplike.is_lisplike)  
         """
-        return set((nonterminal, self.nonterminals[nonterminal]) for nonterminal in self.nonterminals)
+        return set((nonterminal, self.typed_nonterminals[nonterminal]) for nonterminal in self.nonterminals)
 
     def get_start_symbol(self):
         """
@@ -139,13 +145,14 @@ class SyGuSGrammar:
         The list is ordered deterministically. If no nonterminals are specified, then the rule list is returned for 
         all possible nonterminals.  
         :param nonterminals: sequence of string   
-        :return: dict {string: list of lisplike.is_lisplike_repr}  
+        :return: dict {string: list of lisplike.is_lisplike}  
         """
         nonterminals = list(nonterminals)
         if not nonterminals:
             # No nonterminals specified
-            nonterminals = self.nonterminals.keys()
-        return {nonterminal: sorted(self.rules[nonterminal]) for nonterminal in nonterminals}
+            nonterminals = self.nonterminals
+        return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than)) 
+                for nonterminal in nonterminals}
 
     def is_finite(self):
         """
@@ -156,18 +163,28 @@ class SyGuSGrammar:
         """
         # Compute the set of nonterminals that occur in each production rule for each nonterminal.
         # See if the relevant caching attribute holds a valid value
-        if self._post is None:
-            self._post = track_nonterminals_one_step(self)
-        ordered_post_dict = self._post
-        worklist = {self.get_start_symbol()}
-        seen_nonterminals = worklist
-        while worklist:
-            nonterminal = worklist.pop()
+        if self.post is None:
+            self.post = track_nonterminals_one_step(self)
+        one_step_dict = dict()
+        for nt in self.nonterminals:
+            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
+            one_step_dict[nt] = one_step_set
+
+        # Auxiliary function to recurse on each nonterminal and check for repeated occurrence
+        def is_finite_check_and_recurse(nonterminal=self.get_start_symbol(), seen_nonterminals=None):
+            if seen_nonterminals is None:
+                seen_nonterminals = set()
             if nonterminal in seen_nonterminals:
+                # Repeated occurrence. Grammar is not finite.
                 return False
-            worklist.union({symbol for symbols_in_rule in ordered_post_dict[nonterminal] for symbol in symbols_in_rule})
-        # Entire grammar has been traversed without a cycle. Grammar is finite.
-        return True
+            else:
+                # The nonterminal is now a seen symbol.
+                seen_nonterminals = seen_nonterminals | {nonterminal}
+                # Recurse on all nonterminals reachable from the current one in one step
+                return all(is_finite_check_and_recurse(symbol, seen_nonterminals) 
+                           for symbol in one_step_dict[nonterminal])
+        # Call auxiliary function to check for finiteness and return the value
+        return is_finite_check_and_recurse()
 
 
 def load_from_string(synthfun_str):
@@ -178,7 +195,7 @@ def load_from_string(synthfun_str):
     :return: SyGuSGrammar  
     """
     # Parse string into nested lists of atomic strings.
-    nested_list = lisplike.parser(synthfun_str)
+    nested_list = lisplike.parse(synthfun_str)
     # Construct SyGuSGrammar object from nested list representation.
     if len(nested_list) != 6:
         raise ValueError('Must have the form (synth-fun name arguments return-type predeclarations grouped-rule-list)')
@@ -209,14 +226,15 @@ def load_from_string(synthfun_str):
     return grammar
 
 
-# Helper function for SMTGrammar class
+# Helper function for ConstraintGrammar class
 # Implemented here in order to not expose the internals of the class
 def track_nonterminals_one_step(sygus_grammar):
     """
-    Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal.  
+    Dictionary of nonterminals produced post the expansion of each rule of each nonterminal.  
     The keys are nonterminals and the values are a list of lists of nonterminals. The order of the outer 
-    list is the same as the order of the rules given by get_ordered_rule_list. The order of nonterminals in the 
-    inner list is arbitrary but deterministic.  
+    list is the same as the order of the rules given by get_ordered_rule_list (deterministic). The order of 
+    nonterminals in the inner list is arbitrary but deterministic, and they appear with the same multiplicity with 
+    which they appear in the corresponding expansion.  
     :param sygus_grammar: SyGuSGrammar  
     :return: dict {string: list of list of string}  
     """
@@ -228,8 +246,12 @@ def track_nonterminals_one_step(sygus_grammar):
         # list, store the nonterminals produced by the rule expansion.
         ordered_post_list = []
         for rule in ordered_rule_dict[nonterminal]:
-            # Sort the list before adding it in order to make the computation deterministic.
-            ordered_post_list.append(
-                sorted([nonterminal for nonterminal in nonterminals if lisplike.is_subexpr_repr(nonterminal, rule)]))
-        post[nonterminal] = ordered_post_list
+            # Check for the number of times each nonterminal appears in this rule and add it with that multiplicity
+            nonterminals_in_rule = []
+            for nt in nonterminals:
+                nonterminals_in_rule = nonterminals_in_rule + [nt] * lisplike.count_subexpr(nt, rule)
+            ordered_post_list.append(nonterminals_in_rule)
+        # Sort the inner lists in order to make the computation deterministic.
+        ordered_sorted_post_list = [sorted(occurring_nonterminals) for occurring_nonterminals in ordered_post_list]
+        post[nonterminal] = ordered_sorted_post_list
     return post
