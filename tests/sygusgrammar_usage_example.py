@@ -1,5 +1,6 @@
 from src.SyGuSGrammar import load_from_string
 
+
 synthfun_str = """
 (synth-fun lemma ((x Int) (y (Set Int))  ) Bool
            ((Start Bool) (B1 Bool) (B2 Bool) (B3 Bool) (Loc Int))
@@ -9,7 +10,8 @@ synthfun_str = """
            (B1 Bool
                   ((member Loc (hbst Loc))))
           (B2 Bool
-                  ((<= (key Loc) (maxr Loc))))
+                  ((<= (key Loc) (maxr Loc))
+                  ))
            (B3 Bool
                   ((<= (minr Loc) (key Loc))))
            (Loc Int (x
@@ -19,10 +21,17 @@ synthfun_str = """
 """
 
 grammar = load_from_string(synthfun_str)
-for key in grammar.__dict__:
-    print('{}: {}'.format(key, getattr(grammar, key)))
 
+print('Printing grammar attributes')
+for key in grammar.__dict__:
+    if key != 'nonterminals':
+        print('{}: {}'.format(key, getattr(grammar, key)))
+
+print('\n\nPrinting production rules for each nonterminal')
 for key in grammar.nonterminals:
     print('{}:'.format(key))
     for rule in grammar.rules[key]:
         print(rule)
+
+print('\n\nChecking finiteness of grammar')
+print(grammar.is_finite())
