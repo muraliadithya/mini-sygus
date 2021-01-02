@@ -141,18 +141,25 @@ class ConstraintGrammar:
         """
         ordered_rule_dict = self._rule_dict
         starting_symbol = self.starting_symbol
-        # Construct pairs containing each symbol and the rule it expands to based on the valuation
+        # Construct pairs containing each symbol and the expression it expands to based on the valuation
         valuation_pairs = []
         for symbol in self.symbols:
-            rule_choice_boolvars = self.symbols[symbol][1]
+            original_symbol, rule_choice_boolvars = self.symbols[symbol]
             try:
                 chosen_rule_index = next(i for i in range(len(rule_choice_boolvars)) if valuation[rule_choice_boolvars[i]])
-                chosen_rule = ordered_rule_dict[symbol][chosen_rule_index]
+                chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
+                # Substitute the occurrences of nonterminals in the rule with their copies for further evaluation
+                # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
+                nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
+                nonterminal_copies = self.boolvars[rule_choice_boolvars[chosen_rule_index]]
+                substitution = lisplike.substitute(chosen_rule, list(zip(nonterminals_in_rule, nonterminal_copies)))
             except StopIteration:
-                chosen_rule_index = None
-                chosen_rule = self._no_rule_chosen
+                # No rule is chosen according to the valuation.
+                # chosen_rule_index = None
+                # chosen_rule = self._no_rule_chosen
+                substitution = self._no_rule_chosen
             # If no rule is chosen, write a special symbol.
-            valuation_pairs = valuation_pairs + [(symbol, chosen_rule)]
+            valuation_pairs = valuation_pairs + [(symbol, substitution)]
 
         # Auxiliary function to apply valuations and build the result recursively
         def evaluate_aux(expr=None):

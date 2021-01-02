@@ -262,7 +262,7 @@ def substitute(expr, subst_pairs):
         raise NotLispLikeReprException('Given expression is not lisp-like.')
     else:
         for (present, replacement) in subst_pairs:
-            if not is_lisplike(present) or not is_lisplike(subst_pairs):
+            if not is_lisplike(present) or not is_lisplike(replacement):
                 raise NotLispLikeReprException('Substitution pairs must contain lisp-like representations.')
     return _substitute_aux(expr, subst_pairs)
 
@@ -270,7 +270,7 @@ def substitute(expr, subst_pairs):
 def _substitute_aux(expr, subst_pairs):
     if isinstance(expr, list):
         # Substitute recursively
-        subst_expr_rec = [substitute(subexpr, subst_pairs) for subexpr in expr]
+        subst_expr_rec = [_substitute_aux(subexpr, subst_pairs) for subexpr in expr]
     else:
         # expr is a string: no recursion. The result is the expression itself.
         subst_expr_rec = expr
