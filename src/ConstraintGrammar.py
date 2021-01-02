@@ -28,6 +28,15 @@ above.
 """
 
 from src.SyGuSGrammar import track_nonterminals_one_step, SyGuSGrammar
+import src.lisplike as lisplike
+
+
+class NonsenseValuationException(Exception):
+    """
+    This exception is raised when valuations on the constraint-based representation does not have a valuation 
+    that is meaningful as a yield of the grammar.  
+    """
+    pass
 
 
 class ConstraintGrammar:
@@ -57,11 +66,15 @@ class ConstraintGrammar:
         # corresponding to the choice of each production rule.The order of boolvars is the order in which 
         # the rules appear in the result of SyGuSGrammar.get_ordered_rule_dict.
         self.symbols = None
+        # Starting symbol to traverse the constraint-based representation
+        self.starting_symbol = None
 
         # Internal attributes (should not exposed by any methods)
         self._post = track_nonterminals_one_step(sygus_grammar)
         self._nonterminals = nonterminals
         self._rule_dict = sygus_grammar.get_ordered_rule_list()
+        # Special symbol to denote when no rule is chosen for a symbol according to valuation
+        self._no_rule_chosen = '||NoRuleChosen||'
 
         # Attributes for caching useful values
         # self.post = track_nonterminals_one_step(sygus_grammar)
@@ -89,6 +102,7 @@ class ConstraintGrammar:
         # should contain.
         # Worklist will contain pairs (nonterminal, nonterminal_copy). Initial pair is the start symbol and a copy.
         start_symbol_initial_copy = _nonterminal_copy_name(start_symbol, nonterminal_copy_counter[start_symbol], synthfun_name)
+        self.starting_symbol = start_symbol_initial_copy
         nonterminal_copy_counter[start_symbol] = nonterminal_copy_counter[start_symbol] + 1
         worklist = {(start_symbol, start_symbol_initial_copy)}
         while worklist:
@@ -117,6 +131,52 @@ class ConstraintGrammar:
                     # Add the copies with the original symbols to the worklist.
                     worklist.add((symbol, fresh_nonterminal_name))
                 self.boolvars[boolvar_name] = post_symbol_copies
+
+    def evaluate(self, valuation):
+        """
+        Apply the given valuation on boolean variables to the representation. The result is an expression from 
+        the grammar.  
+        :param valuation: dict {string: bool}  
+        :return: lisplike.is_lisplike  
+        """
+        ordered_rule_dict = self._rule_dict
+        starting_symbol = self.starting_symbol
+        # Construct pairs containing each symbol and the rule it expands to based on the valuation
+        valuation_pairs = []
+        for symbol in self.symbols:
+            rule_choice_boolvars = self.symbols[symbol][1]
+            try:
+                chosen_rule_index = next(i for i in range(len(rule_choice_boolvars)) if valuation[rule_choice_boolvars[i]])
+                chosen_rule = ordered_rule_dict[symbol][chosen_rule_index]
+            except StopIteration:
+                chosen_rule_index = None
+                chosen_rule = self._no_rule_chosen
+            # If no rule is chosen, write a special symbol.
+            valuation_pairs = valuation_pairs + [(symbol, chosen_rule)]
+
+        # Auxiliary function to apply valuations and build the result recursively
+        def evaluate_aux(expr=None):
+            if expr is None:
+                expr = starting_symbol
+            # If there are any nonterminals in the expression substitute them with the expansion rules recursively
+            expanded_expr = lisplike.substitute(expr, valuation_pairs)
+            # There are only three choices: 
+            # (i) some symbol could not be expanded to anything
+            # (ii) all expansions are done
+            # (iii) there are valid expansions left to be done.
+            # If any symbol is expanded such that the no rule chosen symbol appears, then stop and raise exception
+            if lisplike.is_subexpr(self._no_rule_chosen, expanded_expr):
+                # TODO (medium-low): output the symbol/path within the grammar where the valuation does not make sense.
+                raise NonsenseValuationException('The given valuation does not make sense.')
+            # If the expression is unchanged, return the value as there are no more symbols to be expanded. 
+            if expr == expanded_expr:
+                return expr
+            else:
+                # Recursively apply valuation on the expanded expression
+                return evaluate_aux(expanded_expr)
+
+        # Call the auxiliary function and return the result
+        return evaluate_aux()
 
 
 # Helper functions
