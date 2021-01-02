@@ -250,3 +250,33 @@ def less_than(repr1, repr2):
     else:
         # Both strings or both nested lists. Use built-in comparison
         return repr1 < repr2
+
+
+def substitute(expr, subst_pairs):
+    """
+    Perform a substitution in the given expression with given substitution pairs. Each pair (present, replacement) 
+    is such that if the 'present' occurs as a subexpression, it will be replaced with 'replacement'.  
+    The substitutions are performed bottom-up on the expression, and the first matching substitution is applied.  
+    """
+    if not is_lisplike(expr):
+        raise NotLispLikeReprException('Given expression is not lisp-like.')
+    else:
+        for (present, replacement) in subst_pairs:
+            if not is_lisplike(present) or not is_lisplike(subst_pairs):
+                raise NotLispLikeReprException('Substitution pairs must contain lisp-like representations.')
+    return _substitute_aux(expr, subst_pairs)
+
+
+def _substitute_aux(expr, subst_pairs):
+    if isinstance(expr, list):
+        # Substitute recursively
+        subst_expr_rec = [substitute(subexpr, subst_pairs) for subexpr in expr]
+    else:
+        # expr is a string: no recursion. The result is the expression itself.
+        subst_expr_rec = expr
+    # Perform substitution if any pairs match
+    for (if_present, replacement) in subst_pairs:
+        if if_present == subst_expr_rec:
+            return replacement
+    # None of the substitution pairs match. Return the recursively constructed result
+    return subst_expr_rec
