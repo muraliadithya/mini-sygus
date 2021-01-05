@@ -1,4 +1,5 @@
 from src.SyGuSGrammar import load_from_string
+from src.ConstraintGrammar import ConstraintGrammar
 
 
 synthfun_str = """
@@ -22,16 +23,26 @@ synthfun_str = """
 
 grammar = load_from_string(synthfun_str)
 
-print('Printing grammar attributes')
-for key in grammar.__dict__:
-    if key != 'nonterminals':
-        print('{}: {}'.format(key, getattr(grammar, key)))
+# print('Printing grammar attributes')
+# for key in grammar.__dict__:
+#     if key != 'nonterminals':
+#         print('{}: {}'.format(key, getattr(grammar, key)))
+# 
+# print('\n\nPrinting production rules for each nonterminal')
+# nonterminals = grammar.get_nonterminal_set()
+# for key in nonterminals:
+#     print('{}:'.format(key))
+#     for rule in grammar.rules[key]:
+#         print(rule)
+# 
+# print('\n\nChecking finiteness of grammar')
+# print(grammar.is_finite())
 
-print('\n\nPrinting production rules for each nonterminal')
-for key in grammar.nonterminals:
-    print('{}:'.format(key))
-    for rule in grammar.rules[key]:
-        print(rule)
+constraint_grammar = ConstraintGrammar(grammar)
+constraint_grammar.compute_constraint_encoding()
+print(constraint_grammar.pretty_smt_encoding())
 
-print('\n\nChecking finiteness of grammar')
-print(grammar.is_finite())
+# Using valuation to print the yield of the grammar
+#valuation = {boolvar: True for boolvar in constraint_grammar.boolvars}
+#print(constraint_grammar.evaluate(valuation))
+
