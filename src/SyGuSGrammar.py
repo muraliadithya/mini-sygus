@@ -116,7 +116,7 @@ class SyGuSGrammar:
         list is the same as the order of parameters.    
         :return: list of (string, lisplike.is_lisplike)  
         """
-        return self.parameters
+        return list(self.parameters.items())
 
     def get_range_type(self):
         """
