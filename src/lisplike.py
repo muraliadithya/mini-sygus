@@ -38,13 +38,27 @@ class NotLispLikeReprException(Exception):
     pass
 
 
+def is_lisplike(value):
+    """
+    Checking whether a value is a lisp-like representation.  
+    :param value: any  
+    :return: bool  
+    """
+    if isinstance(value, str):
+        return True
+    if isinstance(value, list):
+        return all(is_lisplike(v) for v in value)
+    else:
+        return False
+
+
 def parse(input_str, noerr=False):
     """
     Basic lisp-like parser.  
     Setting the noerr argument does not raise an exception, instead behaves like a best-effort parser.  
     :param input_str: string  
     :param noerr: bool  
-    :return: nested list of strings  
+    :return: is_lisplike (nested list of strings)  
     """
     # Preprocess: remove arbitrary whitespaces and replace with single space
     processed_str = ' '.join(input_str.split())
@@ -113,22 +127,37 @@ def _parse_aux(in_str, noerr, end, begin=0):
     return partial_result, curr
 
 
-def pretty_string(nested_list, noindent=False):
+def pretty_string(expr, noindent=False):
     """
     Pretty printer to output lisp-like strings from a nested list of utterances.  
     Specifying 'noindent' will yield a string that is only delimited by spaces, rather than tabs or newlines.  
-    :param nested_list: nested list of strings  
+    :param expr: is_lisplike  
     :param noindent: bool  
     :return: string  
     """
+    if not is_lisplike(expr):
+        raise NotLispLikeReprException('Given value is not a lisp-like representation.')
     # TODO (medium): Ensure each line does not exceed a certain length.
-    result = _pretty_string_aux(nested_list, noindent)
+    # Hack around pretty printer for controlling indentation explicitly
+    # Can only be done when noindent is True
+    if noindent:
+        # Replace all existing '\n' with a special symbol
+        expr = substitute(expr, [('\n', '<newline>')])
+    result = _pretty_string_aux(expr, noindent)
+    # Hack around pretty printer for controlling indentation explicitly
+    # Can only be done when noindent is True
+    if noindent:
+        # Replace all '<newline>' with '\n'
+        result = result.replace('<newline>', '\n')
     return result
 
 
 def _pretty_string_aux(lisplike_repr, noindent, align=0):
+    if not lisplike_repr:
+        # Degenerate case. Not an application, not an utterance. Empty expression.
+        return '()'
     if isinstance(lisplike_repr, str):
-        # Single utterance. Just return the string, respecting alignment.
+        # Base case: single utterance. Just return the string, respecting alignment.
         result = ' ' * align + lisplike_repr
         return result
     # Open parentheses, respecting column alignment
@@ -155,20 +184,6 @@ def _pretty_string_aux(lisplike_repr, noindent, align=0):
 
 
 # Additional utilities for denoting a 'lisp-like' string or nested list
-def is_lisplike(value):
-    """
-    Checking whether a value is a lisp-like representation.  
-    :param value: any  
-    :return: bool  
-    """
-    if isinstance(value, str):
-        return True
-    if isinstance(value, list):
-        return all(is_lisplike(v) for v in value)
-    else:
-        return False
-
-
 def is_lisplike_string(input_str):
     """
     Checking whether a given string is lisp-like.  
