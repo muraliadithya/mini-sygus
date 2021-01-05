@@ -43,6 +43,7 @@ class ConstraintGrammar:
     """
     Basic class that generates a constraint-based representation of a SyGuS grammar. 
     """
+
     def __init__(self, sygus_grammar):
         if not isinstance(sygus_grammar, SyGuSGrammar):
             raise TypeError('SyGuSGrammar expected.')
@@ -71,7 +72,6 @@ class ConstraintGrammar:
 
         # Internal attributes (should not exposed by any methods)
         self._post = track_nonterminals_one_step(sygus_grammar)
-        self._nonterminals = nonterminals
         self._rule_dict = sygus_grammar.get_ordered_rule_list()
         # Special symbol to denote when no rule is chosen for a symbol according to valuation
         self._no_rule_chosen = '||NoRuleChosen||'
@@ -94,14 +94,16 @@ class ConstraintGrammar:
         self.symbols = dict()
         start_symbol = self.sygus_grammar.get_start_symbol()
         # Counters for creating fresh nonterminal copy names
-        nonterminal_copy_counter = {nonterminal: 0 for nonterminal in self._nonterminals}
+        nonterminal_copy_counter = {nonterminal: 0 for nonterminal in self.sygus_grammar.get_nonterminal_set()}
         synthfun_name = self.sygus_grammar.get_name()
 
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
         # Worklist will contain pairs (nonterminal, nonterminal_copy). Initial pair is the start symbol and a copy.
-        start_symbol_initial_copy = _nonterminal_copy_name(start_symbol, nonterminal_copy_counter[start_symbol], synthfun_name)
+        start_symbol_initial_copy = _nonterminal_copy_name(start_symbol,
+                                                           nonterminal_copy_counter[start_symbol],
+                                                           synthfun_name)
         self.starting_symbol = start_symbol_initial_copy
         nonterminal_copy_counter[start_symbol] = nonterminal_copy_counter[start_symbol] + 1
         worklist = {(start_symbol, start_symbol_initial_copy)}
@@ -142,11 +144,12 @@ class ConstraintGrammar:
         ordered_rule_dict = self._rule_dict
         starting_symbol = self.starting_symbol
         # Construct pairs containing each symbol and the expression it expands to based on the valuation
-        valuation_pairs = []
+        substitution_pairs = []
         for symbol in self.symbols:
             original_symbol, rule_choice_boolvars = self.symbols[symbol]
             try:
-                chosen_rule_index = next(i for i in range(len(rule_choice_boolvars)) if valuation[rule_choice_boolvars[i]])
+                chosen_rule_index = next(i for i in range(len(rule_choice_boolvars))
+                                         if valuation[rule_choice_boolvars[i]])
                 chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
                 # Substitute the occurrences of nonterminals in the rule with their copies for further evaluation
                 # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
@@ -159,14 +162,14 @@ class ConstraintGrammar:
                 # chosen_rule = self._no_rule_chosen
                 substitution = self._no_rule_chosen
             # If no rule is chosen, write a special symbol.
-            valuation_pairs = valuation_pairs + [(symbol, substitution)]
+            substitution_pairs = substitution_pairs + [(symbol, substitution)]
 
         # Auxiliary function to apply valuations and build the result recursively
         def evaluate_aux(expr=None):
             if expr is None:
                 expr = starting_symbol
             # If there are any nonterminals in the expression substitute them with the expansion rules recursively
-            expanded_expr = lisplike.substitute(expr, valuation_pairs)
+            expanded_expr = lisplike.substitute(expr, substitution_pairs)
             # There are only three choices: 
             # (i) some symbol could not be expanded to anything
             # (ii) all expansions are done
@@ -184,6 +187,77 @@ class ConstraintGrammar:
 
         # Call the auxiliary function and return the result
         return evaluate_aux()
+
+    def pretty_smt_encoding(self):
+        """
+        Return a string in SMT-Lib format that (i) Declares variables and (ii) an evaluation function corresponding 
+        to the grammar. Refer to the package and module descriptions for the roles and intended meaning 
+        of these commands.  
+        :return: string  
+        """
+        # TODO (high): construct lisplike.is_lisplike values instead of strings
+        # Precomputing useful values
+        synthfun_name = self.sygus_grammar.get_name()
+        typed_nonterminals = dict(self.sygus_grammar.get_typed_nonterminal_set())
+        typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
+        # Degenerates to '()' when the list of arguments is empty
+        typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
+        arguments = [arg[0] for arg in typed_params]
+        ordered_rule_dict = self.sygus_grammar.get_ordered_rule_list()
+        define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
+        # Declare boolean variables
+        # TODO (medium): refactor code to have each variable with its type. Only boolean variables currently
+        boolvar_decls = '\n'.join(['(declare-const {} Bool)'.format(boolvar) for boolvar in self.boolvars])
+        bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
+        # Define functions for each nonterminal copy grouped by the original nonterminal
+        func_decl_string = ';Declaring functions corresponding to nonterminals\n'
+        for nonterminal in self.sygus_grammar.get_nonterminal_set():
+            func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
+            return_type = typed_nonterminals[nonterminal]
+            post_nonterminals = self._post[nonterminal]
+            nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
+            for nonterminal_copy in nonterminal_copies:
+                choice_boolvars = self.symbols[nonterminal_copy][1]
+                post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
+                if arguments != []:
+                    # If there are arguments, each of the nonterminal copies will need to appear in the form of 
+                    # applications to the arguments.
+                    post_nonterminal_copies_with_args = [[[nt_copy] + arguments 
+                                                          for nt_copy in nt_copy_list] 
+                                                         for nt_copy_list in post_nonterminal_copies]
+                else:
+                    post_nonterminal_copies_with_args = post_nonterminal_copies
+                # Compute the expansion rules with nonterminal copies and arguments in place of the nonterminals
+                substituted_expansions = [lisplike.substitute(ordered_rule_dict[nonterminal][i],
+                                                              list(zip(post_nonterminals[i],
+                                                                       post_nonterminal_copies_with_args[i])))
+                                          for i in range(len(ordered_rule_dict[nonterminal]))]
+
+                # Auxiliary function
+                def func_decl_body_aux(boolvars, rules):
+                    # Hack around lisplike pretty printer's lack of customisation.
+                    # Putting \n and pretty printing with 'no indent' as a manner of controlling indentation.
+                    # TODO (medium): Don't explicitly construct lisplike representations since it breaks abstraction
+                    if len(boolvars) == 1:
+                        # Base case. Let both the then branch and else branch be the same rule
+                        return ['ite', boolvars[0], '\n', rules[0], '\n', rules[0]]
+                    # Make an ite operator on the first boolvar and rule and recurse
+                    return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
+                func_body = lisplike.pretty_string(func_decl_body_aux(choice_boolvars, substituted_expansions), 
+                                                   noindent=True)
+                func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
+                                                     return_type=return_type, body=func_body)
+                func_decl_string = func_decl_string + func_decl
+        # Define the replacement for the synth-fun command
+        # Must have the same name as the function to be synthesised
+        synthfun_return_type = self.sygus_grammar.get_range_type()
+        starting_symbol = self.starting_symbol
+        evalfun_body = '({} {})'.format(starting_symbol, ' '.join(arguments)) if arguments != [] else starting_symbol
+        eval_function_string = (';Function to be synthesised\n' + define_fun_format).format(
+            name=synthfun_name, typed_args=typed_param_string, 
+            return_type=synthfun_return_type, body=evalfun_body)
+        # Return the boolean declarations, function declarations, and the eval function
+        return bool_decl_string + '\n\n' + func_decl_string + '\n' + eval_function_string
 
 
 # Helper functions
