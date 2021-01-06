@@ -17,14 +17,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
     :return grammars: list [ConstraintGrammar]
     """
     if outfile_name is None:
-        dot_index = infile_name.rfind('.')
-        slash_index = infile_name.rfind('/')
-        if slash_index == -1:
-            slash_index = 0
-            infile_name = '/' + infile_name
-        outfile_name = ''.join([infile_name[:slash_index],'/output',
-                                infile_name[slash_index:dot_index],'_syn',
-                                infile_name[dot_index:]])
+        outfile_name = get_outfile_name(infile_name)
     grammars = []
     with open(infile_name) as infile:
         with open(outfile_name, 'w') as outfile:
@@ -74,8 +67,11 @@ def call_solver(smtfile_name, grammars):
     solver_out, err = proc.communicate()
     # Process output
     model = {}
-    if solver_out == '':
-        print(err)
+    if solver_out == '' or 'error' in solver_out[:6]:
+        if err:
+            print(err)
+        else:
+            print(solver_out)
     else:
         solver_lines = solver_out.split('\n')
         if solver_lines[0] == 'sat':
@@ -92,3 +88,14 @@ def call_solver(smtfile_name, grammars):
         else:
             print('unsat')
     return model
+
+def get_outfile_name(infile_name):
+    dot_index = infile_name.rfind('.')
+    slash_index = infile_name.rfind('/')
+    if slash_index == -1:
+        slash_index = 0
+        infile_name = '/' + infile_name
+    outfile_name = ''.join([infile_name[:slash_index],'/output',
+                            infile_name[slash_index:dot_index],'_syn',
+                            infile_name[dot_index:]])
+    return outfile_name

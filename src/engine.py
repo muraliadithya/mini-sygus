@@ -14,5 +14,6 @@ from src.engine_utils import *
 args = sys.argv[1:]
 if args:
     infile_name = args[0]
-    grammars = sygus_to_constraint(infile_name)
+    smtfile_name = get_outfile_name(infile_name)
+    grammars = sygus_to_constraint(infile_name, smtfile_name)
     model = call_solver(smtfile_name, grammars)
