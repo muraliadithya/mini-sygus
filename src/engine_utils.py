@@ -27,8 +27,11 @@ def sygus_to_constraint(infile_name, outfile_name=None):
             for num,line in enumerate(infile):
                 # Read infile line-by-line
                 if reading_sygus:
+                    # SyGuS grammar is not written to the outfile
                     # Continue reading SyGuS grammar
-                    # SyGus grammar is not written to the outfile
+                    # Only include uncommented portions
+                    if ';' in line:
+                        line = line[:line.find(';')]
                     synthfun_str += '\n' + line
                     depth += line.count('(') - line.count(')')
                     if depth <= 0:
