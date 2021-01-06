@@ -260,7 +260,7 @@ class ConstraintGrammar:
             name=synthfun_name, typed_args=typed_param_string, 
             return_type=synthfun_return_type, body=evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
-        return bool_decl_string + '\n' + bool_asser_string + '\n\n' + func_decl_string + '\n' + eval_function_string
+        return bool_decl_string + '\n\n' + func_decl_string + '\n' + bool_asser_string + '\n'+ eval_function_string
 
 
 # Helper functions

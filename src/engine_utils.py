@@ -6,6 +6,7 @@ with constraint grammars.
 import subprocess, itertools, warnings
 from src.SyGuSGrammar import load_from_string
 from src.ConstraintGrammar import ConstraintGrammar
+from src.lisplike import pretty_string
 
 # Replace SyGuS grammars in file with constraint grammars in SMT-Lib format
 def sygus_to_constraint(infile_name, outfile_name=None):
@@ -86,8 +87,8 @@ def call_solver(smtfile_name, grammars):
             print('sat')
             # Evaluate and print synthesized lemmas over SMT model
             for constraint_grammar in grammars:
-                print('\n')
-                print(constraint_grammar.evaluate(model))
+                print(constraint_grammar.sygus_grammar.name)
+                print(pretty_string(constraint_grammar.evaluate(model), noindent=True))
         else:
             print('unsat')
     return model
