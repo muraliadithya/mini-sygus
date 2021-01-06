@@ -260,8 +260,10 @@ def less_than(repr1, repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check first argument.')
     elif not is_lisplike(repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check second argument.')
-    if isinstance(repr1, str) and not isinstance(repr2, str):
+    if isinstance(repr1, str) and isinstance(repr2, list):
         return True
+    elif isinstance(repr1, list) and isinstance(repr2, str):
+        return False
     else:
         # Both strings or both nested lists. Use built-in comparison
         return repr1 < repr2
