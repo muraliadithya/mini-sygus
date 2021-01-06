@@ -211,6 +211,8 @@ class ConstraintGrammar:
         bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
         # Define functions for each nonterminal copy grouped by the original nonterminal
         func_decl_string = ';Declaring functions corresponding to nonterminals\n'
+        # Assert that a particular rule must be chosen for each function via its boolean variables
+        bool_asser_string = ';Asserting affirmative choice of some boolean variable for each function\n'
         for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
             func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
             return_type = typed_nonterminals[nonterminal]
@@ -218,6 +220,7 @@ class ConstraintGrammar:
             nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
             for nonterminal_copy in nonterminal_copies:
                 choice_boolvars = self.symbols[nonterminal_copy][1]
+                bool_asser_string += '(assert (or {}))\n'.format(' '.join(choice_boolvars))
                 post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
                 if arguments != []:
                     # If there are arguments, each of the nonterminal copies will need to appear in the form of 
@@ -257,7 +260,7 @@ class ConstraintGrammar:
             name=synthfun_name, typed_args=typed_param_string, 
             return_type=synthfun_return_type, body=evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
-        return bool_decl_string + '\n\n' + func_decl_string + '\n' + eval_function_string
+        return bool_decl_string + '\n' + bool_asser_string + '\n\n' + func_decl_string + '\n' + eval_function_string
 
 
 # Helper functions
