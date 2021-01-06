@@ -211,7 +211,7 @@ class ConstraintGrammar:
         bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
         # Define functions for each nonterminal copy grouped by the original nonterminal
         func_decl_string = ';Declaring functions corresponding to nonterminals\n'
-        for nonterminal in self.sygus_grammar.get_nonterminal_set():
+        for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
             func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
             return_type = typed_nonterminals[nonterminal]
             post_nonterminals = self._post[nonterminal]

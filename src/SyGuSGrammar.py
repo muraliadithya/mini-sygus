@@ -194,6 +194,39 @@ class SyGuSGrammar:
                            for symbol in one_step_dict[nonterminal])
         # Call auxiliary function to check for finiteness and return the value
         return is_finite_check_and_recurse()
+    
+    def get_ordered_nonterminal_list(self):
+        """
+        Return a list of nonterminals in the grammar, ordered by dependence by expansion containment
+        such that the nonterminals whose expansions contain no nonterminals are first and the start
+        symbol is last.
+        :return: list of string
+        """
+        # Compute the set of nonterminals that occur in each production rule for each nonterminal.
+        # See if the relevant caching attribute holds a valid value
+        if self.post is None:
+            self.post = track_nonterminals_one_step(self)
+        one_step_dict = dict()
+        nonterminals = self.get_nonterminal_set()
+        for nt in nonterminals:
+            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
+            one_step_dict[nt] = one_step_set
+        
+        # Auxiliary function to construct ordered list
+        def get_nonterminal_heights(nonterminal=self.get_start_symbol(), nonterminal_heights=None):
+            if nonterminal_heights is None:
+                nonterminal_heights = dict()
+            nonterminal_heights[nonterminal] = 1
+            if one_step_dict[nonterminal]:
+                for symbol in one_step_dict[nonterminal]:
+                    nonterminal_heights.update(get_nonterminal_heights(symbol, nonterminal_heights))
+                nonterminal_heights[nonterminal] += max([nonterminal_heights[symbol]
+                                                         for symbol in one_step_dict[nonterminal]])
+            return nonterminal_heights
+        # Call auxiliary function to instruct ordering of nonterminals
+        nonterminal_heights = get_nonterminal_heights()
+        # Obtain list of nonterminals sorted by increasing height
+        return sorted(nonterminal_heights, key=nonterminal_heights.get)
 
 
 def load_from_string(synthfun_str):
