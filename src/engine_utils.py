@@ -54,6 +54,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
                 else:
                     # Aside from grammars, infile and outfile should match
                     outfile.write(convert_to_smt(line))
+            outfile.write('(get-model)')
     return grammars
 
 def call_solver(smtfile_name, grammars):
