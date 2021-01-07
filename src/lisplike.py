@@ -179,7 +179,8 @@ def _pretty_string_aux(lisplike_repr, noindent, align=0):
     result = result + ' ' * align + ')'
     # If noindent is true, strip all whitespaces and replace with a single space, respecting alignment.
     if noindent:
-        result = ' ' * align + ' '.join(result.split())
+        #result = ' ' * align + ' '.join(result.split())
+        result = ' ' * align + ' '.join(result[:-1].split()) + ')'
     return result
 
 

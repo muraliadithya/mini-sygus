@@ -1,0 +1,97 @@
+(set-logic ALL)
+;; combination of true models and false model
+(define-fun sdlst ((x!0 Int)) Bool
+  (ite (= x!0 2) true
+  (ite (= x!0 4) true
+  (ite (= x!0 1) true
+  (ite (= x!0 3) true
+  (ite (= x!0 5) true
+    true))))))
+(define-fun prv ((x!0 Int)) Int
+  (ite (= x!0 2) 2
+  (ite (= x!0 4) 3
+  (ite (= x!0 1) 3
+  (ite (= x!0 3) 1
+  (ite (= x!0 5) 4
+    3))))))
+(define-fun key ((x!0 Int)) Int
+  (ite (= x!0 2) 0
+  (ite (= x!0 4) 0
+  (ite (= x!0 1) 0
+  (ite (= x!0 3) 0
+  (ite (= x!0 5) 0
+    0))))))
+(define-fun nxt ((x!0 Int)) Int
+  (ite (= x!0 2) 2
+  (ite (= x!0 4) 5
+  (ite (= x!0 1) 3
+  (ite (= x!0 3) 4
+  (ite (= x!0 5) 3
+    3))))))
+(define-fun dlst ((x!0 Int)) Bool
+  (ite (= x!0 2) true
+  (ite (= x!0 4) false
+  (ite (= x!0 1) false
+  (ite (= x!0 3) false
+  (ite (= x!0 5) false
+    false))))))
+(define-fun slst ((x!0 Int)) Bool
+  (ite (= x!0 2) true
+  (ite (= x!0 4) false
+  (ite (= x!0 1) false
+  (ite (= x!0 3) false
+  (ite (= x!0 5) false
+    false))))))
+
+;; lemma to synthesize
+;; TODO: must be generated from problem parameters
+
+(synth-fun lemma ((x Int) (nil Int)) Bool
+
+           ((Start Bool) (B1 Bool) (I Int) (I1 Int))
+
+           ((Start Bool (B1
+                   (=> B1 B1)
+                   (and B1 B1)
+                   (or B1 B1)
+                   (not B1)))
+            (B1 Bool ((dlst I) (slst I) (sdlst I)))
+            (I Int (I1
+                   (nxt I1)
+                   (prv I1)))
+            (I1 Int (x nil)))
+
+)
+
+(synth-fun rswitch () Int
+
+           ((Start Int))
+           ((Start Int (0 1 2)))
+
+)
+
+;; pfp constraints from counterexample models
+
+
+;; constraints from false model
+(constraint (or (and (=> (= rswitch 0) (not (=> (dlst 1) (lemma 1 2))))
+(=> (= rswitch 1) (not (=> (sdlst 1) (lemma 1 2))))
+(=> (= rswitch 2) (not (=> (slst 1) (lemma 1 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 2) (lemma 2 2))))
+(=> (= rswitch 1) (not (=> (sdlst 2) (lemma 2 2))))
+(=> (= rswitch 2) (not (=> (slst 2) (lemma 2 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 3) (lemma 3 2))))
+(=> (= rswitch 1) (not (=> (sdlst 3) (lemma 3 2))))
+(=> (= rswitch 2) (not (=> (slst 3) (lemma 3 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 4) (lemma 4 2))))
+(=> (= rswitch 1) (not (=> (sdlst 4) (lemma 4 2))))
+(=> (= rswitch 2) (not (=> (slst 4) (lemma 4 2))))
+)
+))
+
+;; constraints from true models
+
+(check-synth)

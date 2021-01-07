@@ -84,11 +84,10 @@ def call_solver(smtfile_name, grammars):
                 if 'define-fun' in line:
                     line = line.split(' ')
                     model[line[1]] = line[4][:-1] == 'true'
-            print('sat')
+            print('sat\n')
             # Evaluate and print synthesized lemmas over SMT model
             for constraint_grammar in grammars:
-                print(constraint_grammar.sygus_grammar.name)
-                print(pretty_string(constraint_grammar.evaluate(model), noindent=True))
+                print(constraint_grammar.get_synth_function(model))
         else:
             print('unsat')
     return model

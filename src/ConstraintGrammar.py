@@ -261,7 +261,23 @@ class ConstraintGrammar:
             return_type=synthfun_return_type, body=evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
         return bool_decl_string + '\n\n' + func_decl_string + '\n' + bool_asser_string + '\n'+ eval_function_string
-
+    
+    def get_synth_function(self, valuation=None):
+        define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
+        synthfun_name = self.sygus_grammar.get_name()
+        synthfun_return_type = self.sygus_grammar.get_range_type()
+        starting_symbol = self.starting_symbol
+        typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
+        arguments = [arg[0] for arg in typed_params]
+        typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
+        if valuation is None:
+            synthfun_body = '({} {})'.format(starting_symbol, ' '.join(arguments)) if arguments != [] else starting_symbol
+        else:
+            synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
+        synth_function_string = (define_fun_format).format(
+            name=synthfun_name, typed_args=typed_param_string, 
+            return_type=synthfun_return_type, body=synthfun_body)
+        return synth_function_string
 
 # Helper functions
 def _nonterminal_copy_name(symbol_name, copy_number, synthfun_name):

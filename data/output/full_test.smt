@@ -307,114 +307,318 @@
 ;; TODO: must be generated from problem parameters
 (declare-const k Int)
 
-(declare-const b1 Bool)
-(declare-const b2 Bool)
-(declare-const b3 Bool)
-(declare-const b4 Bool)
-(declare-const b5 Bool)
-(declare-const b6 Bool)
-(declare-const b7 Bool)
-(declare-const b8 Bool)
-(declare-const b9 Bool)
-(declare-const b10 Bool)
-(declare-const b11 Bool)
-(declare-const b12 Bool)
-(declare-const b13 Bool)
-(declare-const b14 Bool)
-(declare-const b15 Bool)
-(declare-const b16 Bool)
-(declare-const b17 Bool)
-(declare-const b18 Bool)
-(declare-const b19 Bool)
-(declare-const b20 Bool)
-(declare-const b21 Bool)
-(declare-const b22 Bool)
-(declare-const b23 Bool)
-(declare-const b24 Bool)
-(declare-const b25 Bool)
-(declare-const b26 Bool)
-(declare-const b27 Bool)
-(declare-const b28 Bool)
-(declare-const b29 Bool)
-(declare-const b30 Bool)
-(declare-const b31 Bool)
 
-(define-fun Loc1 ((x Int) (y Int)) Int
-(ite b8 x (ite b9 y (ite b10 (lft x) (rght x))))
+;Declaring boolean variables to encode grammar
+(declare-const lemma_b0 Bool)
+(declare-const lemma_b1 Bool)
+(declare-const lemma_b2 Bool)
+(declare-const lemma_b3 Bool)
+(declare-const lemma_b4 Bool)
+(declare-const lemma_b5 Bool)
+(declare-const lemma_b6 Bool)
+(declare-const lemma_b7 Bool)
+(declare-const lemma_b8 Bool)
+(declare-const lemma_b9 Bool)
+(declare-const lemma_b10 Bool)
+(declare-const lemma_b11 Bool)
+(declare-const lemma_b12 Bool)
+(declare-const lemma_b13 Bool)
+(declare-const lemma_b14 Bool)
+(declare-const lemma_b15 Bool)
+(declare-const lemma_b16 Bool)
+(declare-const lemma_b17 Bool)
+(declare-const lemma_b18 Bool)
+(declare-const lemma_b19 Bool)
+(declare-const lemma_b20 Bool)
+(declare-const lemma_b21 Bool)
+(declare-const lemma_b22 Bool)
+(declare-const lemma_b23 Bool)
+(declare-const lemma_b24 Bool)
+(declare-const lemma_b25 Bool)
+(declare-const lemma_b26 Bool)
+(declare-const lemma_b27 Bool)
+(declare-const lemma_b28 Bool)
+(declare-const lemma_b29 Bool)
+(declare-const lemma_b30 Bool)
+(declare-const lemma_b31 Bool)
+(declare-const lemma_b32 Bool)
+(declare-const lemma_b33 Bool)
+(declare-const lemma_b34 Bool)
+(declare-const lemma_b35 Bool)
+(declare-const lemma_b36 Bool)
+(declare-const lemma_b37 Bool)
+(declare-const lemma_b38 Bool)
+(declare-const lemma_b39 Bool)
+(declare-const lemma_b40 Bool)
+(declare-const lemma_b41 Bool)
+(declare-const lemma_b42 Bool)
+(declare-const lemma_b43 Bool)
+(declare-const lemma_b44 Bool)
+
+;Declaring functions corresponding to nonterminals
+;Functions corresponding to Loc
+(define-fun lemma_Loc_0 ((x Int) (y Int)) Int
+(ite lemma_b3 
+ x 
+ (ite lemma_b4 
+ y 
+ (ite lemma_b5 
+ (lft x) 
+ (ite lemma_b6 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc2 ((x Int) (y Int)) Int
-(ite b11 x (ite b12 y (ite b13 (lft x) (rght x))))
+(define-fun lemma_Loc_1 ((x Int) (y Int)) Int
+(ite lemma_b13 
+ x 
+ (ite lemma_b14 
+ y 
+ (ite lemma_b15 
+ (lft x) 
+ (ite lemma_b16 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc3 ((x Int) (y Int)) Int
-(ite b14 x (ite b15 y (ite b16 (lft x) (rght x))))
+(define-fun lemma_Loc_2 ((x Int) (y Int)) Int
+(ite lemma_b17 
+ x 
+ (ite lemma_b18 
+ y 
+ (ite lemma_b19 
+ (lft x) 
+ (ite lemma_b20 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc4 ((x Int) (y Int)) Int
-(ite b17 x (ite b18 y (ite b19 (lft x) (rght x))))
+(define-fun lemma_Loc_4 ((x Int) (y Int)) Int
+(ite lemma_b21 
+ x 
+ (ite lemma_b22 
+ y 
+ (ite lemma_b23 
+ (lft x) 
+ (ite lemma_b24 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc5 ((x Int) (y Int)) Int
-(ite b20 x (ite b21 y (ite b22 (lft x) (rght x))))
+(define-fun lemma_Loc_3 ((x Int) (y Int)) Int
+(ite lemma_b26 
+ x 
+ (ite lemma_b27 
+ y 
+ (ite lemma_b28 
+ (lft x) 
+ (ite lemma_b29 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc6 ((x Int) (y Int)) Int
-(ite b23 x (ite b24 y (ite b25 (lft x) (rght x))))
+(define-fun lemma_Loc_5 ((x Int) (y Int)) Int
+(ite lemma_b33 
+ x 
+ (ite lemma_b34 
+ y 
+ (ite lemma_b35 
+ (lft x) 
+ (ite lemma_b36 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc7 ((x Int) (y Int)) Int
-(ite b26 x (ite b27 y (ite b28 (lft x) (rght x))))
+(define-fun lemma_Loc_6 ((x Int) (y Int)) Int
+(ite lemma_b37 
+ x 
+ (ite lemma_b38 
+ y 
+ (ite lemma_b39 
+ (lft x) 
+ (ite lemma_b40 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun Loc8 ((x Int) (y Int)) Int
-(ite b29 x (ite b30 y (ite b31 (lft x) (rght x))))
+(define-fun lemma_Loc_7 ((x Int) (y Int)) Int
+(ite lemma_b41 
+ x 
+ (ite lemma_b42 
+ y 
+ (ite lemma_b43 
+ (lft x) 
+ (ite lemma_b44 
+ (rght x) 
+ (rght x)))))
 )
-(define-fun I1 ((x Int) (y Int)) Int
-(ite b2 (minr (Loc3 x y)) (ite b3 (maxr (Loc4 x y)) k))
+;Functions corresponding to I
+(define-fun lemma_I_0 ((x Int) (y Int)) Int
+(ite lemma_b7 
+ (minr (lemma_Loc_1 x y)) 
+ (ite lemma_b8 
+ (maxr (lemma_Loc_2 x y)) 
+ (ite lemma_b9 
+ k 
+ k)))
 )
-(define-fun I2 ((x Int) (y Int)) Int
-(ite b4 (minr (Loc5 x y)) (ite b5 (maxr (Loc6 x y)) k))
+(define-fun lemma_I_1 ((x Int) (y Int)) Int
+(ite lemma_b10 
+ (minr (lemma_Loc_3 x y)) 
+ (ite lemma_b11 
+ (maxr (lemma_Loc_4 x y)) 
+ (ite lemma_b12 
+ k 
+ k)))
 )
-(define-fun I3 ((x Int) (y Int)) Int
-(ite b6 (minr (Loc7 x y)) (ite b7 (maxr (Loc8 x y)) k))
+(define-fun lemma_I_2 ((x Int) (y Int)) Int
+(ite lemma_b30 
+ (minr (lemma_Loc_6 x y)) 
+ (ite lemma_b31 
+ (maxr (lemma_Loc_7 x y)) 
+ (ite lemma_b32 
+ k 
+ k)))
 )
-(define-fun B1_1 ((x Int) (y Int)) Bool
-(ite b1 (<= (I2 x y) (I3 x y)) (bst (Loc2 x y)))
+;Functions corresponding to B1
+(define-fun lemma_B1_0 ((x Int) (y Int)) Bool
+(ite lemma_b1 
+ (<= (lemma_I_0 x y) (lemma_I_0 x y)) 
+ (ite lemma_b2 
+ (bst (lemma_Loc_0 x y)) 
+ (bst (lemma_Loc_0 x y))))
+)
+;Functions corresponding to B2
+(define-fun lemma_B2_0 ((x Int) (y Int)) Bool
+(ite lemma_b25 
+ (<= (minr (lemma_Loc_5 x y)) (lemma_I_2 x y)) 
+ (<= (minr (lemma_Loc_5 x y)) (lemma_I_2 x y)))
+)
+;Functions corresponding to Start
+(define-fun lemma_Start_0 ((x Int) (y Int)) Bool
+(ite lemma_b0 
+ (=> (lemma_B1_0 x y) (lemma_B2_0 x y)) 
+ (=> (lemma_B1_0 x y) (lemma_B2_0 x y)))
 )
 
+;Asserting affirmative choice of some boolean variable for each function
+(assert (or lemma_b3 lemma_b4 lemma_b5 lemma_b6))
+(assert (or lemma_b13 lemma_b14 lemma_b15 lemma_b16))
+(assert (or lemma_b17 lemma_b18 lemma_b19 lemma_b20))
+(assert (or lemma_b21 lemma_b22 lemma_b23 lemma_b24))
+(assert (or lemma_b26 lemma_b27 lemma_b28 lemma_b29))
+(assert (or lemma_b33 lemma_b34 lemma_b35 lemma_b36))
+(assert (or lemma_b37 lemma_b38 lemma_b39 lemma_b40))
+(assert (or lemma_b41 lemma_b42 lemma_b43 lemma_b44))
+(assert (or lemma_b7 lemma_b8 lemma_b9))
+(assert (or lemma_b10 lemma_b11 lemma_b12))
+(assert (or lemma_b30 lemma_b31 lemma_b32))
+(assert (or lemma_b1 lemma_b2))
+(assert (or lemma_b25))
+(assert (or lemma_b0))
+
+;Function to be synthesised
 (define-fun lemma ((x Int) (y Int)) Bool
-(=> (B1_1 x y)
-    (<= (minr (Loc1 x y))
-        (I1 x y)))
+(lemma_Start_0 x y)
 )
 
 
-(declare-const b32 Bool)
-(declare-const b33 Bool)
-(declare-const b34 Bool)
-(declare-const b35 Bool)
-(declare-const b36 Bool)
-(declare-const b37 Bool)
 
-(define-fun Loc9 ((x Int) (y Int)) Int
-(ite b32 x y)
+;Declaring boolean variables to encode grammar
+(declare-const lemma2_b0 Bool)
+(declare-const lemma2_b1 Bool)
+(declare-const lemma2_b2 Bool)
+(declare-const lemma2_b3 Bool)
+(declare-const lemma2_b4 Bool)
+(declare-const lemma2_b5 Bool)
+(declare-const lemma2_b6 Bool)
+(declare-const lemma2_b7 Bool)
+(declare-const lemma2_b8 Bool)
+(declare-const lemma2_b9 Bool)
+(declare-const lemma2_b10 Bool)
+(declare-const lemma2_b11 Bool)
+(declare-const lemma2_b12 Bool)
+(declare-const lemma2_b13 Bool)
+(declare-const lemma2_b14 Bool)
+(declare-const lemma2_b15 Bool)
+
+;Declaring functions corresponding to nonterminals
+;Functions corresponding to Loc
+(define-fun lemma2_Loc_0 ((x Int) (y Int)) Int
+(ite lemma2_b2 
+ x 
+ (ite lemma2_b3 
+ y 
+ y))
 )
-(define-fun Loc10 ((x Int) (y Int)) Int
-(ite b33 x y)
+(define-fun lemma2_Loc_1 ((x Int) (y Int)) Int
+(ite lemma2_b4 
+ x 
+ (ite lemma2_b5 
+ y 
+ y))
 )
-(define-fun Loc11 ((x Int) (y Int)) Int
-(ite b34 x y)
+(define-fun lemma2_Loc_4 ((x Int) (y Int)) Int
+(ite lemma2_b8 
+ x 
+ (ite lemma2_b9 
+ y 
+ y))
 )
-(define-fun Loc12 ((x Int) (y Int)) Int
-(ite b35 x y)
+(define-fun lemma2_Loc_3 ((x Int) (y Int)) Int
+(ite lemma2_b10 
+ x 
+ (ite lemma2_b11 
+ y 
+ y))
 )
-(define-fun Loc13 ((x Int) (y Int)) Int
-(ite b36 x y)
+(define-fun lemma2_Loc_2 ((x Int) (y Int)) Int
+(ite lemma2_b12 
+ x 
+ (ite lemma2_b13 
+ y 
+ y))
 )
-(define-fun Loc14 ((x Int) (y Int)) Int
-(ite b37 x y)
+(define-fun lemma2_Loc_5 ((x Int) (y Int)) Int
+(ite lemma2_b14 
+ x 
+ (ite lemma2_b15 
+ y 
+ y))
+)
+;Functions corresponding to B3
+(define-fun lemma2_B3_0 ((x Int) (y Int)) Bool
+(ite lemma2_b6 
+ (<= (minr (lemma2_Loc_2 x y)) (key (lemma2_Loc_2 x y))) 
+ (<= (minr (lemma2_Loc_2 x y)) (key (lemma2_Loc_2 x y))))
+)
+;Functions corresponding to B1
+(define-fun lemma2_B1_0 ((x Int) (y Int)) Bool
+(ite lemma2_b7 
+ (member (lemma2_Loc_4 x y) (hbst (lemma2_Loc_4 x y))) 
+ (member (lemma2_Loc_4 x y) (hbst (lemma2_Loc_4 x y))))
+)
+;Functions corresponding to B2
+(define-fun lemma2_B2_0 ((x Int) (y Int)) Bool
+(ite lemma2_b1 
+ (<= (key (lemma2_Loc_0 x y)) (maxr (lemma2_Loc_0 x y))) 
+ (<= (key (lemma2_Loc_0 x y)) (maxr (lemma2_Loc_0 x y))))
+)
+;Functions corresponding to Start
+(define-fun lemma2_Start_0 ((x Int) (y Int)) Bool
+(ite lemma2_b0 
+ (=> (lemma2_B1_0 x y) (and (lemma2_B2_0 x y) (lemma2_B3_0 x y))) 
+ (=> (lemma2_B1_0 x y) (and (lemma2_B2_0 x y) (lemma2_B3_0 x y))))
 )
 
+;Asserting affirmative choice of some boolean variable for each function
+(assert (or lemma2_b2 lemma2_b3))
+(assert (or lemma2_b4 lemma2_b5))
+(assert (or lemma2_b8 lemma2_b9))
+(assert (or lemma2_b10 lemma2_b11))
+(assert (or lemma2_b12 lemma2_b13))
+(assert (or lemma2_b14 lemma2_b15))
+(assert (or lemma2_b6))
+(assert (or lemma2_b7))
+(assert (or lemma2_b1))
+(assert (or lemma2_b0))
+
+;Function to be synthesised
 (define-fun lemma2 ((x Int) (y Int)) Bool
-(=> (member (Loc9 x y) (hbst (Loc10 x y)))
-    (and (<= (key (Loc11 x y))
-             (maxr (Loc12 x y)))
-         (<= (minr (Loc13 x y))
-             (key (Loc14 x y)))))
+(lemma2_Start_0 x y)
 )
 
 
