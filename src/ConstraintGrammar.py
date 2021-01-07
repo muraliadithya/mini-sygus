@@ -109,10 +109,12 @@ class ConstraintGrammar:
         worklist = {(start_symbol, start_symbol_initial_copy)}
         while worklist:
             nonterminal, nonterminal_copy = worklist.pop()
-            # Invent as many new boolean variables as rules, and add the entry to symbols
+            # Invent as many new boolean variables as rules (minus one), and add the entry to symbols
             rule_list = self._rule_dict[nonterminal]
             num_rules = len(rule_list)
             new_boolvars = []
+            # If there is just one rule, no need for boolean variables
+            #for _ in range(num_rules-1):
             for _ in range(num_rules):
                 fresh_boolvar_number = boolcounter
                 fresh_boolvar_name = _boolvar_name(fresh_boolvar_number, synthfun_name)
@@ -120,7 +122,20 @@ class ConstraintGrammar:
                 new_boolvars = new_boolvars + [fresh_boolvar_name]
             self.symbols[nonterminal_copy] = (nonterminal, new_boolvars)
 
-            # For each rule create new nonterminal copies and add the entry to boolvars. 
+            # For each rule create new nonterminal copies and add the entry to boolvars.
+            #for i in range(num_rules):
+            #    post_symbols = self._post[nonterminal][i]
+            #    post_symbol_copies = []
+            #    for symbol in post_symbols:
+            #        fresh_nonterminal_number = nonterminal_copy_counter[symbol]
+            #        fresh_nonterminal_name = _nonterminal_copy_name(symbol, fresh_nonterminal_number, synthfun_name)
+            #        nonterminal_copy_counter[symbol] = nonterminal_copy_counter[symbol] + 1
+            #        post_symbol_copies = post_symbol_copies + [fresh_nonterminal_name]
+            #        # Add the copies with the original symbols to the worklist.
+            #        worklist.add((symbol, fresh_nonterminal_name))
+            #    if i < num_rules-1:
+            #        boolvar_name = new_boolvars[i]
+            #        self.boolvars[boolvar_name] = post_symbol_copies
             for i in range(num_rules):
                 boolvar_name = new_boolvars[i]
                 post_symbols = self._post[nonterminal][i]
@@ -237,6 +252,14 @@ class ConstraintGrammar:
                                           for i in range(len(ordered_rule_dict[nonterminal]))]
 
                 # Auxiliary function
+                #def func_decl_body_aux(boolvars, rules):
+                #    # New version of auxiliary function to use ite statements only when choice of rules remains
+                #    if len(rules) == 1:
+                #        return rules[0]
+                #    elif len(rules) == 2:
+                #        return ['ite', boolvars[0], '\n', rules[0], '\n', rules[1]]
+                #    else:
+                #        return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
                 def func_decl_body_aux(boolvars, rules):
                     # Hack around lisplike pretty printer's lack of customisation.
                     # Putting \n and pretty printing with 'no indent' as a manner of controlling indentation.
