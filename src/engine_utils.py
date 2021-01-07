@@ -30,7 +30,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
                 if reading_sygus:
                     # SyGuS grammar is not written to the outfile
                     # Continue reading SyGuS grammar
-                    # Only include uncommented portions
+                    # Only include uncommented portions into grammar
                     if ';' in line:
                         line = line[:line.find(';')]
                     synthfun_str += '\n' + line
@@ -53,7 +53,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
                     depth = line.count('(') - line.count(')')
                 else:
                     # Aside from grammars, infile and outfile should match
-                    outfile.write(line)
+                    outfile.write(convert_to_smt(line))
     return grammars
 
 def call_solver(smtfile_name, grammars):
@@ -93,13 +93,35 @@ def call_solver(smtfile_name, grammars):
             print('unsat')
     return model
 
+def convert_to_smt(line):
+    """
+    Convert a string into SMT format.
+    For uncommented appearances, replace 'constraint' with 'assert'
+    and 'check-synth' with 'check-sat'.
+    :param line: string
+    :return line: string
+    """
+    index = len(line)
+    if ';' in line:
+        index = line.find(';')
+    if 'constraint' in line[:index]:
+        line = line[:index].replace('constraint','assert') + line[index:]
+    if 'check-synth' in line[:index]:
+        line = line[:index].replace('check-synth','check-sat') + line[index:]
+    return line
+
 def get_outfile_name(infile_name):
+    """
+    Generate SMT filename based on input filename.
+    Output file is located in an output folder in the input file directory.
+    :param infile_name: string
+    :param outfile_name: string
+    """
     dot_index = infile_name.rfind('.')
     slash_index = infile_name.rfind('/')
     if slash_index == -1:
         slash_index = 0
         infile_name = '/' + infile_name
     outfile_name = ''.join([infile_name[:slash_index],'/output',
-                            infile_name[slash_index:dot_index],'_syn',
-                            infile_name[dot_index:]])
+                            infile_name[slash_index:dot_index],'.smt'])
     return outfile_name
