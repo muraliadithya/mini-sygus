@@ -296,462 +296,462 @@
 
 ;Declaring functions corresponding to nonterminals
 ;Functions corresponding to I1
-(define-fun lemma_I1_1 ((x Int) (nil Int)) Int
-(ite lemma_b17 
- x 
- (ite lemma_b18 
- nil 
- nil))
-)
-(define-fun lemma_I1_3 ((x Int) (nil Int)) Int
-(ite lemma_b40 
- x 
- (ite lemma_b41 
- nil 
- nil))
-)
 (define-fun lemma_I1_2 ((x Int) (nil Int)) Int
-(ite lemma_b42 
+(ite lemma_b29 
  x 
- (ite lemma_b43 
+ (ite lemma_b30 
  nil 
  nil))
 )
-(define-fun lemma_I1_5 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_8 ((x Int) (nil Int)) Int
+(ite lemma_b31 
+ x 
+ (ite lemma_b32 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_0 ((x Int) (nil Int)) Int
+(ite lemma_b36 
+ x 
+ (ite lemma_b37 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_10 ((x Int) (nil Int)) Int
 (ite lemma_b44 
  x 
  (ite lemma_b45 
  nil 
  nil))
 )
-(define-fun lemma_I1_6 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_4 ((x Int) (nil Int)) Int
 (ite lemma_b46 
  x 
  (ite lemma_b47 
  nil 
  nil))
 )
+(define-fun lemma_I1_3 ((x Int) (nil Int)) Int
+(ite lemma_b51 
+ x 
+ (ite lemma_b52 
+ nil 
+ nil))
+)
 (define-fun lemma_I1_9 ((x Int) (nil Int)) Int
-(ite lemma_b48 
+(ite lemma_b71 
  x 
- (ite lemma_b49 
- nil 
- nil))
-)
-(define-fun lemma_I1_7 ((x Int) (nil Int)) Int
-(ite lemma_b50 
- x 
- (ite lemma_b51 
- nil 
- nil))
-)
-(define-fun lemma_I1_14 ((x Int) (nil Int)) Int
-(ite lemma_b55 
- x 
- (ite lemma_b56 
- nil 
- nil))
-)
-(define-fun lemma_I1_17 ((x Int) (nil Int)) Int
-(ite lemma_b63 
- x 
- (ite lemma_b64 
- nil 
- nil))
-)
-(define-fun lemma_I1_20 ((x Int) (nil Int)) Int
-(ite lemma_b65 
- x 
- (ite lemma_b66 
- nil 
- nil))
-)
-(define-fun lemma_I1_4 ((x Int) (nil Int)) Int
-(ite lemma_b70 
- x 
- (ite lemma_b71 
- nil 
- nil))
-)
-(define-fun lemma_I1_0 ((x Int) (nil Int)) Int
-(ite lemma_b78 
- x 
- (ite lemma_b79 
+ (ite lemma_b72 
  nil 
  nil))
 )
 (define-fun lemma_I1_19 ((x Int) (nil Int)) Int
-(ite lemma_b80 
+(ite lemma_b79 
  x 
- (ite lemma_b81 
+ (ite lemma_b80 
  nil 
  nil))
 )
-(define-fun lemma_I1_11 ((x Int) (nil Int)) Int
-(ite lemma_b85 
+(define-fun lemma_I1_22 ((x Int) (nil Int)) Int
+(ite lemma_b84 
  x 
- (ite lemma_b86 
+ (ite lemma_b85 
  nil 
  nil))
 )
-(define-fun lemma_I1_34 ((x Int) (nil Int)) Int
-(ite lemma_b96 
+(define-fun lemma_I1_21 ((x Int) (nil Int)) Int
+(ite lemma_b86 
  x 
- (ite lemma_b97 
+ (ite lemma_b87 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_6 ((x Int) (nil Int)) Int
+(ite lemma_b88 
+ x 
+ (ite lemma_b89 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_35 ((x Int) (nil Int)) Int
+(ite lemma_b93 
+ x 
+ (ite lemma_b94 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_15 ((x Int) (nil Int)) Int
+(ite lemma_b95 
+ x 
+ (ite lemma_b96 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_17 ((x Int) (nil Int)) Int
+(ite lemma_b97 
+ x 
+ (ite lemma_b98 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_27 ((x Int) (nil Int)) Int
+(ite lemma_b99 
+ x 
+ (ite lemma_b100 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_37 ((x Int) (nil Int)) Int
+(ite lemma_b101 
+ x 
+ (ite lemma_b102 
  nil 
  nil))
 )
 (define-fun lemma_I1_13 ((x Int) (nil Int)) Int
-(ite lemma_b98 
+(ite lemma_b103 
  x 
- (ite lemma_b99 
+ (ite lemma_b104 
  nil 
  nil))
 )
-(define-fun lemma_I1_24 ((x Int) (nil Int)) Int
-(ite lemma_b100 
+(define-fun lemma_I1_16 ((x Int) (nil Int)) Int
+(ite lemma_b105 
  x 
- (ite lemma_b101 
+ (ite lemma_b106 
  nil 
  nil))
 )
-(define-fun lemma_I1_10 ((x Int) (nil Int)) Int
-(ite lemma_b102 
- x 
- (ite lemma_b103 
- nil 
- nil))
-)
-(define-fun lemma_I1_31 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_41 ((x Int) (nil Int)) Int
 (ite lemma_b107 
  x 
  (ite lemma_b108 
  nil 
  nil))
 )
-(define-fun lemma_I1_41 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_12 ((x Int) (nil Int)) Int
 (ite lemma_b109 
  x 
  (ite lemma_b110 
  nil 
  nil))
 )
-(define-fun lemma_I1_40 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_26 ((x Int) (nil Int)) Int
 (ite lemma_b114 
  x 
  (ite lemma_b115 
  nil 
  nil))
 )
-(define-fun lemma_I1_30 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_32 ((x Int) (nil Int)) Int
 (ite lemma_b116 
  x 
  (ite lemma_b117 
  nil 
  nil))
 )
-(define-fun lemma_I1_22 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_39 ((x Int) (nil Int)) Int
 (ite lemma_b118 
  x 
  (ite lemma_b119 
  nil 
  nil))
 )
-(define-fun lemma_I1_36 ((x Int) (nil Int)) Int
-(ite lemma_b123 
+(define-fun lemma_I1_31 ((x Int) (nil Int)) Int
+(ite lemma_b120 
  x 
- (ite lemma_b124 
+ (ite lemma_b121 
  nil 
  nil))
 )
-(define-fun lemma_I1_43 ((x Int) (nil Int)) Int
-(ite lemma_b125 
+(define-fun lemma_I1_23 ((x Int) (nil Int)) Int
+(ite lemma_b122 
  x 
- (ite lemma_b126 
+ (ite lemma_b123 
  nil 
  nil))
 )
-(define-fun lemma_I1_33 ((x Int) (nil Int)) Int
-(ite lemma_b127 
+(define-fun lemma_I1_7 ((x Int) (nil Int)) Int
+(ite lemma_b124 
  x 
- (ite lemma_b128 
+ (ite lemma_b125 
  nil 
  nil))
 )
-(define-fun lemma_I1_8 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_14 ((x Int) (nil Int)) Int
+(ite lemma_b126 
+ x 
+ (ite lemma_b127 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_1 ((x Int) (nil Int)) Int
+(ite lemma_b128 
+ x 
+ (ite lemma_b129 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_5 ((x Int) (nil Int)) Int
+(ite lemma_b130 
+ x 
+ (ite lemma_b131 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_20 ((x Int) (nil Int)) Int
 (ite lemma_b132 
  x 
  (ite lemma_b133 
  nil 
  nil))
 )
-(define-fun lemma_I1_28 ((x Int) (nil Int)) Int
-(ite lemma_b134 
- x 
- (ite lemma_b135 
- nil 
- nil))
-)
 (define-fun lemma_I1_29 ((x Int) (nil Int)) Int
-(ite lemma_b136 
+(ite lemma_b137 
  x 
- (ite lemma_b137 
+ (ite lemma_b138 
  nil 
  nil))
 )
-(define-fun lemma_I1_15 ((x Int) (nil Int)) Int
-(ite lemma_b138 
+(define-fun lemma_I1_25 ((x Int) (nil Int)) Int
+(ite lemma_b139 
  x 
- (ite lemma_b139 
+ (ite lemma_b140 
  nil 
  nil))
 )
-(define-fun lemma_I1_16 ((x Int) (nil Int)) Int
-(ite lemma_b140 
+(define-fun lemma_I1_36 ((x Int) (nil Int)) Int
+(ite lemma_b141 
  x 
- (ite lemma_b141 
+ (ite lemma_b142 
  nil 
  nil))
 )
-(define-fun lemma_I1_18 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_11 ((x Int) (nil Int)) Int
+(ite lemma_b143 
+ x 
+ (ite lemma_b144 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_48 ((x Int) (nil Int)) Int
 (ite lemma_b148 
  x 
  (ite lemma_b149 
  nil 
  nil))
 )
-(define-fun lemma_I1_23 ((x Int) (nil Int)) Int
-(ite lemma_b156 
+(define-fun lemma_I1_33 ((x Int) (nil Int)) Int
+(ite lemma_b153 
  x 
- (ite lemma_b157 
+ (ite lemma_b154 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_40 ((x Int) (nil Int)) Int
+(ite lemma_b155 
+ x 
+ (ite lemma_b156 
  nil 
  nil))
 )
 (define-fun lemma_I1_56 ((x Int) (nil Int)) Int
-(ite lemma_b158 
+(ite lemma_b157 
  x 
- (ite lemma_b159 
+ (ite lemma_b158 
  nil 
  nil))
 )
-(define-fun lemma_I1_27 ((x Int) (nil Int)) Int
-(ite lemma_b160 
+(define-fun lemma_I1_24 ((x Int) (nil Int)) Int
+(ite lemma_b165 
  x 
- (ite lemma_b161 
+ (ite lemma_b166 
  nil 
  nil))
 )
-(define-fun lemma_I1_32 ((x Int) (nil Int)) Int
-(ite lemma_b162 
+(define-fun lemma_I1_51 ((x Int) (nil Int)) Int
+(ite lemma_b167 
  x 
- (ite lemma_b163 
+ (ite lemma_b168 
  nil 
  nil))
 )
-(define-fun lemma_I1_52 ((x Int) (nil Int)) Int
-(ite lemma_b164 
- x 
- (ite lemma_b165 
- nil 
- nil))
-)
-(define-fun lemma_I1_35 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_18 ((x Int) (nil Int)) Int
 (ite lemma_b169 
  x 
  (ite lemma_b170 
  nil 
  nil))
 )
-(define-fun lemma_I1_51 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_28 ((x Int) (nil Int)) Int
 (ite lemma_b171 
  x 
  (ite lemma_b172 
  nil 
  nil))
 )
-(define-fun lemma_I1_55 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_45 ((x Int) (nil Int)) Int
 (ite lemma_b173 
  x 
  (ite lemma_b174 
  nil 
  nil))
 )
-(define-fun lemma_I1_12 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_30 ((x Int) (nil Int)) Int
 (ite lemma_b175 
  x 
  (ite lemma_b176 
  nil 
  nil))
 )
-(define-fun lemma_I1_39 ((x Int) (nil Int)) Int
-(ite lemma_b180 
+(define-fun lemma_I1_38 ((x Int) (nil Int)) Int
+(ite lemma_b177 
  x 
- (ite lemma_b181 
- nil 
- nil))
-)
-(define-fun lemma_I1_21 ((x Int) (nil Int)) Int
-(ite lemma_b182 
- x 
- (ite lemma_b183 
- nil 
- nil))
-)
-(define-fun lemma_I1_26 ((x Int) (nil Int)) Int
-(ite lemma_b184 
- x 
- (ite lemma_b185 
+ (ite lemma_b178 
  nil 
  nil))
 )
 (define-fun lemma_I1_47 ((x Int) (nil Int)) Int
+(ite lemma_b179 
+ x 
+ (ite lemma_b180 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_42 ((x Int) (nil Int)) Int
+(ite lemma_b181 
+ x 
+ (ite lemma_b182 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_34 ((x Int) (nil Int)) Int
 (ite lemma_b186 
  x 
  (ite lemma_b187 
  nil 
  nil))
 )
-(define-fun lemma_I1_25 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_44 ((x Int) (nil Int)) Int
 (ite lemma_b188 
  x 
  (ite lemma_b189 
  nil 
  nil))
 )
-(define-fun lemma_I1_44 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_59 ((x Int) (nil Int)) Int
 (ite lemma_b190 
  x 
  (ite lemma_b191 
  nil 
  nil))
 )
-(define-fun lemma_I1_67 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_49 ((x Int) (nil Int)) Int
 (ite lemma_b192 
  x 
  (ite lemma_b193 
  nil 
  nil))
 )
-(define-fun lemma_I1_58 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_52 ((x Int) (nil Int)) Int
 (ite lemma_b194 
  x 
  (ite lemma_b195 
  nil 
  nil))
 )
+(define-fun lemma_I1_43 ((x Int) (nil Int)) Int
+(ite lemma_b196 
+ x 
+ (ite lemma_b197 
+ nil 
+ nil))
+)
 (define-fun lemma_I1_53 ((x Int) (nil Int)) Int
-(ite lemma_b199 
+(ite lemma_b198 
  x 
- (ite lemma_b200 
+ (ite lemma_b199 
  nil 
  nil))
 )
-(define-fun lemma_I1_42 ((x Int) (nil Int)) Int
-(ite lemma_b201 
+(define-fun lemma_I1_55 ((x Int) (nil Int)) Int
+(ite lemma_b200 
  x 
- (ite lemma_b202 
- nil 
- nil))
-)
-(define-fun lemma_I1_57 ((x Int) (nil Int)) Int
-(ite lemma_b203 
- x 
- (ite lemma_b204 
- nil 
- nil))
-)
-(define-fun lemma_I1_37 ((x Int) (nil Int)) Int
-(ite lemma_b205 
- x 
- (ite lemma_b206 
- nil 
- nil))
-)
-(define-fun lemma_I1_46 ((x Int) (nil Int)) Int
-(ite lemma_b207 
- x 
- (ite lemma_b208 
+ (ite lemma_b201 
  nil 
  nil))
 )
 (define-fun lemma_I1_50 ((x Int) (nil Int)) Int
-(ite lemma_b209 
+(ite lemma_b202 
  x 
- (ite lemma_b210 
+ (ite lemma_b203 
  nil 
  nil))
 )
-(define-fun lemma_I1_54 ((x Int) (nil Int)) Int
-(ite lemma_b211 
+(define-fun lemma_I1_46 ((x Int) (nil Int)) Int
+(ite lemma_b204 
  x 
- (ite lemma_b212 
+ (ite lemma_b205 
  nil 
  nil))
 )
-(define-fun lemma_I1_38 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_61 ((x Int) (nil Int)) Int
+(ite lemma_b206 
+ x 
+ (ite lemma_b207 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_60 ((x Int) (nil Int)) Int
+(ite lemma_b208 
+ x 
+ (ite lemma_b209 
+ nil 
+ nil))
+)
+(define-fun lemma_I1_62 ((x Int) (nil Int)) Int
 (ite lemma_b213 
  x 
  (ite lemma_b214 
  nil 
  nil))
 )
-(define-fun lemma_I1_71 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_54 ((x Int) (nil Int)) Int
 (ite lemma_b215 
  x 
  (ite lemma_b216 
  nil 
  nil))
 )
-(define-fun lemma_I1_69 ((x Int) (nil Int)) Int
-(ite lemma_b217 
+(define-fun lemma_I1_57 ((x Int) (nil Int)) Int
+(ite lemma_b220 
  x 
- (ite lemma_b218 
+ (ite lemma_b221 
  nil 
  nil))
 )
-(define-fun lemma_I1_62 ((x Int) (nil Int)) Int
-(ite lemma_b219 
- x 
- (ite lemma_b220 
- nil 
- nil))
-)
-(define-fun lemma_I1_61 ((x Int) (nil Int)) Int
-(ite lemma_b221 
- x 
- (ite lemma_b222 
- nil 
- nil))
-)
-(define-fun lemma_I1_48 ((x Int) (nil Int)) Int
-(ite lemma_b223 
- x 
- (ite lemma_b224 
- nil 
- nil))
-)
-(define-fun lemma_I1_64 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_58 ((x Int) (nil Int)) Int
 (ite lemma_b225 
  x 
  (ite lemma_b226 
  nil 
  nil))
 )
-(define-fun lemma_I1_59 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_71 ((x Int) (nil Int)) Int
 (ite lemma_b227 
  x 
  (ite lemma_b228 
  nil 
  nil))
 )
-(define-fun lemma_I1_45 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_67 ((x Int) (nil Int)) Int
 (ite lemma_b229 
  x 
  (ite lemma_b230 
  nil 
  nil))
 )
-(define-fun lemma_I1_49 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_64 ((x Int) (nil Int)) Int
 (ite lemma_b231 
  x 
  (ite lemma_b232 
@@ -765,21 +765,21 @@
  nil 
  nil))
 )
-(define-fun lemma_I1_60 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_65 ((x Int) (nil Int)) Int
 (ite lemma_b235 
  x 
  (ite lemma_b236 
  nil 
  nil))
 )
-(define-fun lemma_I1_68 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_69 ((x Int) (nil Int)) Int
 (ite lemma_b237 
  x 
  (ite lemma_b238 
  nil 
  nil))
 )
-(define-fun lemma_I1_65 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_63 ((x Int) (nil Int)) Int
 (ite lemma_b239 
  x 
  (ite lemma_b240 
@@ -793,7 +793,7 @@
  nil 
  nil))
 )
-(define-fun lemma_I1_63 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_68 ((x Int) (nil Int)) Int
 (ite lemma_b243 
  x 
  (ite lemma_b244 
@@ -801,224 +801,224 @@
  nil))
 )
 ;Functions corresponding to I
-(define-fun lemma_I_2 ((x Int) (nil Int)) Int
-(ite lemma_b8 
+(define-fun lemma_I_6 ((x Int) (nil Int)) Int
+(ite lemma_b14 
  (lemma_I1_0 x nil) 
- (ite lemma_b9 
+ (ite lemma_b15 
  (nxt (lemma_I1_1 x nil)) 
- (ite lemma_b10 
+ (ite lemma_b16 
  (prv (lemma_I1_2 x nil)) 
  (prv (lemma_I1_2 x nil)))))
 )
-(define-fun lemma_I_8 ((x Int) (nil Int)) Int
-(ite lemma_b19 
+(define-fun lemma_I_2 ((x Int) (nil Int)) Int
+(ite lemma_b17 
  (lemma_I1_3 x nil) 
- (ite lemma_b20 
+ (ite lemma_b18 
  (nxt (lemma_I1_4 x nil)) 
- (ite lemma_b21 
+ (ite lemma_b19 
  (prv (lemma_I1_5 x nil)) 
  (prv (lemma_I1_5 x nil)))))
 )
-(define-fun lemma_I_6 ((x Int) (nil Int)) Int
-(ite lemma_b22 
+(define-fun lemma_I_3 ((x Int) (nil Int)) Int
+(ite lemma_b23 
  (lemma_I1_6 x nil) 
- (ite lemma_b23 
- (nxt (lemma_I1_7 x nil)) 
  (ite lemma_b24 
+ (nxt (lemma_I1_7 x nil)) 
+ (ite lemma_b25 
  (prv (lemma_I1_8 x nil)) 
  (prv (lemma_I1_8 x nil)))))
 )
-(define-fun lemma_I_5 ((x Int) (nil Int)) Int
-(ite lemma_b25 
+(define-fun lemma_I_8 ((x Int) (nil Int)) Int
+(ite lemma_b33 
  (lemma_I1_9 x nil) 
- (ite lemma_b26 
+ (ite lemma_b34 
  (nxt (lemma_I1_10 x nil)) 
- (ite lemma_b27 
+ (ite lemma_b35 
  (prv (lemma_I1_11 x nil)) 
  (prv (lemma_I1_11 x nil)))))
 )
-(define-fun lemma_I_3 ((x Int) (nil Int)) Int
-(ite lemma_b34 
+(define-fun lemma_I_4 ((x Int) (nil Int)) Int
+(ite lemma_b38 
  (lemma_I1_12 x nil) 
- (ite lemma_b35 
+ (ite lemma_b39 
  (nxt (lemma_I1_13 x nil)) 
- (ite lemma_b36 
+ (ite lemma_b40 
  (prv (lemma_I1_14 x nil)) 
  (prv (lemma_I1_14 x nil)))))
 )
-(define-fun lemma_I_17 ((x Int) (nil Int)) Int
-(ite lemma_b52 
+(define-fun lemma_I_12 ((x Int) (nil Int)) Int
+(ite lemma_b41 
  (lemma_I1_15 x nil) 
- (ite lemma_b53 
+ (ite lemma_b42 
  (nxt (lemma_I1_16 x nil)) 
- (ite lemma_b54 
+ (ite lemma_b43 
  (prv (lemma_I1_17 x nil)) 
  (prv (lemma_I1_17 x nil)))))
 )
-(define-fun lemma_I_4 ((x Int) (nil Int)) Int
-(ite lemma_b57 
+(define-fun lemma_I_0 ((x Int) (nil Int)) Int
+(ite lemma_b53 
  (lemma_I1_18 x nil) 
- (ite lemma_b58 
+ (ite lemma_b54 
  (nxt (lemma_I1_19 x nil)) 
- (ite lemma_b59 
+ (ite lemma_b55 
  (prv (lemma_I1_20 x nil)) 
  (prv (lemma_I1_20 x nil)))))
 )
-(define-fun lemma_I_16 ((x Int) (nil Int)) Int
-(ite lemma_b60 
+(define-fun lemma_I_11 ((x Int) (nil Int)) Int
+(ite lemma_b56 
  (lemma_I1_21 x nil) 
- (ite lemma_b61 
+ (ite lemma_b57 
  (nxt (lemma_I1_22 x nil)) 
- (ite lemma_b62 
+ (ite lemma_b58 
  (prv (lemma_I1_23 x nil)) 
  (prv (lemma_I1_23 x nil)))))
 )
-(define-fun lemma_I_15 ((x Int) (nil Int)) Int
-(ite lemma_b67 
+(define-fun lemma_I_1 ((x Int) (nil Int)) Int
+(ite lemma_b62 
  (lemma_I1_24 x nil) 
- (ite lemma_b68 
+ (ite lemma_b63 
  (nxt (lemma_I1_25 x nil)) 
- (ite lemma_b69 
+ (ite lemma_b64 
  (prv (lemma_I1_26 x nil)) 
  (prv (lemma_I1_26 x nil)))))
 )
 (define-fun lemma_I_9 ((x Int) (nil Int)) Int
-(ite lemma_b82 
+(ite lemma_b65 
  (lemma_I1_27 x nil) 
- (ite lemma_b83 
+ (ite lemma_b66 
  (nxt (lemma_I1_28 x nil)) 
- (ite lemma_b84 
+ (ite lemma_b67 
  (prv (lemma_I1_29 x nil)) 
  (prv (lemma_I1_29 x nil)))))
 )
 (define-fun lemma_I_7 ((x Int) (nil Int)) Int
-(ite lemma_b87 
+(ite lemma_b68 
  (lemma_I1_30 x nil) 
- (ite lemma_b88 
+ (ite lemma_b69 
  (nxt (lemma_I1_31 x nil)) 
- (ite lemma_b89 
+ (ite lemma_b70 
  (prv (lemma_I1_32 x nil)) 
  (prv (lemma_I1_32 x nil)))))
 )
-(define-fun lemma_I_12 ((x Int) (nil Int)) Int
-(ite lemma_b90 
+(define-fun lemma_I_20 ((x Int) (nil Int)) Int
+(ite lemma_b73 
  (lemma_I1_33 x nil) 
- (ite lemma_b91 
+ (ite lemma_b74 
  (nxt (lemma_I1_34 x nil)) 
- (ite lemma_b92 
+ (ite lemma_b75 
  (prv (lemma_I1_35 x nil)) 
  (prv (lemma_I1_35 x nil)))))
 )
-(define-fun lemma_I_22 ((x Int) (nil Int)) Int
-(ite lemma_b93 
+(define-fun lemma_I_13 ((x Int) (nil Int)) Int
+(ite lemma_b76 
  (lemma_I1_36 x nil) 
- (ite lemma_b94 
+ (ite lemma_b77 
  (nxt (lemma_I1_37 x nil)) 
- (ite lemma_b95 
+ (ite lemma_b78 
  (prv (lemma_I1_38 x nil)) 
  (prv (lemma_I1_38 x nil)))))
 )
-(define-fun lemma_I_20 ((x Int) (nil Int)) Int
-(ite lemma_b104 
+(define-fun lemma_I_17 ((x Int) (nil Int)) Int
+(ite lemma_b81 
  (lemma_I1_39 x nil) 
- (ite lemma_b105 
+ (ite lemma_b82 
  (nxt (lemma_I1_40 x nil)) 
- (ite lemma_b106 
+ (ite lemma_b83 
  (prv (lemma_I1_41 x nil)) 
  (prv (lemma_I1_41 x nil)))))
 )
-(define-fun lemma_I_18 ((x Int) (nil Int)) Int
-(ite lemma_b111 
+(define-fun lemma_I_16 ((x Int) (nil Int)) Int
+(ite lemma_b90 
  (lemma_I1_42 x nil) 
- (ite lemma_b112 
+ (ite lemma_b91 
  (nxt (lemma_I1_43 x nil)) 
- (ite lemma_b113 
+ (ite lemma_b92 
  (prv (lemma_I1_44 x nil)) 
  (prv (lemma_I1_44 x nil)))))
 )
-(define-fun lemma_I_13 ((x Int) (nil Int)) Int
-(ite lemma_b120 
+(define-fun lemma_I_18 ((x Int) (nil Int)) Int
+(ite lemma_b111 
  (lemma_I1_45 x nil) 
- (ite lemma_b121 
+ (ite lemma_b112 
  (nxt (lemma_I1_46 x nil)) 
- (ite lemma_b122 
+ (ite lemma_b113 
  (prv (lemma_I1_47 x nil)) 
  (prv (lemma_I1_47 x nil)))))
 )
-(define-fun lemma_I_1 ((x Int) (nil Int)) Int
-(ite lemma_b129 
+(define-fun lemma_I_5 ((x Int) (nil Int)) Int
+(ite lemma_b134 
  (lemma_I1_48 x nil) 
- (ite lemma_b130 
+ (ite lemma_b135 
  (nxt (lemma_I1_49 x nil)) 
- (ite lemma_b131 
+ (ite lemma_b136 
  (prv (lemma_I1_50 x nil)) 
  (prv (lemma_I1_50 x nil)))))
 )
-(define-fun lemma_I_0 ((x Int) (nil Int)) Int
-(ite lemma_b142 
+(define-fun lemma_I_15 ((x Int) (nil Int)) Int
+(ite lemma_b145 
  (lemma_I1_51 x nil) 
- (ite lemma_b143 
+ (ite lemma_b146 
  (nxt (lemma_I1_52 x nil)) 
- (ite lemma_b144 
+ (ite lemma_b147 
  (prv (lemma_I1_53 x nil)) 
  (prv (lemma_I1_53 x nil)))))
 )
-(define-fun lemma_I_19 ((x Int) (nil Int)) Int
-(ite lemma_b145 
+(define-fun lemma_I_10 ((x Int) (nil Int)) Int
+(ite lemma_b150 
  (lemma_I1_54 x nil) 
- (ite lemma_b146 
+ (ite lemma_b151 
  (nxt (lemma_I1_55 x nil)) 
- (ite lemma_b147 
+ (ite lemma_b152 
  (prv (lemma_I1_56 x nil)) 
  (prv (lemma_I1_56 x nil)))))
 )
 (define-fun lemma_I_14 ((x Int) (nil Int)) Int
-(ite lemma_b150 
+(ite lemma_b159 
  (lemma_I1_57 x nil) 
- (ite lemma_b151 
+ (ite lemma_b160 
  (nxt (lemma_I1_58 x nil)) 
- (ite lemma_b152 
+ (ite lemma_b161 
  (prv (lemma_I1_59 x nil)) 
  (prv (lemma_I1_59 x nil)))))
 )
-(define-fun lemma_I_10 ((x Int) (nil Int)) Int
-(ite lemma_b153 
+(define-fun lemma_I_19 ((x Int) (nil Int)) Int
+(ite lemma_b162 
  (lemma_I1_60 x nil) 
- (ite lemma_b154 
+ (ite lemma_b163 
  (nxt (lemma_I1_61 x nil)) 
- (ite lemma_b155 
+ (ite lemma_b164 
  (prv (lemma_I1_62 x nil)) 
  (prv (lemma_I1_62 x nil)))))
 )
-(define-fun lemma_I_21 ((x Int) (nil Int)) Int
-(ite lemma_b166 
+(define-fun lemma_I_23 ((x Int) (nil Int)) Int
+(ite lemma_b210 
  (lemma_I1_63 x nil) 
- (ite lemma_b167 
+ (ite lemma_b211 
  (nxt (lemma_I1_64 x nil)) 
- (ite lemma_b168 
+ (ite lemma_b212 
  (prv (lemma_I1_65 x nil)) 
  (prv (lemma_I1_65 x nil)))))
 )
-(define-fun lemma_I_11 ((x Int) (nil Int)) Int
-(ite lemma_b177 
+(define-fun lemma_I_21 ((x Int) (nil Int)) Int
+(ite lemma_b217 
  (lemma_I1_66 x nil) 
- (ite lemma_b178 
+ (ite lemma_b218 
  (nxt (lemma_I1_67 x nil)) 
- (ite lemma_b179 
+ (ite lemma_b219 
  (prv (lemma_I1_68 x nil)) 
  (prv (lemma_I1_68 x nil)))))
 )
-(define-fun lemma_I_23 ((x Int) (nil Int)) Int
-(ite lemma_b196 
+(define-fun lemma_I_22 ((x Int) (nil Int)) Int
+(ite lemma_b222 
  (lemma_I1_69 x nil) 
- (ite lemma_b197 
+ (ite lemma_b223 
  (nxt (lemma_I1_70 x nil)) 
- (ite lemma_b198 
+ (ite lemma_b224 
  (prv (lemma_I1_71 x nil)) 
  (prv (lemma_I1_71 x nil)))))
 )
 ;Functions corresponding to B1
-(define-fun lemma_B1_0 ((x Int) (nil Int)) Bool
+(define-fun lemma_B1_2 ((x Int) (nil Int)) Bool
 (ite lemma_b5 
  (dlst (lemma_I_0 x nil)) 
  (ite lemma_b6 
@@ -1027,66 +1027,66 @@
  (sdlst (lemma_I_2 x nil)) 
  (sdlst (lemma_I_2 x nil)))))
 )
-(define-fun lemma_B1_3 ((x Int) (nil Int)) Bool
-(ite lemma_b11 
+(define-fun lemma_B1_6 ((x Int) (nil Int)) Bool
+(ite lemma_b8 
  (dlst (lemma_I_3 x nil)) 
- (ite lemma_b12 
+ (ite lemma_b9 
  (slst (lemma_I_4 x nil)) 
- (ite lemma_b13 
+ (ite lemma_b10 
  (sdlst (lemma_I_5 x nil)) 
  (sdlst (lemma_I_5 x nil)))))
 )
-(define-fun lemma_B1_1 ((x Int) (nil Int)) Bool
-(ite lemma_b14 
+(define-fun lemma_B1_7 ((x Int) (nil Int)) Bool
+(ite lemma_b11 
  (dlst (lemma_I_6 x nil)) 
- (ite lemma_b15 
+ (ite lemma_b12 
  (slst (lemma_I_7 x nil)) 
- (ite lemma_b16 
+ (ite lemma_b13 
  (sdlst (lemma_I_8 x nil)) 
  (sdlst (lemma_I_8 x nil)))))
 )
-(define-fun lemma_B1_6 ((x Int) (nil Int)) Bool
-(ite lemma_b28 
+(define-fun lemma_B1_0 ((x Int) (nil Int)) Bool
+(ite lemma_b20 
  (dlst (lemma_I_9 x nil)) 
- (ite lemma_b29 
+ (ite lemma_b21 
  (slst (lemma_I_10 x nil)) 
- (ite lemma_b30 
+ (ite lemma_b22 
  (sdlst (lemma_I_11 x nil)) 
  (sdlst (lemma_I_11 x nil)))))
 )
-(define-fun lemma_B1_5 ((x Int) (nil Int)) Bool
-(ite lemma_b31 
+(define-fun lemma_B1_4 ((x Int) (nil Int)) Bool
+(ite lemma_b26 
  (dlst (lemma_I_12 x nil)) 
- (ite lemma_b32 
+ (ite lemma_b27 
  (slst (lemma_I_13 x nil)) 
- (ite lemma_b33 
+ (ite lemma_b28 
  (sdlst (lemma_I_14 x nil)) 
  (sdlst (lemma_I_14 x nil)))))
 )
-(define-fun lemma_B1_4 ((x Int) (nil Int)) Bool
-(ite lemma_b37 
+(define-fun lemma_B1_1 ((x Int) (nil Int)) Bool
+(ite lemma_b48 
  (dlst (lemma_I_15 x nil)) 
- (ite lemma_b38 
+ (ite lemma_b49 
  (slst (lemma_I_16 x nil)) 
- (ite lemma_b39 
+ (ite lemma_b50 
  (sdlst (lemma_I_17 x nil)) 
  (sdlst (lemma_I_17 x nil)))))
 )
-(define-fun lemma_B1_2 ((x Int) (nil Int)) Bool
-(ite lemma_b72 
+(define-fun lemma_B1_5 ((x Int) (nil Int)) Bool
+(ite lemma_b59 
  (dlst (lemma_I_18 x nil)) 
- (ite lemma_b73 
+ (ite lemma_b60 
  (slst (lemma_I_19 x nil)) 
- (ite lemma_b74 
+ (ite lemma_b61 
  (sdlst (lemma_I_20 x nil)) 
  (sdlst (lemma_I_20 x nil)))))
 )
-(define-fun lemma_B1_7 ((x Int) (nil Int)) Bool
-(ite lemma_b75 
+(define-fun lemma_B1_3 ((x Int) (nil Int)) Bool
+(ite lemma_b183 
  (dlst (lemma_I_21 x nil)) 
- (ite lemma_b76 
+ (ite lemma_b184 
  (slst (lemma_I_22 x nil)) 
- (ite lemma_b77 
+ (ite lemma_b185 
  (sdlst (lemma_I_23 x nil)) 
  (sdlst (lemma_I_23 x nil)))))
 )
@@ -1106,68 +1106,68 @@
 )
 
 ;Asserting affirmative choice of some boolean variable for each function
-(assert (or lemma_b17 lemma_b18))
-(assert (or lemma_b40 lemma_b41))
-(assert (or lemma_b42 lemma_b43))
+(assert (or lemma_b29 lemma_b30))
+(assert (or lemma_b31 lemma_b32))
+(assert (or lemma_b36 lemma_b37))
 (assert (or lemma_b44 lemma_b45))
 (assert (or lemma_b46 lemma_b47))
-(assert (or lemma_b48 lemma_b49))
-(assert (or lemma_b50 lemma_b51))
-(assert (or lemma_b55 lemma_b56))
-(assert (or lemma_b63 lemma_b64))
-(assert (or lemma_b65 lemma_b66))
-(assert (or lemma_b70 lemma_b71))
-(assert (or lemma_b78 lemma_b79))
-(assert (or lemma_b80 lemma_b81))
-(assert (or lemma_b85 lemma_b86))
-(assert (or lemma_b96 lemma_b97))
-(assert (or lemma_b98 lemma_b99))
-(assert (or lemma_b100 lemma_b101))
-(assert (or lemma_b102 lemma_b103))
+(assert (or lemma_b51 lemma_b52))
+(assert (or lemma_b71 lemma_b72))
+(assert (or lemma_b79 lemma_b80))
+(assert (or lemma_b84 lemma_b85))
+(assert (or lemma_b86 lemma_b87))
+(assert (or lemma_b88 lemma_b89))
+(assert (or lemma_b93 lemma_b94))
+(assert (or lemma_b95 lemma_b96))
+(assert (or lemma_b97 lemma_b98))
+(assert (or lemma_b99 lemma_b100))
+(assert (or lemma_b101 lemma_b102))
+(assert (or lemma_b103 lemma_b104))
+(assert (or lemma_b105 lemma_b106))
 (assert (or lemma_b107 lemma_b108))
 (assert (or lemma_b109 lemma_b110))
 (assert (or lemma_b114 lemma_b115))
 (assert (or lemma_b116 lemma_b117))
 (assert (or lemma_b118 lemma_b119))
-(assert (or lemma_b123 lemma_b124))
-(assert (or lemma_b125 lemma_b126))
-(assert (or lemma_b127 lemma_b128))
+(assert (or lemma_b120 lemma_b121))
+(assert (or lemma_b122 lemma_b123))
+(assert (or lemma_b124 lemma_b125))
+(assert (or lemma_b126 lemma_b127))
+(assert (or lemma_b128 lemma_b129))
+(assert (or lemma_b130 lemma_b131))
 (assert (or lemma_b132 lemma_b133))
-(assert (or lemma_b134 lemma_b135))
-(assert (or lemma_b136 lemma_b137))
-(assert (or lemma_b138 lemma_b139))
-(assert (or lemma_b140 lemma_b141))
+(assert (or lemma_b137 lemma_b138))
+(assert (or lemma_b139 lemma_b140))
+(assert (or lemma_b141 lemma_b142))
+(assert (or lemma_b143 lemma_b144))
 (assert (or lemma_b148 lemma_b149))
-(assert (or lemma_b156 lemma_b157))
-(assert (or lemma_b158 lemma_b159))
-(assert (or lemma_b160 lemma_b161))
-(assert (or lemma_b162 lemma_b163))
-(assert (or lemma_b164 lemma_b165))
+(assert (or lemma_b153 lemma_b154))
+(assert (or lemma_b155 lemma_b156))
+(assert (or lemma_b157 lemma_b158))
+(assert (or lemma_b165 lemma_b166))
+(assert (or lemma_b167 lemma_b168))
 (assert (or lemma_b169 lemma_b170))
 (assert (or lemma_b171 lemma_b172))
 (assert (or lemma_b173 lemma_b174))
 (assert (or lemma_b175 lemma_b176))
-(assert (or lemma_b180 lemma_b181))
-(assert (or lemma_b182 lemma_b183))
-(assert (or lemma_b184 lemma_b185))
+(assert (or lemma_b177 lemma_b178))
+(assert (or lemma_b179 lemma_b180))
+(assert (or lemma_b181 lemma_b182))
 (assert (or lemma_b186 lemma_b187))
 (assert (or lemma_b188 lemma_b189))
 (assert (or lemma_b190 lemma_b191))
 (assert (or lemma_b192 lemma_b193))
 (assert (or lemma_b194 lemma_b195))
-(assert (or lemma_b199 lemma_b200))
-(assert (or lemma_b201 lemma_b202))
-(assert (or lemma_b203 lemma_b204))
-(assert (or lemma_b205 lemma_b206))
-(assert (or lemma_b207 lemma_b208))
-(assert (or lemma_b209 lemma_b210))
-(assert (or lemma_b211 lemma_b212))
+(assert (or lemma_b196 lemma_b197))
+(assert (or lemma_b198 lemma_b199))
+(assert (or lemma_b200 lemma_b201))
+(assert (or lemma_b202 lemma_b203))
+(assert (or lemma_b204 lemma_b205))
+(assert (or lemma_b206 lemma_b207))
+(assert (or lemma_b208 lemma_b209))
 (assert (or lemma_b213 lemma_b214))
 (assert (or lemma_b215 lemma_b216))
-(assert (or lemma_b217 lemma_b218))
-(assert (or lemma_b219 lemma_b220))
-(assert (or lemma_b221 lemma_b222))
-(assert (or lemma_b223 lemma_b224))
+(assert (or lemma_b220 lemma_b221))
 (assert (or lemma_b225 lemma_b226))
 (assert (or lemma_b227 lemma_b228))
 (assert (or lemma_b229 lemma_b230))
@@ -1178,38 +1178,38 @@
 (assert (or lemma_b239 lemma_b240))
 (assert (or lemma_b241 lemma_b242))
 (assert (or lemma_b243 lemma_b244))
-(assert (or lemma_b8 lemma_b9 lemma_b10))
-(assert (or lemma_b19 lemma_b20 lemma_b21))
-(assert (or lemma_b22 lemma_b23 lemma_b24))
-(assert (or lemma_b25 lemma_b26 lemma_b27))
-(assert (or lemma_b34 lemma_b35 lemma_b36))
-(assert (or lemma_b52 lemma_b53 lemma_b54))
-(assert (or lemma_b57 lemma_b58 lemma_b59))
-(assert (or lemma_b60 lemma_b61 lemma_b62))
-(assert (or lemma_b67 lemma_b68 lemma_b69))
-(assert (or lemma_b82 lemma_b83 lemma_b84))
-(assert (or lemma_b87 lemma_b88 lemma_b89))
+(assert (or lemma_b14 lemma_b15 lemma_b16))
+(assert (or lemma_b17 lemma_b18 lemma_b19))
+(assert (or lemma_b23 lemma_b24 lemma_b25))
+(assert (or lemma_b33 lemma_b34 lemma_b35))
+(assert (or lemma_b38 lemma_b39 lemma_b40))
+(assert (or lemma_b41 lemma_b42 lemma_b43))
+(assert (or lemma_b53 lemma_b54 lemma_b55))
+(assert (or lemma_b56 lemma_b57 lemma_b58))
+(assert (or lemma_b62 lemma_b63 lemma_b64))
+(assert (or lemma_b65 lemma_b66 lemma_b67))
+(assert (or lemma_b68 lemma_b69 lemma_b70))
+(assert (or lemma_b73 lemma_b74 lemma_b75))
+(assert (or lemma_b76 lemma_b77 lemma_b78))
+(assert (or lemma_b81 lemma_b82 lemma_b83))
 (assert (or lemma_b90 lemma_b91 lemma_b92))
-(assert (or lemma_b93 lemma_b94 lemma_b95))
-(assert (or lemma_b104 lemma_b105 lemma_b106))
 (assert (or lemma_b111 lemma_b112 lemma_b113))
-(assert (or lemma_b120 lemma_b121 lemma_b122))
-(assert (or lemma_b129 lemma_b130 lemma_b131))
-(assert (or lemma_b142 lemma_b143 lemma_b144))
+(assert (or lemma_b134 lemma_b135 lemma_b136))
 (assert (or lemma_b145 lemma_b146 lemma_b147))
 (assert (or lemma_b150 lemma_b151 lemma_b152))
-(assert (or lemma_b153 lemma_b154 lemma_b155))
-(assert (or lemma_b166 lemma_b167 lemma_b168))
-(assert (or lemma_b177 lemma_b178 lemma_b179))
-(assert (or lemma_b196 lemma_b197 lemma_b198))
+(assert (or lemma_b159 lemma_b160 lemma_b161))
+(assert (or lemma_b162 lemma_b163 lemma_b164))
+(assert (or lemma_b210 lemma_b211 lemma_b212))
+(assert (or lemma_b217 lemma_b218 lemma_b219))
+(assert (or lemma_b222 lemma_b223 lemma_b224))
 (assert (or lemma_b5 lemma_b6 lemma_b7))
+(assert (or lemma_b8 lemma_b9 lemma_b10))
 (assert (or lemma_b11 lemma_b12 lemma_b13))
-(assert (or lemma_b14 lemma_b15 lemma_b16))
-(assert (or lemma_b28 lemma_b29 lemma_b30))
-(assert (or lemma_b31 lemma_b32 lemma_b33))
-(assert (or lemma_b37 lemma_b38 lemma_b39))
-(assert (or lemma_b72 lemma_b73 lemma_b74))
-(assert (or lemma_b75 lemma_b76 lemma_b77))
+(assert (or lemma_b20 lemma_b21 lemma_b22))
+(assert (or lemma_b26 lemma_b27 lemma_b28))
+(assert (or lemma_b48 lemma_b49 lemma_b50))
+(assert (or lemma_b59 lemma_b60 lemma_b61))
+(assert (or lemma_b183 lemma_b184 lemma_b185))
 (assert (or lemma_b0 lemma_b1 lemma_b2 lemma_b3 lemma_b4))
 
 ;Function to be synthesised

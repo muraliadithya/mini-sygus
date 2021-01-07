@@ -263,6 +263,12 @@ class ConstraintGrammar:
         return bool_decl_string + '\n\n' + func_decl_string + '\n' + bool_asser_string + '\n'+ eval_function_string
     
     def get_synth_function(self, valuation=None):
+        """
+        The synthesized function part of pretty_smt_encoding.
+        :param valuation: dict {string: bool}
+        :return synth_function_string: string
+        """
+        # TODO (medium): simplify with pretty_smt_encoding
         define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
         synthfun_name = self.sygus_grammar.get_name()
         synthfun_return_type = self.sygus_grammar.get_range_type()
