@@ -9,7 +9,7 @@ a constraint-based syntax-guided synthesis (SyGuS) engine
 ## example
 The following command runs the full solver using the input file `data/out_sdlist-dlist-and-slist.sy`. The engine detects all declared SyGuS grammars from the input file, synthesizes the corresponding lemmas and replaces the grammar descriptions with the lemmas in an output SMT file, runs the CVC4 solver on the output file, obtains a model (if satisfiable), and prints the synthesized lemmas instantiated according to the model.
 ```
-python3 engine.py 'data/out_sdlist-dlist-and-slist.sy'
+python3 -m src.engine data/out_sdlist-dlist-and-slist.sy
 ```
 
 ```
