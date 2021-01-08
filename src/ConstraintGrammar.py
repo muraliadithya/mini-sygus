@@ -61,6 +61,11 @@ class ConstraintGrammar:
         # pointed to by the boolean variable. The order of the copies is the order in which the nonterminals appear 
         # in the SyGuSGrammar.post dictionary.
         self.boolvars = None
+        # Dictionary simlar to self.boolvars representing the catch case of the final replacement rule choice.
+        # Keys are the names of nonterminal copies whose catch case is contained in the value.
+        # Values are the names of nonterminal copies corresponding to the actual nonterminals in the (final)
+        # production rule for the nonterminal copy key.
+        self.boolcatch = None
         # Dictionary of copies of nonterminals.
         # The keys are the names of the copies as strings. Values are a tuple (parent, list of boolvars)
         # Parent is the original nonterminal for which the key is a copy, and the list is of boolean variables 
@@ -89,6 +94,7 @@ class ConstraintGrammar:
         # Method is decoupled from initialisation because there may be functions in future versions that make
         # changes to the object fields before needing to compute the constraint-based representation.
         self.boolvars = dict()
+        self.boolcatch = dict()
         # Counter for creating fresh boolean variable names
         boolcounter = 0
         self.symbols = dict()
@@ -114,8 +120,7 @@ class ConstraintGrammar:
             num_rules = len(rule_list)
             new_boolvars = []
             # If there is just one rule, no need for boolean variables
-            #for _ in range(num_rules-1):
-            for _ in range(num_rules):
+            for _ in range(num_rules-1):
                 fresh_boolvar_number = boolcounter
                 fresh_boolvar_name = _boolvar_name(fresh_boolvar_number, synthfun_name)
                 boolcounter = boolcounter + 1
@@ -123,21 +128,7 @@ class ConstraintGrammar:
             self.symbols[nonterminal_copy] = (nonterminal, new_boolvars)
 
             # For each rule create new nonterminal copies and add the entry to boolvars.
-            #for i in range(num_rules):
-            #    post_symbols = self._post[nonterminal][i]
-            #    post_symbol_copies = []
-            #    for symbol in post_symbols:
-            #        fresh_nonterminal_number = nonterminal_copy_counter[symbol]
-            #        fresh_nonterminal_name = _nonterminal_copy_name(symbol, fresh_nonterminal_number, synthfun_name)
-            #        nonterminal_copy_counter[symbol] = nonterminal_copy_counter[symbol] + 1
-            #        post_symbol_copies = post_symbol_copies + [fresh_nonterminal_name]
-            #        # Add the copies with the original symbols to the worklist.
-            #        worklist.add((symbol, fresh_nonterminal_name))
-            #    if i < num_rules-1:
-            #        boolvar_name = new_boolvars[i]
-            #        self.boolvars[boolvar_name] = post_symbol_copies
             for i in range(num_rules):
-                boolvar_name = new_boolvars[i]
                 post_symbols = self._post[nonterminal][i]
                 post_symbol_copies = []
                 for symbol in post_symbols:
@@ -147,7 +138,12 @@ class ConstraintGrammar:
                     post_symbol_copies = post_symbol_copies + [fresh_nonterminal_name]
                     # Add the copies with the original symbols to the worklist.
                     worklist.add((symbol, fresh_nonterminal_name))
-                self.boolvars[boolvar_name] = post_symbol_copies
+                if i != num_rules - 1:
+                    boolvar_name = new_boolvars[i]
+                    self.boolvars[boolvar_name] = post_symbol_copies
+                else:
+                    # Need catch case for symbol copies of last production rule
+                    self.boolcatch[nonterminal_copy] = post_symbol_copies
 
     def evaluate(self, valuation):
         """
@@ -170,13 +166,20 @@ class ConstraintGrammar:
                 # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
                 nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
                 nonterminal_copies = self.boolvars[rule_choice_boolvars[chosen_rule_index]]
-                substitution = lisplike.substitute(chosen_rule, list(zip(nonterminals_in_rule, nonterminal_copies)))
-            except StopIteration:
-                # No rule is chosen according to the valuation.
-                # chosen_rule_index = None
-                # chosen_rule = self._no_rule_chosen
-                substitution = self._no_rule_chosen
-            # If no rule is chosen, write a special symbol.
+            except:
+                # All boolvars are False; "catch" case
+                chosen_rule_index = len(rule_choice_boolvars)
+                chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
+                nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
+                nonterminal_copies = self.boolcatch[symbol]
+            substitution = lisplike.substitute(chosen_rule, list(zip(nonterminals_in_rule, nonterminal_copies)))
+            # Nonsensical valuations now pass to the catch case as well.
+            #except StopIteration:
+            #    # No rule is chosen according to the valuation.
+            #    # chosen_rule_index = None
+            #    # chosen_rule = self._no_rule_chosen
+            #    substitution = self._no_rule_chosen
+            #    # If no rule is chosen, write a special symbol.
             substitution_pairs = substitution_pairs + [(symbol, substitution)]
 
         # Auxiliary function to apply valuations and build the result recursively
@@ -226,8 +229,6 @@ class ConstraintGrammar:
         bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
         # Define functions for each nonterminal copy grouped by the original nonterminal
         func_decl_string = ';Declaring functions corresponding to nonterminals\n'
-        # Assert that a particular rule must be chosen for each function via its boolean variables
-        bool_asser_string = ';Asserting affirmative choice of some boolean variable for each function\n'
         for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
             func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
             return_type = typed_nonterminals[nonterminal]
@@ -235,8 +236,9 @@ class ConstraintGrammar:
             nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
             for nonterminal_copy in nonterminal_copies:
                 choice_boolvars = self.symbols[nonterminal_copy][1]
-                bool_asser_string += '(assert (or {}))\n'.format(' '.join(choice_boolvars))
                 post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
+                # Include catch case
+                post_nonterminal_copies.append(self.boolcatch[nonterminal_copy])
                 if arguments != []:
                     # If there are arguments, each of the nonterminal copies will need to appear in the form of 
                     # applications to the arguments.
@@ -252,23 +254,19 @@ class ConstraintGrammar:
                                           for i in range(len(ordered_rule_dict[nonterminal]))]
 
                 # Auxiliary function
-                #def func_decl_body_aux(boolvars, rules):
-                #    # New version of auxiliary function to use ite statements only when choice of rules remains
-                #    if len(rules) == 1:
-                #        return rules[0]
-                #    elif len(rules) == 2:
-                #        return ['ite', boolvars[0], '\n', rules[0], '\n', rules[1]]
-                #    else:
-                #        return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
                 def func_decl_body_aux(boolvars, rules):
-                    # Hack around lisplike pretty printer's lack of customisation.
+                    # New version of auxiliary function to use ite statements only when choice of rules remains.
+                    # Hack around lisplike pretty printer's lack of customization.
                     # Putting \n and pretty printing with 'no indent' as a manner of controlling indentation.
-                    # TODO (medium): Don't explicitly construct lisplike representations since it breaks abstraction
-                    if len(boolvars) == 1:
-                        # Base case. Let both the then branch and else branch be the same rule
-                        return ['ite', boolvars[0], '\n', rules[0], '\n', rules[0]]
-                    # Make an ite operator on the first boolvar and rule and recurse
-                    return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
+                    # TODO (medium): Eliminate explicit construction of lisplike representations
+                    if len(rules) == 1:
+                        # Base case with single rule; simply apply the replacement
+                        # Boolvars should be [] in this case
+                        return rules[0]
+                    else:
+                        # Structure an ite operator on first boolvar/rule, then recurse
+                        return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
+                
                 func_body = lisplike.pretty_string(func_decl_body_aux(choice_boolvars, substituted_expansions), 
                                                    noindent=True)
                 func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
@@ -283,7 +281,7 @@ class ConstraintGrammar:
             name=synthfun_name, typed_args=typed_param_string, 
             return_type=synthfun_return_type, body=evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
-        return bool_decl_string + '\n\n' + func_decl_string + '\n' + bool_asser_string + '\n'+ eval_function_string
+        return bool_decl_string + '\n\n' + func_decl_string + '\n'+ eval_function_string
     
     def get_synth_function(self, valuation=None):
         """
