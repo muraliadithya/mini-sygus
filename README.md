@@ -6,6 +6,24 @@ a constraint-based syntax-guided synthesis (SyGuS) engine
 - [Python 3.5 or above](https://www.python.org/downloads/)
 - [CVC4 1.9](https://cvc4.github.io/downloads.html)
 
+## example
+The following command runs the full solver using the input file `data/out_sdlist-dlist-and-slist.sy`. The engine detects all declared SyGuS grammars from the input file, synthesizes the corresponding lemmas and replaces the grammar descriptions with the lemmas in an output SMT file, runs the CVC4 solver on the output file, obtains a model (if satisfiable), and prints the synthesized lemmas instantiated according to the model.
+```
+python3 engine.py 'data/out_sdlist-dlist-and-slist.sy'
+```
+
+```
+sat
+
+(define-fun lemma ((x Int) (nil Int)) Bool
+(not (sdlst (prv nil)))
+)
+
+(define-fun rswitch () Int
+0
+)
+```
+
 ## info
 
 See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas. The first example of `test_driver.ipynb` reveals to current extend of this program: multiple grammars are read from an input text file, replaced by respective (and disjoint) synthesized lemmas, ported to CVC4 in order to verify satisfiability and generate a satisfying model, then applies the reported model to the synthesized lemmas to instantiate the particular lemmas which satisfy the other constraints in the given file.
