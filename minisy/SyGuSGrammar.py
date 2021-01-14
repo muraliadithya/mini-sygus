@@ -1,6 +1,6 @@
 import functools
 
-import src.lisplike as lisplike
+import minisy.lisplike as lisplike
 
 
 # NOTE: Some argument/output types are written as lisplike.is_lisplike. This is currently enforced nowhere.

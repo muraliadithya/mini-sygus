@@ -1,47 +1,59 @@
 (set-logic ALL)
 ;; combination of true models and false model
 (define-fun sdlst ((x!0 Int)) Bool
+  (ite (= x!0 8) true
+  (ite (= x!0 7) true
   (ite (= x!0 2) true
   (ite (= x!0 4) true
   (ite (= x!0 1) true
   (ite (= x!0 3) true
   (ite (= x!0 5) true
-    true))))))
+    true))))))))
 (define-fun prv ((x!0 Int)) Int
+  (ite (= x!0 8) 8
+  (ite (= x!0 7) 8
   (ite (= x!0 2) 2
   (ite (= x!0 4) 3
   (ite (= x!0 1) 3
   (ite (= x!0 3) 1
   (ite (= x!0 5) 4
-    3))))))
+    8))))))))
 (define-fun key ((x!0 Int)) Int
+  (ite (= x!0 8) 0
+  (ite (= x!0 7) 0
   (ite (= x!0 2) 0
   (ite (= x!0 4) 0
   (ite (= x!0 1) 0
   (ite (= x!0 3) 0
   (ite (= x!0 5) 0
-    0))))))
+    0))))))))
 (define-fun nxt ((x!0 Int)) Int
+  (ite (= x!0 8) 8
+  (ite (= x!0 7) 8
   (ite (= x!0 2) 2
   (ite (= x!0 4) 5
   (ite (= x!0 1) 3
   (ite (= x!0 3) 4
   (ite (= x!0 5) 3
-    3))))))
+    8))))))))
 (define-fun dlst ((x!0 Int)) Bool
+  (ite (= x!0 8) true
+  (ite (= x!0 7) true
   (ite (= x!0 2) true
   (ite (= x!0 4) false
   (ite (= x!0 1) false
   (ite (= x!0 3) false
   (ite (= x!0 5) false
-    false))))))
+    false))))))))
 (define-fun slst ((x!0 Int)) Bool
+  (ite (= x!0 8) true
+  (ite (= x!0 7) true
   (ite (= x!0 2) true
   (ite (= x!0 4) false
   (ite (= x!0 1) false
   (ite (= x!0 3) false
   (ite (= x!0 5) false
-    false))))))
+    false))))))))
 
 ;; lemma to synthesize
 ;; TODO: must be generated from problem parameters
@@ -191,508 +203,508 @@
 
 ;Declaring functions corresponding to nonterminals
 ;Functions corresponding to I1
-(define-fun lemma_I1_0 ((x Int) (nil Int)) Int
-(ite lemma_b18 
- x 
- nil)
-)
-(define-fun lemma_I1_1 ((x Int) (nil Int)) Int
-(ite lemma_b19 
- x 
- nil)
-)
-(define-fun lemma_I1_3 ((x Int) (nil Int)) Int
-(ite lemma_b20 
- x 
- nil)
-)
 (define-fun lemma_I1_8 ((x Int) (nil Int)) Int
-(ite lemma_b27 
- x 
- nil)
-)
-(define-fun lemma_I1_2 ((x Int) (nil Int)) Int
-(ite lemma_b30 
- x 
- nil)
-)
-(define-fun lemma_I1_4 ((x Int) (nil Int)) Int
-(ite lemma_b45 
- x 
- nil)
-)
-(define-fun lemma_I1_16 ((x Int) (nil Int)) Int
-(ite lemma_b46 
- x 
- nil)
-)
-(define-fun lemma_I1_6 ((x Int) (nil Int)) Int
-(ite lemma_b51 
+(ite lemma_b28 
  x 
  nil)
 )
 (define-fun lemma_I1_5 ((x Int) (nil Int)) Int
-(ite lemma_b54 
+(ite lemma_b31 
  x 
  nil)
 )
-(define-fun lemma_I1_19 ((x Int) (nil Int)) Int
-(ite lemma_b55 
+(define-fun lemma_I1_12 ((x Int) (nil Int)) Int
+(ite lemma_b32 
  x 
  nil)
 )
-(define-fun lemma_I1_24 ((x Int) (nil Int)) Int
-(ite lemma_b56 
+(define-fun lemma_I1_15 ((x Int) (nil Int)) Int
+(ite lemma_b33 
  x 
  nil)
 )
-(define-fun lemma_I1_30 ((x Int) (nil Int)) Int
-(ite lemma_b57 
- x 
- nil)
-)
-(define-fun lemma_I1_14 ((x Int) (nil Int)) Int
-(ite lemma_b58 
- x 
- nil)
-)
-(define-fun lemma_I1_20 ((x Int) (nil Int)) Int
-(ite lemma_b61 
- x 
- nil)
-)
-(define-fun lemma_I1_23 ((x Int) (nil Int)) Int
-(ite lemma_b64 
- x 
- nil)
-)
-(define-fun lemma_I1_41 ((x Int) (nil Int)) Int
-(ite lemma_b67 
- x 
- nil)
-)
-(define-fun lemma_I1_27 ((x Int) (nil Int)) Int
-(ite lemma_b68 
- x 
- nil)
-)
-(define-fun lemma_I1_32 ((x Int) (nil Int)) Int
-(ite lemma_b73 
+(define-fun lemma_I1_9 ((x Int) (nil Int)) Int
+(ite lemma_b36 
  x 
  nil)
 )
 (define-fun lemma_I1_7 ((x Int) (nil Int)) Int
-(ite lemma_b74 
+(ite lemma_b37 
+ x 
+ nil)
+)
+(define-fun lemma_I1_4 ((x Int) (nil Int)) Int
+(ite lemma_b42 
+ x 
+ nil)
+)
+(define-fun lemma_I1_6 ((x Int) (nil Int)) Int
+(ite lemma_b45 
+ x 
+ nil)
+)
+(define-fun lemma_I1_2 ((x Int) (nil Int)) Int
+(ite lemma_b48 
+ x 
+ nil)
+)
+(define-fun lemma_I1_26 ((x Int) (nil Int)) Int
+(ite lemma_b49 
+ x 
+ nil)
+)
+(define-fun lemma_I1_18 ((x Int) (nil Int)) Int
+(ite lemma_b54 
+ x 
+ nil)
+)
+(define-fun lemma_I1_22 ((x Int) (nil Int)) Int
+(ite lemma_b61 
  x 
  nil)
 )
 (define-fun lemma_I1_11 ((x Int) (nil Int)) Int
+(ite lemma_b64 
+ x 
+ nil)
+)
+(define-fun lemma_I1_13 ((x Int) (nil Int)) Int
+(ite lemma_b65 
+ x 
+ nil)
+)
+(define-fun lemma_I1_40 ((x Int) (nil Int)) Int
+(ite lemma_b66 
+ x 
+ nil)
+)
+(define-fun lemma_I1_0 ((x Int) (nil Int)) Int
+(ite lemma_b67 
+ x 
+ nil)
+)
+(define-fun lemma_I1_19 ((x Int) (nil Int)) Int
+(ite lemma_b68 
+ x 
+ nil)
+)
+(define-fun lemma_I1_43 ((x Int) (nil Int)) Int
+(ite lemma_b69 
+ x 
+ nil)
+)
+(define-fun lemma_I1_46 ((x Int) (nil Int)) Int
+(ite lemma_b76 
+ x 
+ nil)
+)
+(define-fun lemma_I1_41 ((x Int) (nil Int)) Int
+(ite lemma_b77 
+ x 
+ nil)
+)
+(define-fun lemma_I1_23 ((x Int) (nil Int)) Int
+(ite lemma_b78 
+ x 
+ nil)
+)
+(define-fun lemma_I1_49 ((x Int) (nil Int)) Int
 (ite lemma_b79 
  x 
  nil)
 )
 (define-fun lemma_I1_17 ((x Int) (nil Int)) Int
-(ite lemma_b80 
- x 
- nil)
-)
-(define-fun lemma_I1_39 ((x Int) (nil Int)) Int
-(ite lemma_b81 
- x 
- nil)
-)
-(define-fun lemma_I1_57 ((x Int) (nil Int)) Int
 (ite lemma_b82 
  x 
  nil)
 )
-(define-fun lemma_I1_37 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_30 ((x Int) (nil Int)) Int
 (ite lemma_b83 
  x 
  nil)
 )
-(define-fun lemma_I1_26 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_45 ((x Int) (nil Int)) Int
 (ite lemma_b84 
  x 
  nil)
 )
-(define-fun lemma_I1_31 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_38 ((x Int) (nil Int)) Int
 (ite lemma_b87 
  x 
  nil)
 )
-(define-fun lemma_I1_9 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_3 ((x Int) (nil Int)) Int
 (ite lemma_b88 
  x 
  nil)
 )
-(define-fun lemma_I1_25 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_1 ((x Int) (nil Int)) Int
 (ite lemma_b89 
  x 
  nil)
 )
-(define-fun lemma_I1_62 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_16 ((x Int) (nil Int)) Int
 (ite lemma_b90 
  x 
  nil)
 )
-(define-fun lemma_I1_40 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_36 ((x Int) (nil Int)) Int
 (ite lemma_b91 
  x 
  nil)
 )
-(define-fun lemma_I1_12 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_34 ((x Int) (nil Int)) Int
 (ite lemma_b92 
  x 
  nil)
 )
-(define-fun lemma_I1_18 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_53 ((x Int) (nil Int)) Int
 (ite lemma_b93 
  x 
  nil)
 )
-(define-fun lemma_I1_15 ((x Int) (nil Int)) Int
-(ite lemma_b94 
- x 
- nil)
-)
-(define-fun lemma_I1_13 ((x Int) (nil Int)) Int
-(ite lemma_b95 
- x 
- nil)
-)
-(define-fun lemma_I1_10 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_39 ((x Int) (nil Int)) Int
 (ite lemma_b96 
  x 
  nil)
 )
-(define-fun lemma_I1_21 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_60 ((x Int) (nil Int)) Int
 (ite lemma_b97 
  x 
  nil)
 )
-(define-fun lemma_I1_28 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_50 ((x Int) (nil Int)) Int
 (ite lemma_b98 
  x 
  nil)
 )
-(define-fun lemma_I1_22 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_10 ((x Int) (nil Int)) Int
 (ite lemma_b99 
  x 
  nil)
 )
-(define-fun lemma_I1_35 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_25 ((x Int) (nil Int)) Int
 (ite lemma_b100 
  x 
  nil)
 )
-(define-fun lemma_I1_36 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_24 ((x Int) (nil Int)) Int
 (ite lemma_b101 
  x 
  nil)
 )
-(define-fun lemma_I1_43 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_33 ((x Int) (nil Int)) Int
 (ite lemma_b102 
  x 
  nil)
 )
-(define-fun lemma_I1_45 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_56 ((x Int) (nil Int)) Int
 (ite lemma_b103 
  x 
  nil)
 )
-(define-fun lemma_I1_29 ((x Int) (nil Int)) Int
-(ite lemma_b104 
- x 
- nil)
-)
-(define-fun lemma_I1_49 ((x Int) (nil Int)) Int
-(ite lemma_b105 
- x 
- nil)
-)
-(define-fun lemma_I1_51 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_47 ((x Int) (nil Int)) Int
 (ite lemma_b106 
  x 
  nil)
 )
-(define-fun lemma_I1_55 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_62 ((x Int) (nil Int)) Int
 (ite lemma_b107 
  x 
  nil)
 )
-(define-fun lemma_I1_38 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_14 ((x Int) (nil Int)) Int
 (ite lemma_b108 
  x 
  nil)
 )
-(define-fun lemma_I1_56 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_20 ((x Int) (nil Int)) Int
 (ite lemma_b109 
  x 
  nil)
 )
-(define-fun lemma_I1_58 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_28 ((x Int) (nil Int)) Int
 (ite lemma_b110 
  x 
  nil)
 )
-(define-fun lemma_I1_47 ((x Int) (nil Int)) Int
-(ite lemma_b115 
- x 
- nil)
-)
-(define-fun lemma_I1_44 ((x Int) (nil Int)) Int
-(ite lemma_b116 
+(define-fun lemma_I1_21 ((x Int) (nil Int)) Int
+(ite lemma_b111 
  x 
  nil)
 )
 (define-fun lemma_I1_48 ((x Int) (nil Int)) Int
+(ite lemma_b112 
+ x 
+ nil)
+)
+(define-fun lemma_I1_27 ((x Int) (nil Int)) Int
+(ite lemma_b113 
+ x 
+ nil)
+)
+(define-fun lemma_I1_29 ((x Int) (nil Int)) Int
+(ite lemma_b114 
+ x 
+ nil)
+)
+(define-fun lemma_I1_51 ((x Int) (nil Int)) Int
 (ite lemma_b117 
  x 
  nil)
 )
-(define-fun lemma_I1_34 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_59 ((x Int) (nil Int)) Int
 (ite lemma_b118 
  x 
  nil)
 )
-(define-fun lemma_I1_33 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_52 ((x Int) (nil Int)) Int
 (ite lemma_b119 
  x 
  nil)
 )
-(define-fun lemma_I1_54 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_61 ((x Int) (nil Int)) Int
+(ite lemma_b120 
+ x 
+ nil)
+)
+(define-fun lemma_I1_32 ((x Int) (nil Int)) Int
+(ite lemma_b121 
+ x 
+ nil)
+)
+(define-fun lemma_I1_44 ((x Int) (nil Int)) Int
 (ite lemma_b122 
  x 
  nil)
 )
-(define-fun lemma_I1_52 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_55 ((x Int) (nil Int)) Int
 (ite lemma_b123 
  x 
  nil)
 )
-(define-fun lemma_I1_53 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_42 ((x Int) (nil Int)) Int
 (ite lemma_b124 
  x 
  nil)
 )
-(define-fun lemma_I1_46 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_63 ((x Int) (nil Int)) Int
 (ite lemma_b125 
  x 
  nil)
 )
-(define-fun lemma_I1_50 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_35 ((x Int) (nil Int)) Int
 (ite lemma_b126 
  x 
  nil)
 )
-(define-fun lemma_I1_42 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_37 ((x Int) (nil Int)) Int
 (ite lemma_b127 
  x 
  nil)
 )
-(define-fun lemma_I1_70 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_31 ((x Int) (nil Int)) Int
 (ite lemma_b128 
  x 
  nil)
 )
-(define-fun lemma_I1_64 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_54 ((x Int) (nil Int)) Int
 (ite lemma_b129 
  x 
  nil)
 )
-(define-fun lemma_I1_59 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_58 ((x Int) (nil Int)) Int
 (ite lemma_b130 
  x 
  nil)
 )
-(define-fun lemma_I1_71 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_69 ((x Int) (nil Int)) Int
 (ite lemma_b131 
  x 
  nil)
 )
-(define-fun lemma_I1_61 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_68 ((x Int) (nil Int)) Int
 (ite lemma_b132 
  x 
  nil)
 )
-(define-fun lemma_I1_60 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_67 ((x Int) (nil Int)) Int
 (ite lemma_b133 
  x 
  nil)
 )
-(define-fun lemma_I1_68 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_57 ((x Int) (nil Int)) Int
 (ite lemma_b134 
  x 
  nil)
 )
-(define-fun lemma_I1_63 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_65 ((x Int) (nil Int)) Int
 (ite lemma_b135 
  x 
  nil)
 )
-(define-fun lemma_I1_65 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_64 ((x Int) (nil Int)) Int
 (ite lemma_b136 
  x 
  nil)
 )
-(define-fun lemma_I1_69 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_66 ((x Int) (nil Int)) Int
 (ite lemma_b137 
  x 
  nil)
 )
-(define-fun lemma_I1_67 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_70 ((x Int) (nil Int)) Int
 (ite lemma_b138 
  x 
  nil)
 )
-(define-fun lemma_I1_66 ((x Int) (nil Int)) Int
+(define-fun lemma_I1_71 ((x Int) (nil Int)) Int
 (ite lemma_b139 
  x 
  nil)
 )
 ;Functions corresponding to I
-(define-fun lemma_I_2 ((x Int) (nil Int)) Int
-(ite lemma_b8 
+(define-fun lemma_I_5 ((x Int) (nil Int)) Int
+(ite lemma_b12 
  (lemma_I1_0 x nil) 
- (ite lemma_b9 
+ (ite lemma_b13 
  (nxt (lemma_I1_1 x nil)) 
  (prv (lemma_I1_2 x nil))))
 )
-(define-fun lemma_I_8 ((x Int) (nil Int)) Int
+(define-fun lemma_I_1 ((x Int) (nil Int)) Int
 (ite lemma_b14 
  (lemma_I1_3 x nil) 
  (ite lemma_b15 
  (nxt (lemma_I1_4 x nil)) 
  (prv (lemma_I1_5 x nil))))
 )
-(define-fun lemma_I_14 ((x Int) (nil Int)) Int
-(ite lemma_b23 
+(define-fun lemma_I_3 ((x Int) (nil Int)) Int
+(ite lemma_b18 
  (lemma_I1_6 x nil) 
- (ite lemma_b24 
+ (ite lemma_b19 
  (nxt (lemma_I1_7 x nil)) 
  (prv (lemma_I1_8 x nil))))
 )
-(define-fun lemma_I_17 ((x Int) (nil Int)) Int
-(ite lemma_b25 
+(define-fun lemma_I_7 ((x Int) (nil Int)) Int
+(ite lemma_b20 
  (lemma_I1_9 x nil) 
- (ite lemma_b26 
+ (ite lemma_b21 
  (nxt (lemma_I1_10 x nil)) 
  (prv (lemma_I1_11 x nil))))
 )
-(define-fun lemma_I_3 ((x Int) (nil Int)) Int
-(ite lemma_b28 
+(define-fun lemma_I_6 ((x Int) (nil Int)) Int
+(ite lemma_b22 
  (lemma_I1_12 x nil) 
- (ite lemma_b29 
+ (ite lemma_b23 
  (nxt (lemma_I1_13 x nil)) 
  (prv (lemma_I1_14 x nil))))
 )
 (define-fun lemma_I_11 ((x Int) (nil Int)) Int
-(ite lemma_b31 
+(ite lemma_b29 
  (lemma_I1_15 x nil) 
- (ite lemma_b32 
+ (ite lemma_b30 
  (nxt (lemma_I1_16 x nil)) 
  (prv (lemma_I1_17 x nil))))
 )
-(define-fun lemma_I_7 ((x Int) (nil Int)) Int
-(ite lemma_b33 
+(define-fun lemma_I_19 ((x Int) (nil Int)) Int
+(ite lemma_b34 
  (lemma_I1_18 x nil) 
- (ite lemma_b34 
+ (ite lemma_b35 
  (nxt (lemma_I1_19 x nil)) 
  (prv (lemma_I1_20 x nil))))
 )
-(define-fun lemma_I_12 ((x Int) (nil Int)) Int
-(ite lemma_b35 
+(define-fun lemma_I_17 ((x Int) (nil Int)) Int
+(ite lemma_b38 
  (lemma_I1_21 x nil) 
- (ite lemma_b36 
+ (ite lemma_b39 
  (nxt (lemma_I1_22 x nil)) 
  (prv (lemma_I1_23 x nil))))
 )
-(define-fun lemma_I_10 ((x Int) (nil Int)) Int
-(ite lemma_b37 
+(define-fun lemma_I_14 ((x Int) (nil Int)) Int
+(ite lemma_b40 
  (lemma_I1_24 x nil) 
- (ite lemma_b38 
+ (ite lemma_b41 
  (nxt (lemma_I1_25 x nil)) 
  (prv (lemma_I1_26 x nil))))
 )
-(define-fun lemma_I_5 ((x Int) (nil Int)) Int
-(ite lemma_b39 
+(define-fun lemma_I_8 ((x Int) (nil Int)) Int
+(ite lemma_b46 
  (lemma_I1_27 x nil) 
- (ite lemma_b40 
+ (ite lemma_b47 
  (nxt (lemma_I1_28 x nil)) 
  (prv (lemma_I1_29 x nil))))
 )
-(define-fun lemma_I_4 ((x Int) (nil Int)) Int
-(ite lemma_b43 
+(define-fun lemma_I_12 ((x Int) (nil Int)) Int
+(ite lemma_b50 
  (lemma_I1_30 x nil) 
- (ite lemma_b44 
+ (ite lemma_b51 
  (nxt (lemma_I1_31 x nil)) 
  (prv (lemma_I1_32 x nil))))
 )
-(define-fun lemma_I_13 ((x Int) (nil Int)) Int
-(ite lemma_b47 
+(define-fun lemma_I_2 ((x Int) (nil Int)) Int
+(ite lemma_b52 
  (lemma_I1_33 x nil) 
- (ite lemma_b48 
+ (ite lemma_b53 
  (nxt (lemma_I1_34 x nil)) 
  (prv (lemma_I1_35 x nil))))
 )
-(define-fun lemma_I_19 ((x Int) (nil Int)) Int
-(ite lemma_b49 
+(define-fun lemma_I_23 ((x Int) (nil Int)) Int
+(ite lemma_b55 
  (lemma_I1_36 x nil) 
- (ite lemma_b50 
+ (ite lemma_b56 
  (nxt (lemma_I1_37 x nil)) 
  (prv (lemma_I1_38 x nil))))
 )
-(define-fun lemma_I_16 ((x Int) (nil Int)) Int
-(ite lemma_b52 
+(define-fun lemma_I_21 ((x Int) (nil Int)) Int
+(ite lemma_b57 
  (lemma_I1_39 x nil) 
- (ite lemma_b53 
+ (ite lemma_b58 
  (nxt (lemma_I1_40 x nil)) 
  (prv (lemma_I1_41 x nil))))
 )
-(define-fun lemma_I_0 ((x Int) (nil Int)) Int
+(define-fun lemma_I_15 ((x Int) (nil Int)) Int
 (ite lemma_b59 
  (lemma_I1_42 x nil) 
  (ite lemma_b60 
  (nxt (lemma_I1_43 x nil)) 
  (prv (lemma_I1_44 x nil))))
 )
-(define-fun lemma_I_6 ((x Int) (nil Int)) Int
+(define-fun lemma_I_0 ((x Int) (nil Int)) Int
 (ite lemma_b62 
  (lemma_I1_45 x nil) 
  (ite lemma_b63 
  (nxt (lemma_I1_46 x nil)) 
  (prv (lemma_I1_47 x nil))))
 )
-(define-fun lemma_I_9 ((x Int) (nil Int)) Int
-(ite lemma_b65 
+(define-fun lemma_I_4 ((x Int) (nil Int)) Int
+(ite lemma_b70 
  (lemma_I1_48 x nil) 
- (ite lemma_b66 
+ (ite lemma_b71 
  (nxt (lemma_I1_49 x nil)) 
  (prv (lemma_I1_50 x nil))))
 )
-(define-fun lemma_I_1 ((x Int) (nil Int)) Int
-(ite lemma_b71 
+(define-fun lemma_I_9 ((x Int) (nil Int)) Int
+(ite lemma_b72 
  (lemma_I1_51 x nil) 
- (ite lemma_b72 
+ (ite lemma_b73 
  (nxt (lemma_I1_52 x nil)) 
  (prv (lemma_I1_53 x nil))))
 )
-(define-fun lemma_I_18 ((x Int) (nil Int)) Int
-(ite lemma_b75 
+(define-fun lemma_I_10 ((x Int) (nil Int)) Int
+(ite lemma_b74 
  (lemma_I1_54 x nil) 
- (ite lemma_b76 
+ (ite lemma_b75 
  (nxt (lemma_I1_55 x nil)) 
  (prv (lemma_I1_56 x nil))))
 )
-(define-fun lemma_I_21 ((x Int) (nil Int)) Int
-(ite lemma_b77 
+(define-fun lemma_I_18 ((x Int) (nil Int)) Int
+(ite lemma_b80 
  (lemma_I1_57 x nil) 
- (ite lemma_b78 
+ (ite lemma_b81 
  (nxt (lemma_I1_58 x nil)) 
  (prv (lemma_I1_59 x nil))))
 )
-(define-fun lemma_I_15 ((x Int) (nil Int)) Int
+(define-fun lemma_I_13 ((x Int) (nil Int)) Int
 (ite lemma_b85 
  (lemma_I1_60 x nil) 
  (ite lemma_b86 
@@ -700,28 +712,28 @@
  (prv (lemma_I1_62 x nil))))
 )
 (define-fun lemma_I_20 ((x Int) (nil Int)) Int
-(ite lemma_b111 
+(ite lemma_b94 
  (lemma_I1_63 x nil) 
- (ite lemma_b112 
+ (ite lemma_b95 
  (nxt (lemma_I1_64 x nil)) 
  (prv (lemma_I1_65 x nil))))
 )
-(define-fun lemma_I_22 ((x Int) (nil Int)) Int
-(ite lemma_b113 
+(define-fun lemma_I_16 ((x Int) (nil Int)) Int
+(ite lemma_b104 
  (lemma_I1_66 x nil) 
- (ite lemma_b114 
+ (ite lemma_b105 
  (nxt (lemma_I1_67 x nil)) 
  (prv (lemma_I1_68 x nil))))
 )
-(define-fun lemma_I_23 ((x Int) (nil Int)) Int
-(ite lemma_b120 
+(define-fun lemma_I_22 ((x Int) (nil Int)) Int
+(ite lemma_b115 
  (lemma_I1_69 x nil) 
- (ite lemma_b121 
+ (ite lemma_b116 
  (nxt (lemma_I1_70 x nil)) 
  (prv (lemma_I1_71 x nil))))
 )
 ;Functions corresponding to B1
-(define-fun lemma_B1_0 ((x Int) (nil Int)) Bool
+(define-fun lemma_B1_3 ((x Int) (nil Int)) Bool
 (ite lemma_b4 
  (dlst (lemma_I_0 x nil)) 
  (ite lemma_b5 
@@ -735,45 +747,45 @@
  (slst (lemma_I_4 x nil)) 
  (sdlst (lemma_I_5 x nil))))
 )
-(define-fun lemma_B1_1 ((x Int) (nil Int)) Bool
-(ite lemma_b10 
+(define-fun lemma_B1_7 ((x Int) (nil Int)) Bool
+(ite lemma_b8 
  (dlst (lemma_I_6 x nil)) 
- (ite lemma_b11 
+ (ite lemma_b9 
  (slst (lemma_I_7 x nil)) 
  (sdlst (lemma_I_8 x nil))))
 )
-(define-fun lemma_B1_2 ((x Int) (nil Int)) Bool
-(ite lemma_b12 
+(define-fun lemma_B1_0 ((x Int) (nil Int)) Bool
+(ite lemma_b10 
  (dlst (lemma_I_9 x nil)) 
- (ite lemma_b13 
+ (ite lemma_b11 
  (slst (lemma_I_10 x nil)) 
  (sdlst (lemma_I_11 x nil))))
 )
-(define-fun lemma_B1_7 ((x Int) (nil Int)) Bool
+(define-fun lemma_B1_5 ((x Int) (nil Int)) Bool
 (ite lemma_b16 
  (dlst (lemma_I_12 x nil)) 
  (ite lemma_b17 
  (slst (lemma_I_13 x nil)) 
  (sdlst (lemma_I_14 x nil))))
 )
-(define-fun lemma_B1_3 ((x Int) (nil Int)) Bool
-(ite lemma_b21 
+(define-fun lemma_B1_2 ((x Int) (nil Int)) Bool
+(ite lemma_b24 
  (dlst (lemma_I_15 x nil)) 
- (ite lemma_b22 
+ (ite lemma_b25 
  (slst (lemma_I_16 x nil)) 
  (sdlst (lemma_I_17 x nil))))
 )
-(define-fun lemma_B1_4 ((x Int) (nil Int)) Bool
-(ite lemma_b41 
+(define-fun lemma_B1_1 ((x Int) (nil Int)) Bool
+(ite lemma_b26 
  (dlst (lemma_I_18 x nil)) 
- (ite lemma_b42 
+ (ite lemma_b27 
  (slst (lemma_I_19 x nil)) 
  (sdlst (lemma_I_20 x nil))))
 )
-(define-fun lemma_B1_5 ((x Int) (nil Int)) Bool
-(ite lemma_b69 
+(define-fun lemma_B1_4 ((x Int) (nil Int)) Bool
+(ite lemma_b43 
  (dlst (lemma_I_21 x nil)) 
- (ite lemma_b70 
+ (ite lemma_b44 
  (slst (lemma_I_22 x nil)) 
  (sdlst (lemma_I_23 x nil))))
 )
@@ -816,6 +828,16 @@ rswitch_Start_0
 )
 
 ;; pfp constraints from counterexample models
+(assert (and (=> (= rswitch 0) (let ((a!1 (and (= (prv (nxt 7)) 7) (lemma (nxt 7) 8) (dlst (nxt 7)))))
+(let ((a!2 (ite (= 7 8) true (ite (= (nxt 7) 8) true a!1))))
+  (=> a!2 (lemma 7 8)))))(=> (= rswitch 1) (let ((a!1 (and (= (prv (nxt 7)) 7)
+                (<= (key 7) (key (nxt 7)))
+                (lemma (nxt 7) 8)
+                (sdlst (nxt 7)))))
+(let ((a!2 (ite (= 7 8) true (ite (= (nxt 7) 8) true a!1))))
+  (=> a!2 (lemma 7 8)))))(=> (= rswitch 2) (let ((a!1 (and (<= (key 7) (key (nxt 7))) (lemma (nxt 7) 8) (slst (nxt 7)))))
+(let ((a!2 (ite (= 7 8) true (ite (= (nxt 7) 8) true a!1))))
+  (=> a!2 (lemma 7 8)))))))
 
 
 ;; constraints from false model

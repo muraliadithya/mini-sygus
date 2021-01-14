@@ -1,0 +1,370 @@
+(set-logic ALL)
+;; combination of true models and false model
+(define-fun hbst ((x!0 Int)) (Set Int)
+  (ite (and (= x!0 13808)) (as emptyset (Set Int))
+  (ite (and (= x!0 13806)) (insert 13799 (insert 13806 (insert 13810 (insert 13875 (insert 13815 (insert 13819 (as emptyset (Set Int))))))))
+  (ite (and (= x!0 13873)) (insert 13798 (insert 13801 (insert 13802 (insert 13803 (insert 13997 (insert 13873 (insert 13874 (insert 13882 (as emptyset (Set Int))))))))))
+  (ite (and (= x!0 13813)) (insert 0 (insert 14027 (insert 13804 (insert 13808 (insert 13811 (insert 13876 (insert 13813 (insert 13815 (insert 13821 (as emptyset (Set Int)))))))))))
+  (ite (and (= x!0 13800)) (insert 13808 (insert 13817 (insert 13818 (insert 13800 (as emptyset (Set Int))))))
+  (ite (and (= x!0 13815)) (insert 13799 (insert 13806 (insert 13810 (insert 13875 (insert 13815 (insert 13819 (as emptyset (Set Int))))))))
+  (ite (and (= x!0 13875)) (insert 0 (insert 13997 (insert 13873 (insert 13874 (insert 13875 (insert 13876 (insert 13881 (insert 13882 (insert 14027 (insert 13798 (insert 13801 (insert 13802 (insert 13803 (insert 13804 (insert 13805 (insert 13808 (insert 13811 (insert 13812 (insert 13813 (insert 13815 (insert 13816 (insert 13818 (insert 13821 (as emptyset (Set Int)))))))))))))))))))))))))
+  (ite (and (= x!0 13816)) (insert 13816 (insert 13818 (insert 13812 (insert 13805 (as emptyset (Set Int))))))
+  (ite (and (= x!0 13818)) (insert 13808 (insert 13817 (insert 13818 (insert 13800 (as emptyset (Set Int))))))
+  (ite (and (= x!0 13881)) (insert 13798 (insert 13801 (insert 13802 (insert 13803 (insert 13997 (insert 13805 (insert 13873 (insert 13874 (insert 13812 (insert 13882 (insert 13816 (insert 13881 (insert 13818 (as emptyset (Set Int)))))))))))))))
+  (ite (and (= x!0 13804)) (insert 0 (insert 14027 (insert 13804 (insert 13808 (insert 13811 (insert 13876 (insert 13815 (insert 13821 (as emptyset (Set Int))))))))))
+  (as emptyset (Set Int))))))))))))))
+
+(define-fun rght ((x!0 Int)) Int
+  (ite (= x!0 13808) 13808
+  (ite (= x!0 13806) 13936
+  (ite (= x!0 13873) 13905
+  (ite (= x!0 13813) 13808
+  (ite (= x!0 13800) 13924
+  (ite (= x!0 13815) 13806
+  (ite (= x!0 13875) 13813
+  (ite (= x!0 13816) 13946
+  (ite (= x!0 13818) 13808
+  (ite (= x!0 13881) 13873
+  (ite (= x!0 13804) 13914
+    13808))))))))))))
+(define-fun minr ((x!0 Int)) Int
+  (ite (= x!0 13808) 100
+  (ite (= x!0 13806) (- 1)
+  (ite (= x!0 13873) 12
+  (ite (= x!0 13813) 70
+  (ite (= x!0 13800) 66
+  (ite (= x!0 13815) (- 2)
+  (ite (= x!0 13875) 1
+  (ite (= x!0 13816) 1
+  (ite (= x!0 13818) 65
+  (ite (= x!0 13881) 1
+  (ite (= x!0 13804) 70
+    1))))))))))))
+(define-fun lft ((x!0 Int)) Int
+  (ite (= x!0 13808) 13808
+  (ite (= x!0 13806) 13934
+  (ite (= x!0 13873) 13906
+  (ite (= x!0 13813) 13804
+  (ite (= x!0 13800) 13925
+  (ite (= x!0 13815) 13808
+  (ite (= x!0 13875) 13881
+  (ite (= x!0 13816) 13947
+  (ite (= x!0 13818) 13800
+  (ite (= x!0 13881) 13816
+  (ite (= x!0 13804) 13915
+    13808))))))))))))
+(define-fun key ((x!0 Int)) Int
+  (ite (= x!0 13808) 101
+  (ite (= x!0 13806) (- 1)
+  (ite (= x!0 13873) 68
+  (ite (= x!0 13813) 71
+  (ite (= x!0 13800) 67
+  (ite (= x!0 13815) (- 2)
+  (ite (= x!0 13875) 69
+  (ite (= x!0 13816) 1
+  (ite (= x!0 13818) 65
+  (ite (= x!0 13881) 12
+  (ite (= x!0 13804) 70
+    101))))))))))))
+(define-fun maxr ((x!0 Int)) Int
+  (ite (= x!0 13808) (- 1)
+  (ite (= x!0 13806) 1
+  (ite (= x!0 13873) 68
+  (ite (= x!0 13813) 71
+  (ite (= x!0 13800) 67
+  (ite (= x!0 13815) 1
+  (ite (= x!0 13875) 71
+  (ite (= x!0 13816) 11
+  (ite (= x!0 13818) 67
+  (ite (= x!0 13881) 68
+  (ite (= x!0 13804) 70
+    1))))))))))))
+(define-fun bst ((x!0 Int)) Bool
+  (ite (= x!0 13808) true
+  (ite (= x!0 13806) false
+  (ite (= x!0 13873) true
+  (ite (= x!0 13813) true
+  (ite (= x!0 13800) false
+  (ite (= x!0 13815) false
+  (ite (= x!0 13875) true
+  (ite (= x!0 13816) true
+  (ite (= x!0 13818) false
+  (ite (= x!0 13881) true
+  (ite (= x!0 13804) true
+    true))))))))))))
+
+;; lemma to synthesize
+;; TODO: must be generated from problem parameters
+(synth-fun lemma ((x Int) (y Int)) Bool
+           ((Start Bool) (B1 Bool) (G (Set Int)) (H Int) (Loc Int))
+
+           ((Start Bool (B1
+                  (=> B1 B1)))
+           (B1 Bool
+                  ((<= H H)
+                   (member Loc G)))
+           (G (Set Int)
+                  ((hbst Loc)))
+           (H Int (
+                  (key Loc)
+                  (minr Loc)
+                  (maxr Loc)))
+           (Loc Int (x y)))
+)
+
+(synth-fun rswitch () Int
+           ((Start Int))
+           ((Start Int (0)))
+)
+
+;; pfp constraints from counterexample models
+
+
+;; constraints from false model
+(constraint (or (and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13800) (lemma 13800 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13804) (lemma 13804 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13806) (lemma 13806 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13808) (lemma 13808 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13873) (lemma 13873 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13875) (lemma 13875 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13813) (lemma 13813 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13815) (lemma 13815 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13816) (lemma 13816 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13881) (lemma 13881 13818 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13800 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13804 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13806 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13808 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13873 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13875 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13813 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13815 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13816 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13881 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 13818) (lemma 13818 13818 ))))
+)
+))
+
+;; constraints from true models
+
+(check-synth)

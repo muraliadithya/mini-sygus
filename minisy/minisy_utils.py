@@ -7,9 +7,9 @@ import subprocess
 import itertools
 import warnings
 
-from src.SyGuSGrammar import load_from_string
-from src.ConstraintGrammar import ConstraintGrammar
-from src.lisplike import pretty_string
+from minisy.SyGuSGrammar import load_from_string
+from minisy.ConstraintGrammar import ConstraintGrammar
+from minisy.lisplike import pretty_string
 
 
 # Replace SyGuS grammars in file with constraint grammars in SMT-Lib format
@@ -19,7 +19,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
     constraint grammar in SMT-Lib format.  
     :param infile_name: string  
     :param outfile_name: string  
-    :return grammars: list [src.ConstraintGrammar]  
+    :return grammars: list [minisy.ConstraintGrammar]  
     """
     if outfile_name is None:
         outfile_name = get_outfile_name(infile_name)
@@ -67,7 +67,7 @@ def call_solver(smtfile_name, grammars):
     Call SMT solver and, if sat, display grammar expressions corresponding to boolean
     valuations in returned SMT model.  
     :param smtfile_name: string  
-    :param grammars: list [src.ConstraintGrammar]  
+    :param grammars: list [minisy.ConstraintGrammar]  
     :return model: dict {string: bool}  
     """
     # Call CVC4 solver on smtfile_name
@@ -125,10 +125,5 @@ def get_outfile_name(infile_name):
     :return: string  
     """
     dot_index = infile_name.rfind('.')
-    slash_index = infile_name.rfind('/')
-    if slash_index == -1:
-        slash_index = 0
-        infile_name = '/' + infile_name
-    outfile_name = ''.join([infile_name[:slash_index], '/output', 
-                            infile_name[slash_index:dot_index], '.smt'])
+    outfile_name = '{}.smt2'.format(infile_name[:dot_index])
     return outfile_name
