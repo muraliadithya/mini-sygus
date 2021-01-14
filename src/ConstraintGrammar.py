@@ -78,8 +78,6 @@ class ConstraintGrammar:
         # Internal attributes (should not exposed by any methods)
         self._post = track_nonterminals_one_step(sygus_grammar)
         self._rule_dict = sygus_grammar.get_ordered_rule_list()
-        # Special symbol to denote when no rule is chosen for a symbol according to valuation
-        self._no_rule_chosen = '||NoRuleChosen||'
 
         # Attributes for caching useful values
         # self.post = track_nonterminals_one_step(sygus_grammar)
@@ -106,7 +104,7 @@ class ConstraintGrammar:
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
-        # Worklist will contain pairs (nonterminal, nonterminal_copy). Initial pair is the start symbol and a copy.
+        # Worklist will contain pairs (nonterminal, nonterminal_copy). Initial pair is the start symbol and its copy.
         start_symbol_initial_copy = _nonterminal_copy_name(start_symbol,
                                                            nonterminal_copy_counter[start_symbol],
                                                            synthfun_name)
@@ -142,7 +140,8 @@ class ConstraintGrammar:
                     boolvar_name = new_boolvars[i]
                     self.boolvars[boolvar_name] = post_symbol_copies
                 else:
-                    # Need catch case for symbol copies of last production rule
+                    # Catchall case for symbol copies of last production rule
+                    # Same as the entry in the if branch but made in self.boolcatch
                     self.boolcatch[nonterminal_copy] = post_symbol_copies
 
     def evaluate(self, valuation):
@@ -166,20 +165,13 @@ class ConstraintGrammar:
                 # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
                 nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
                 nonterminal_copies = self.boolvars[rule_choice_boolvars[chosen_rule_index]]
-            except:
-                # All boolvars are False; "catch" case
-                chosen_rule_index = len(rule_choice_boolvars)
-                chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
-                nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
+            except StopIteration:
+                # All boolvars are False; catchall case
+                # Choose the last expansion rule in the ordered list of rules
+                chosen_rule = ordered_rule_dict[original_symbol][-1]
+                nonterminals_in_rule = self._post[original_symbol][-1]
                 nonterminal_copies = self.boolcatch[symbol]
             substitution = lisplike.substitute(chosen_rule, list(zip(nonterminals_in_rule, nonterminal_copies)))
-            # Nonsensical valuations now pass to the catch case as well.
-            #except StopIteration:
-            #    # No rule is chosen according to the valuation.
-            #    # chosen_rule_index = None
-            #    # chosen_rule = self._no_rule_chosen
-            #    substitution = self._no_rule_chosen
-            #    # If no rule is chosen, write a special symbol.
             substitution_pairs = substitution_pairs + [(symbol, substitution)]
 
         # Auxiliary function to apply valuations and build the result recursively
@@ -189,13 +181,9 @@ class ConstraintGrammar:
             # If there are any nonterminals in the expression substitute them with the expansion rules recursively
             expanded_expr = lisplike.substitute(expr, substitution_pairs)
             # There are only three choices: 
-            # (i) some symbol could not be expanded to anything
+            # (i) some symbol could not be expanded -- cannot happen since its last rule is a 'default' selection
             # (ii) all expansions are done
             # (iii) there are valid expansions left to be done.
-            # If any symbol is expanded such that the no rule chosen symbol appears, then stop and raise exception
-            if lisplike.is_subexpr(self._no_rule_chosen, expanded_expr):
-                # TODO (medium-low): output the symbol/path within the grammar where the valuation does not make sense.
-                raise NonsenseValuationException('The given valuation does not make sense.')
             # If the expression is unchanged, return the value as there are no more symbols to be expanded. 
             if expr == expanded_expr:
                 return expr
@@ -216,7 +204,7 @@ class ConstraintGrammar:
         # TODO (high): construct lisplike.is_lisplike values instead of strings
         # Precomputing useful values
         synthfun_name = self.sygus_grammar.get_name()
-        typed_nonterminals = dict(self.sygus_grammar.get_typed_nonterminal_set())
+        typed_nonterminals = dict(self.sygus_grammar.get_typed_nonterminal_list())
         typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
         # Degenerates to '()' when the list of arguments is empty
         typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
@@ -232,6 +220,7 @@ class ConstraintGrammar:
         for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
             func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
             return_type = typed_nonterminals[nonterminal]
+            return_type_string = lisplike.pretty_string(return_type, noindent=True)
             post_nonterminals = self._post[nonterminal]
             nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
             for nonterminal_copy in nonterminal_copies:
@@ -266,23 +255,24 @@ class ConstraintGrammar:
                     else:
                         # Structure an ite operator on first boolvar/rule, then recurse
                         return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
-                
+
                 func_body = lisplike.pretty_string(func_decl_body_aux(choice_boolvars, substituted_expansions), 
                                                    noindent=True)
                 func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
-                                                     return_type=return_type, body=func_body)
+                                                     return_type=return_type_string, body=func_body)
                 func_decl_string = func_decl_string + func_decl
         # Define the replacement for the synth-fun command
         # Must have the same name as the function to be synthesised
         synthfun_return_type = self.sygus_grammar.get_range_type()
+        synthfun_return_type_string = lisplike.pretty_string(synthfun_return_type, noindent=True)
         starting_symbol = self.starting_symbol
         evalfun_body = '({} {})'.format(starting_symbol, ' '.join(arguments)) if arguments != [] else starting_symbol
         eval_function_string = (';Function to be synthesised\n' + define_fun_format).format(
             name=synthfun_name, typed_args=typed_param_string, 
-            return_type=synthfun_return_type, body=evalfun_body)
+            return_type=synthfun_return_type_string, body=evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
-        return bool_decl_string + '\n\n' + func_decl_string + '\n'+ eval_function_string
-    
+        return bool_decl_string + '\n\n' + func_decl_string + '\n' + eval_function_string
+
     def get_synth_function(self, valuation=None):
         """
         The synthesized function part of pretty_smt_encoding.
@@ -305,6 +295,7 @@ class ConstraintGrammar:
             name=synthfun_name, typed_args=typed_param_string, 
             return_type=synthfun_return_type, body=synthfun_body)
         return synth_function_string
+
 
 # Helper functions
 def _nonterminal_copy_name(symbol_name, copy_number, synthfun_name):
