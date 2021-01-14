@@ -3,19 +3,23 @@ Module to handle reading files with SyGuS grammars and writing corresponding fil
 with constraint grammars.
 """
 
-import subprocess, itertools, warnings
+import subprocess
+import itertools
+import warnings
+
 from src.SyGuSGrammar import load_from_string
 from src.ConstraintGrammar import ConstraintGrammar
 from src.lisplike import pretty_string
+
 
 # Replace SyGuS grammars in file with constraint grammars in SMT-Lib format
 def sygus_to_constraint(infile_name, outfile_name=None):
     """
     Write a copy of input file, replacing each SyGuS grammar by the corresponding
-    constraint grammar in SMT-Lib format.
-    :param infile_name: string
-    :param outfile_name: string
-    :return grammars: list [ConstraintGrammar]
+    constraint grammar in SMT-Lib format.  
+    :param infile_name: string  
+    :param outfile_name: string  
+    :return grammars: list [src.ConstraintGrammar]  
     """
     if outfile_name is None:
         outfile_name = get_outfile_name(infile_name)
@@ -25,7 +29,7 @@ def sygus_to_constraint(infile_name, outfile_name=None):
             reading_sygus = False
             synthfun_str = ''
             depth = 0
-            for num,line in enumerate(infile):
+            for num, line in enumerate(infile):
                 # Read infile line-by-line
                 if reading_sygus:
                     # SyGuS grammar is not written to the outfile
@@ -57,13 +61,14 @@ def sygus_to_constraint(infile_name, outfile_name=None):
             outfile.write('(get-model)')
     return grammars
 
+
 def call_solver(smtfile_name, grammars):
     """
     Call SMT solver and, if sat, display grammar expressions corresponding to boolean
-    valuations in returned SMT model.
-    :param smtfile_name: string
-    :param grammars: list [ConstraintGrammar]
-    :return model: dict {string: bool}
+    valuations in returned SMT model.  
+    :param smtfile_name: string  
+    :param grammars: list [src.ConstraintGrammar]  
+    :return model: dict {string: bool}  
     """
     # Call CVC4 solver on smtfile_name
     solver = 'cvc4'
@@ -93,35 +98,37 @@ def call_solver(smtfile_name, grammars):
             print('unsat')
     return model
 
+
 def convert_to_smt(line):
     """
-    Convert a string into SMT format.
-    For uncommented appearances, replace 'constraint' with 'assert'
-    and 'check-synth' with 'check-sat'.
-    :param line: string
-    :return line: string
+    Convert a string into SMT format.  
+    For uncommented appearances, replace 'constraint' with 'assert'  
+    and 'check-synth' with 'check-sat'.  
+    :param line: string  
+    :return line: string  
     """
     index = len(line)
     if ';' in line:
         index = line.find(';')
     if 'constraint' in line[:index]:
-        line = line[:index].replace('constraint','assert') + line[index:]
+        line = line[:index].replace('constraint', 'assert') + line[index:]
     if 'check-synth' in line[:index]:
-        line = line[:index].replace('check-synth','check-sat') + line[index:]
+        line = line[:index].replace('check-synth', 'check-sat') + line[index:]
     return line
+
 
 def get_outfile_name(infile_name):
     """
-    Generate SMT filename based on input filename.
-    Output file is located in an output folder in the input file directory.
-    :param infile_name: string
-    :param outfile_name: string
+    Generate SMT filename based on input filename.  
+    Output file is located in an output folder in the input file directory.  
+    :param infile_name: string  
+    :return: string  
     """
     dot_index = infile_name.rfind('.')
     slash_index = infile_name.rfind('/')
     if slash_index == -1:
         slash_index = 0
         infile_name = '/' + infile_name
-    outfile_name = ''.join([infile_name[:slash_index],'/output',
-                            infile_name[slash_index:dot_index],'.smt'])
+    outfile_name = ''.join([infile_name[:slash_index], '/output', 
+                            infile_name[slash_index:dot_index], '.smt'])
     return outfile_name
