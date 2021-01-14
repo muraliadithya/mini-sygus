@@ -125,12 +125,12 @@ class SyGuSGrammar:
         """
         return self.range_type
 
-    def get_typed_nonterminal_set(self):
+    def get_typed_nonterminal_list(self):
         """
         Return the set of nonterminals in the grammar with their types.  
         :return: list of (string, lisplike.is_lisplike)  
         """
-        return set(self.typed_nonterminals.items())
+        return list(self.typed_nonterminals.items())
 
     def get_nonterminal_set(self):
         """
@@ -194,13 +194,13 @@ class SyGuSGrammar:
                            for symbol in one_step_dict[nonterminal])
         # Call auxiliary function to check for finiteness and return the value
         return is_finite_check_and_recurse()
-    
+
     def get_ordered_nonterminal_list(self):
         """
         Return a list of nonterminals in the grammar, ordered by dependence by expansion containment
         such that the nonterminals whose expansions contain no nonterminals are first and the start
-        symbol is last.
-        :return: list of string
+        symbol is last.  
+        :return: list of string  
         """
         # Compute the set of nonterminals that occur in each production rule for each nonterminal.
         # See if the relevant caching attribute holds a valid value
@@ -211,7 +211,7 @@ class SyGuSGrammar:
         for nt in nonterminals:
             one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
             one_step_dict[nt] = one_step_set
-        
+
         # Auxiliary function to construct ordered list
         def get_nonterminal_heights(nonterminal=self.get_start_symbol(), nonterminal_heights=None):
             if nonterminal_heights is None:
