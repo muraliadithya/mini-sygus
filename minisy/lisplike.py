@@ -270,11 +270,15 @@ def less_than(repr1, repr2):
         return repr1 < repr2
 
 
+# TODO (medium): write substitute by calling transform instead
 def substitute(expr, subst_pairs):
     """
     Perform a substitution in the given expression with given substitution pairs. Each pair (present, replacement) 
     is such that if the 'present' occurs as a subexpression, it will be replaced with 'replacement'.  
-    The substitutions are performed bottom-up on the expression, and the first matching substitution is applied.  
+    The substitutions are performed top-down on the expression, and the first matching substitution is applied.  
+    :param expr: is_lisplike  
+    :param subst_pairs: list of (is_lisplike, is_lisplike)  
+    :return: is_lisplike  
     """
     if not is_lisplike(expr):
         raise NotLispLikeReprException('Given expression is not lisp-like.')
@@ -286,15 +290,69 @@ def substitute(expr, subst_pairs):
 
 
 def _substitute_aux(expr, subst_pairs):
+    # Perform substitution if any pairs match
+    for (if_present, replacement) in subst_pairs:
+        if if_present == expr:
+            return replacement
+    # None of the substitution pairs match. Apply substitutions recursively if possible.
     if isinstance(expr, list):
         # Substitute recursively
         subst_expr_rec = [_substitute_aux(subexpr, subst_pairs) for subexpr in expr]
+        return subst_expr_rec
     else:
         # expr is a string: no recursion. The result is the expression itself.
-        subst_expr_rec = expr
-    # Perform substitution if any pairs match
-    for (if_present, replacement) in subst_pairs:
-        if if_present == subst_expr_rec:
-            return replacement
-    # None of the substitution pairs match. Return the recursively constructed result
-    return subst_expr_rec
+        return expr
+
+
+# TODO (low): generalise to be able to choose other expression traversal orders
+def transform(expr, transform_pairs, traversal_order='preorder'):
+    """
+    Perform a transformation of the given expression.  
+    Preorder traversal: attempt transforming the expression as a whole before attempting transformation of 
+    subexpressions from left to right.  
+    Postorder traversal: transform subexpressions from left to right and transform the expression as a whole after.  
+    Inorder traversal of an expression does not have a use case at this point and is not supported.  
+
+    Each transform pair (cond, op) will contain functions that, respectively, indicate when a transformation should 
+    be applied and what the transformation will be. The first pair that 'matches' is the one that is applied.  
+    :param expr: is_lisplike  
+    :param transform_pairs: list of (function: is_lisplike -> bool, function: is_lisplike -> is_lisplike)  
+    :param traversal_order: string  
+    :return: is_lisplike  
+    """
+    if not is_lisplike(expr):
+        raise NotLispLikeReprException('Given expression is not lisp-like.')
+    if traversal_order not in {'preorder', 'postorder'}:
+        raise ValueError('Traversal order has to be either \'preorder\' (default) or \'postorder\'.')
+    transformed_expr = _transform_aux(expr, transform_pairs, traversal_order)
+    if not is_lisplike(transformed_expr):
+        raise NotLispLikeReprException('Could not transform given expression into a lisp-like expression. '
+                                       'Check that the transformation pairs have the expected input/output types.')
+    return transformed_expr
+
+
+def _transform_aux(expr, transform_pairs, traversal_order):
+    # TODO (low): must find a way to inexpensively check that the results of transformations are also lisplike
+    # For preorder traversal, attempt to transform the entire expression first
+    if traversal_order == 'preorder':
+        # Apply transformations if any match on the entire expression
+        for (cond, op) in transform_pairs:
+            if cond(expr):
+                return op(expr)
+    # Transform recursively, regardless of traversal order
+    if isinstance(expr, list):
+        # Apply transformations recursively from the first subexpression to the last
+        transform_expr_rec = []
+        for subexpr in expr:
+            transform_expr_rec.append(_transform_aux(subexpr, transform_pairs, traversal_order))
+    else:
+        # expr is a string: no recursive transformation
+        transform_expr_rec = expr
+    # For postorder traversal, attempt to transform the entire expression once before returning
+    if traversal_order == 'postorder':
+        for (cond, op) in transform_pairs:
+            if cond(transform_expr_rec):
+                return op(transform_expr_rec)
+    else:
+        # Not postorder traversal. Return recursively transformed expression
+        return transform_expr_rec
