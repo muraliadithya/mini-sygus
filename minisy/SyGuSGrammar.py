@@ -213,16 +213,16 @@ class SyGuSGrammar:
             one_step_dict[nt] = one_step_set
 
         # Auxiliary function to construct ordered list
-        def get_nonterminal_heights(nonterminal=self.get_start_symbol(), nonterminal_heights=None):
-            if nonterminal_heights is None:
-                nonterminal_heights = dict()
-            nonterminal_heights[nonterminal] = 1
+        def get_nonterminal_heights(nonterminal=self.get_start_symbol(), nt_heights=None):
+            if nt_heights is None:
+                nt_heights = dict()
+            nt_heights[nonterminal] = 1
             if one_step_dict[nonterminal]:
                 for symbol in one_step_dict[nonterminal]:
-                    nonterminal_heights.update(get_nonterminal_heights(symbol, nonterminal_heights))
-                nonterminal_heights[nonterminal] += max([nonterminal_heights[symbol]
-                                                         for symbol in one_step_dict[nonterminal]])
-            return nonterminal_heights
+                    nt_heights.update(get_nonterminal_heights(symbol, nt_heights))
+                nt_heights[nonterminal] += max([nt_heights[symbol]
+                                                for symbol in one_step_dict[nonterminal]])
+            return nt_heights
         # Call auxiliary function to instruct ordering of nonterminals
         nonterminal_heights = get_nonterminal_heights()
         # Obtain list of nonterminals sorted by increasing height
