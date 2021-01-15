@@ -50,7 +50,7 @@ class ConstraintGrammar:
         elif not sygus_grammar.is_finite():
             raise ValueError('Grammar is not finite. Unsupported.')
         # Preprocessing
-        nonterminals = sygus_grammar.get_nonterminal_set()
+        # nonterminals = sygus_grammar.get_nonterminal_set()
 
         # Essential attributes
         self.sygus_grammar = sygus_grammar
@@ -171,7 +171,25 @@ class ConstraintGrammar:
                 chosen_rule = ordered_rule_dict[original_symbol][-1]
                 nonterminals_in_rule = self._post[original_symbol][-1]
                 nonterminal_copies = self.boolcatch[symbol]
-            substitution = lisplike.substitute(chosen_rule, list(zip(nonterminals_in_rule, nonterminal_copies)))
+
+            # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
+            nonterminal_copy_pairs = list(zip(nonterminals_in_rule, nonterminal_copies))
+
+            # Auxiliary function to compute the hack transform
+            # Second argument is mutable on purpose in order to retain memory between calls
+            def _nonterminal_copy_substitute(expr, copy_pairs=nonterminal_copy_pairs):
+                for (nonterminal, nonterminal_copy) in copy_pairs:
+                    if expr == nonterminal:
+                        copy_pairs.remove((nonterminal, nonterminal_copy))
+                        return nonterminal_copy
+                # No matching substitutions. Return original expression
+                return expr
+            # Compute the rule expansions with nonterminal copies using lisplike.transform
+            # NOTE: IMPORTANT: the postorder traversal makes the substitutions deterministic and in accordance with 
+            # the encoding returned by pretty_smt_encoding
+            substitution = lisplike.transform(chosen_rule, 
+                                              [(lambda x: True, lambda x: _nonterminal_copy_substitute(x))],
+                                              traversal_order='postorder')
             substitution_pairs = substitution_pairs + [(symbol, substitution)]
 
         # Auxiliary function to apply valuations and build the result recursively
@@ -181,7 +199,7 @@ class ConstraintGrammar:
             # If there are any nonterminals in the expression substitute them with the expansion rules recursively
             expanded_expr = lisplike.substitute(expr, substitution_pairs)
             # There are only three choices: 
-            # (i) some symbol could not be expanded -- cannot happen since its last rule is a 'default' selection
+            # (i) some symbol could not be expanded -- should not happen since its last rule is a 'default' selection
             # (ii) all expansions are done
             # (iii) there are valid expansions left to be done.
             # If the expression is unchanged, return the value as there are no more symbols to be expanded. 
@@ -236,13 +254,32 @@ class ConstraintGrammar:
                                                          for nt_copy_list in post_nonterminal_copies]
                 else:
                     post_nonterminal_copies_with_args = post_nonterminal_copies
-                # Compute the expansion rules with nonterminal copies and arguments in place of the nonterminals
-                substituted_expansions = [lisplike.substitute(ordered_rule_dict[nonterminal][i],
-                                                              list(zip(post_nonterminals[i],
-                                                                       post_nonterminal_copies_with_args[i])))
-                                          for i in range(len(ordered_rule_dict[nonterminal]))]
+                substituted_expansions = []
+                for i in range(len(ordered_rule_dict[nonterminal])):
+                    # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
+                    nonterminal_copy_with_arg_pairs = list(zip(post_nonterminals[i], 
+                                                               post_nonterminal_copies_with_args[i]))
 
-                # Auxiliary function
+                    # Auxiliary function to compute the hack transform
+                    # Second argument is mutable on purpose in order to retain memory between calls
+                    def _nonterminal_copy_substitute(expr, copy_pairs=nonterminal_copy_with_arg_pairs):
+                        for (nt, nt_copy_with_arg) in copy_pairs:
+                            if expr == nt:
+                                copy_pairs.remove((nt, nt_copy_with_arg))
+                                return nt_copy_with_arg
+                        # No matching substitutions. Return original expression
+                        return expr
+                    # Add the transformed rule to substituted_expansions
+                    # NOTE: IMPORTANT: The postorder traversal fixes the substitutions in a deterministic way 
+                    # that can be recovered while evaluating valuations from the solver ot get yields from the 
+                    # grammar. Check that the evaluate function uses/maintains this order.
+                    transformed_rule = lisplike.transform(ordered_rule_dict[nonterminal][i], 
+                                                          [(lambda x: True, 
+                                                            lambda x: _nonterminal_copy_substitute(x))], 
+                                                          traversal_order='postorder')
+                    substituted_expansions.append(transformed_rule)
+
+                # Auxiliary function for computing the body of a function declaration
                 def func_decl_body_aux(boolvars, rules):
                     # New version of auxiliary function to use ite statements only when choice of rules remains.
                     # Hack around lisplike pretty printer's lack of customization.
@@ -288,12 +325,12 @@ class ConstraintGrammar:
         arguments = [arg[0] for arg in typed_params]
         typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
         if valuation is None:
-            synthfun_body = '({} {})'.format(starting_symbol, ' '.join(arguments)) if arguments != [] else starting_symbol
+            synthfun_body = '({} {})'.format(starting_symbol, 
+                                             ' '.join(arguments)) if arguments != [] else starting_symbol
         else:
             synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
-        synth_function_string = (define_fun_format).format(
-            name=synthfun_name, typed_args=typed_param_string, 
-            return_type=synthfun_return_type, body=synthfun_body)
+        synth_function_string = define_fun_format.format(name=synthfun_name, typed_args=typed_param_string, 
+                                                         return_type=synthfun_return_type, body=synthfun_body)
         return synth_function_string
 
 
