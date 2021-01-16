@@ -13,14 +13,14 @@ constraints have only ground terms, i.e., quantifier-free.
   - [CVC4 1.9](https://cvc4.github.io/downloads.html)
 
 ## Usage examples
-The entry script into the solver is `scripts/minisy.py`. 
+The entry script into the solver is `scripts/minisy`. 
 It comes with a help message:
 ```
-python3 scripts/minisy.py -h
+python3 scripts/minisy -h
 ```
 
 ```
-usage: minisy.py [-h] [--smtsolver {z3,cvc4}] [--num-solutions num_solutions]
+usage: minisy [-h] [--smtsolver {z3,cvc4}] [--num-solutions num_solutions]
                  infile
 
 A minimal SyGuS solver based on constraint solving.
@@ -37,10 +37,20 @@ optional arguments:
 
 ```
 
+In order to call the solver from anywhere, the `scripts` 
+directory is added to `PATH` and the repo toplevel 
+should be added to `PYTHONPATH`.
+On Linux this can be done by adding the 
+following lines to `.bashrc`:
+```
+export PYTHONPATH="/path/to/repo/mini-sygus/":$PYTHONPATH
+export PATH="/path/to/repo/mini-sygus/scripts/":$PATH
+```
+
 The solver can be run with either Z3 or CVC4. 
 Here is the same synthesis problem solved using both:
 ```
-python3 scripts/minisy.py tests/min2.sy 
+python3 scripts/minisy tests/min2.sy 
 sat
 (define-fun minint ((x Int) (y Int)) Int
 (ite (<= x y) x y)
@@ -48,7 +58,7 @@ sat
 ```
 
 ```
-python3 scripts/minisy.py tests/min2.sy --smtsolver=cvc4 
+python3 scripts/minisy tests/min2.sy --smtsolver=cvc4 
 sat
 (define-fun minint ((x Int) (y Int)) Int
 (ite (<= y x) y x)
@@ -63,7 +73,7 @@ is not removed automatically.
 It is possible to ask for multiple solutions at a time, although 
 this capability is restricted:
 ```
-python3 scripts/minisy.py tests/add2.sy --num-solutions=2
+python3 scripts/minisy tests/add2.sy --num-solutions=2
 sat
 (define-fun add2 ((x Int) (y Int)) Int
 (doplus x y)
@@ -77,7 +87,7 @@ sat
 
 The solver returns `unsat` when it runs out of solutions:
 ```
-python3 scripts/minisy.py tests/add2.sy --num-solutions=3
+python3 scripts/minisy tests/add2.sy --num-solutions=3
 sat
 (define-fun add2 ((x Int) (y Int)) Int
 (doplus x y)
@@ -97,7 +107,7 @@ operators used in the problem are those that can be accepted by the
 corresponding backend solver used.  
 Here is an example where the operators are specific to Z3:
 ```
-python3 scripts/minisy.py tests/trivial_example_z3.sy 
+python3 scripts/minisy tests/trivial_example_z3.sy 
 sat
 (define-fun insert ((x Int) (y (Array Int Bool))) (Array Int Bool)
 (store y x true)
