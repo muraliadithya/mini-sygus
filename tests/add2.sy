@@ -1,0 +1,25 @@
+; Synthesis problem with multiple solutions
+(set-logic ALL)
+
+
+; Defining a 'do_plus' function instead of using arithmetic addition
+; This is to discourage symmetry reduction
+(define-fun do_plus ((x Int) (y Int)) Int
+(+ x y)
+)
+
+
+(synth-fun add2 ((x Int) (y Int)) Int
+    ((Start Int) (I Int))
+    ((Start Int
+                ((do_plus I I)))
+     (I Int
+           (x
+            y)))
+)
+
+(constraint (= (add2 0 1) 1))
+(constraint (= (add2 0 0) 0))
+(constraint (= (add2 3 4) 7))
+
+(check-synth)

@@ -1,41 +1,118 @@
-# lemma-synthesis
-a constraint-based syntax-guided synthesis (SyGuS) engine
+# mini-sygus
+A minimal constraint-based syntax-guided synthesis (SyGuS) engine  
+The current version of the solver has a very restricted use-case of 
+SyGuS problems where the constraints are ground terms, i.e., 
+quantifier-free.  
 
-## requirements
+
+## Requirements
 
 - [Python 3.5 or above](https://www.python.org/downloads/)
-- [CVC4 1.9](https://cvc4.github.io/downloads.html)
+- An SMT solver. Currently the following solvers are supported:
+  - [Z3 4.8.9](https://github.com/Z3Prover/z3/releases/tag/z3-4.8.9) (default choice)
+  - [CVC4 1.9](https://cvc4.github.io/downloads.html)
 
-## example
-The following command runs the full solver using the input file `data/out_sdlist-dlist-and-slist.sy`. The engine detects all declared SyGuS grammars from the input file, synthesizes the corresponding lemmas and replaces the grammar descriptions with the lemmas in an output SMT file, runs the CVC4 solver on the output file, obtains a model (if satisfiable), and prints the synthesized lemmas instantiated according to the model.
+## Usage examples
+The entry script into the solver is `scripts/minisy.py`. 
+It comes with a help message:
 ```
-python3 -m src.engine data/out_sdlist-dlist-and-slist.sy
+python3 scripts/minisy.py -h
 ```
 
 ```
+usage: minisy.py [-h] [--smtsolver {z3,cvc4}] [--num-solutions num_solutions]
+                 infile
+
+A minimal SyGuS solver based on constraint solving.
+
+positional arguments:
+  infile                Input file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --smtsolver {z3,cvc4}
+                        Choice of backend SMT solver.
+  --num-solutions num_solutions, -N num_solutions
+                        Find multiple solutions to the SyGuS problem.
+
+```
+
+The solver can be run with either Z3 or CVC4. 
+Here is the same synthesis problem solved using both:
+```
+python3 scripts/minisy.py tests/min2.sy 
 sat
-
-(define-fun lemma ((x Int) (nil Int)) Bool
-(not (sdlst (prv nil)))
-)
-
-(define-fun rswitch () Int
-0
+(define-fun minint ((x Int) (y Int)) Int
+(ite (<= x y) x y)
 )
 ```
 
-## info
+```
+python3 scripts/minisy.py tests/min2.sy --smtsolver=cvc4 
+sat
+(define-fun minint ((x Int) (y Int)) Int
+(ite (<= y x) y x)
+)
 
-See `test_driver.ipynb` for examples on useful features of `lem_syn` module. See `tests/` for examples of input grammar files and their corresponding output lemmas. The first example of `test_driver.ipynb` reveals to current extend of this program: multiple grammars are read from an input text file, replaced by respective (and disjoint) synthesized lemmas, ported to CVC4 in order to verify satisfiability and generate a satisfying model, then applies the reported model to the synthesized lemmas to instantiate the particular lemmas which satisfy the other constraints in the given file.
+```
 
-Generally, `lem_syn` creates a `grammar` object sourced from the input file description of a finite, context-free grammar in SyGuS format. This `grammar` object is then able to compute a set of boolean flow variables, auxiliary functions, and a synthesized lemma detailing the expanded form of the grammar. This lemma (with variables and functions) can then replace the originating grammar; the resulting file (in SMT-Lib format) can then be ported to an SMT solver (CVC4).
+The solver creates a `.tmp` subdirectory in the same 
+directory as the input to generate temporary/intermediate files. This
+is not removed automatically.
 
-By appending `(check-sat)` and `(get-model)`, a model satisfying the synthesized lemma will be obtained. Then, in dictionary form with boolean variable names as keys and the model assignments as the values, the model may be applied to the originating `grammar` lemma to simplify the synthesized lemma into the form instatiated by the model.
+It is possible to ask for multiple solutions at a time, although 
+this capability is restricted:
+```
+python3 scripts/minisy.py tests/add2.sy --num-solutions=2
+sat
+(define-fun add2 ((x Int) (y Int)) Int
+(doplus x y)
+)
+
+sat
+(define-fun add2 ((x Int) (y Int)) Int
+(doplus y x)
+)
+```
+
+The solver returns `unsat` when it runs out of solutions:
+```
+python3 scripts/minisy.py tests/add2.sy --num-solutions=3
+sat
+(define-fun add2 ((x Int) (y Int)) Int
+(doplus x y)
+)
+
+sat
+(define-fun add2 ((x Int) (y Int)) Int
+(doplus y x)
+)
+```
+
+Input files must be written in SyGuS 2.0 format 
+(see https://sygus.org/language/). Currently this is only enforced 
+loosely. The `synth-fun` command itself must be according to 
+the format, but otherwise it is expected that the theory-specific 
+operators used in the problem are those that can be accepted by the 
+corresponding backend solver used.  
+Here is an example where the operators are specific to Z3:
+```
+python3 scripts/minisy.py tests/trivial_example_z3.sy 
+sat
+(define-fun insert ((x Int) (y (Array Int Bool))) (Array Int Bool)
+(store y x true)
+)
+```
+
+## Info
 
 Feature summary:
-- print/write boolean variables, auxiliary functions, and synthesized lemma in SMT-Lib format
-- replace grammar description by synthesized lines in copy of input file
-- edit grammar after initial read (deleting, enforce, and add replacement rules for existing symbols)
-- maintain multiple grammars within a single input file
-- call CVC4 on synthesized lemma and given constraints to check satisfiability and, if satisfiable, generate a model
-- apply model to synthesized lemma and collapse down output into a single 'instantiated lemma' statement without boolean variables or auxiliary functions
+- Update solver to use either Z3 or CVC4 as the backend
+- Make solver print a help message with usage text and options
+- Multiple solutions
+
+To do:
+- Checking for the validity of a given synthesis solution
+- Symmetry reduction to eliminate redundant solutions when 
+  multiple solutions are being proposed
+- Counterexample generation for quantified constraints
