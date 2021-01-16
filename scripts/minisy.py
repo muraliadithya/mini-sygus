@@ -1,6 +1,6 @@
-"""
-Script to call from terminal and run minimal SyGuS engine.  
-"""
+#!/usr/bin/env python3
+
+# Script to call from terminal and run minimal SyGuS engine.  
 
 import argparse
 
