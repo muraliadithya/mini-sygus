@@ -319,7 +319,7 @@ class ConstraintGrammar:
         # TODO (medium): simplify with pretty_smt_encoding
         define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
         synthfun_name = self.sygus_grammar.get_name()
-        synthfun_return_type = self.sygus_grammar.get_range_type()
+        synthfun_return_type_string = lisplike.pretty_string(self.sygus_grammar.get_range_type(), noindent=True)
         starting_symbol = self.starting_symbol
         typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
         arguments = [arg[0] for arg in typed_params]
@@ -330,7 +330,7 @@ class ConstraintGrammar:
         else:
             synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
         synth_function_string = define_fun_format.format(name=synthfun_name, typed_args=typed_param_string, 
-                                                         return_type=synthfun_return_type, body=synthfun_body)
+                                                         return_type=synthfun_return_type_string, body=synthfun_body)
         return synth_function_string
 
 
