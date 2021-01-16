@@ -1,4 +1,4 @@
-import functools
+import functools, re
 
 import minisy.lisplike as lisplike
 
@@ -29,6 +29,8 @@ class SyGuSGrammar:
         # IMPORTANT: No support for checking whether cached values are correct. Use with caution.
         # Dictionary of nonterminals produced post the expansion of a rule from a given nonterminal
         self.post = None
+        # Set of admissible strings in the grammar
+        self.admiss = None
 
     def name_synth_fun(self, name):
         """
@@ -227,6 +229,44 @@ class SyGuSGrammar:
         nonterminal_heights = get_nonterminal_heights()
         # Obtain list of nonterminals sorted by increasing height
         return sorted(nonterminal_heights, key=nonterminal_heights.get)
+    
+    def get_admissible_strings(self):
+        """
+        Return a set of admissible strings in the grammar.
+        :return: set of string
+        """
+        # See if the relevant cahcing attribute holds a valid value
+        if self.admiss is None and self.is_finite():
+            # Ordered list of nonterminals
+            nt_list = self.get_ordered_nonterminal_list()[::-1]
+            rules = self.get_ordered_rule_list()
+            # Dictionary with values as sets of nonterminal strings.
+            # Each key is the nonterminal which is earliest in nt_list.
+            workdict = {symbol: set() for symbol in nt_list}
+            workdict['Start'].add('Start')
+            admissible_strings = set()
+            for i,nonterminal in enumerate(nt_list):
+                # Iterate through nonterminals (in order), pushing toward admissibility
+                while workdict[nonterminal]:
+                    string = workdict[nonterminal].pop()
+                    for rule in rules[nonterminal]:
+                        # Apply rule once to string
+                        repl = string.replace(nonterminal, lisplike.pretty_string(rule,noindent=True), 1)
+                        repl_split = re.split(' |\(|\)', repl)
+                        # Identify the earliest (in order) nonterminal appearing in post-rule string
+                        next_nonterminal = None
+                        for symbol in nt_list[i:]:
+                            if symbol in repl_split:
+                                next_nonterminal = symbol
+                                break
+                        if next_nonterminal is None:
+                            # String does not contain nonterminals, so is admissible
+                            admissible_strings.add(repl)
+                        else:
+                            # Place post-rule string in workdict
+                            workdict[next_nonterminal].add(repl)
+            self.admiss = admissible_strings
+        return self.admiss
 
 
 def load_from_string(synthfun_str):
