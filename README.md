@@ -12,6 +12,16 @@ constraints have only ground terms, i.e., quantifier-free.
   - [Z3 4.8.9](https://github.com/Z3Prover/z3/releases/tag/z3-4.8.9) (default choice)
   - [CVC4 1.9](https://cvc4.github.io/downloads.html)
 
+## Installation
+- Clone the master branch
+- Install the requirements. Running `z3 -h` or `cvc4 -h` 
+  should work depending on the solver of your choice.
+- Add the repo top level `mini-sygus` to `PYTHONPATH` and 
+  `mini-sygus/scripts` directory to `PATH`.
+- The synthesis engine should be installed. You should 
+  be able to run `minisy -h` from the terminal.
+
+
 ## Usage examples
 The entry script into the solver is `scripts/minisy`. 
 It comes with a help message:
