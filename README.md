@@ -1,8 +1,8 @@
 # mini-sygus
 A minimal constraint-based syntax-guided synthesis (SyGuS) engine  
 The current version of the solver has a very restricted use-case of 
-SyGuS problems where the constraints are ground terms, i.e., 
-quantifier-free.  
+SyGuS problems where the grammars are finite and the 
+constraints have only ground terms, i.e., quantifier-free.  
 
 
 ## Requirements
