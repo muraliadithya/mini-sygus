@@ -1,0 +1,725 @@
+(define-fun insert ((x Int) (y (Array Int Bool))) (Array Int Bool)
+(store y x true)
+)
+
+(define-fun member ((x Int) (y (Array Int Bool))) Bool
+(select y x)
+)
+
+(define-fun empIntSet () (Array Int Bool)
+((as const (Array Int Bool)) false)
+)
+
+
+;; combination of true models and false model
+(define-fun hbst ((x!0 Int)) (Set Int)
+  (ite (and (= x!0 279182)) empIntSet
+  (ite (and (= x!0 279183)) empIntSet
+  (ite (and (= x!0 279184)) empIntSet
+  (ite (and (= x!0 279185)) (insert 279185 empIntSet)
+  (ite (and (= x!0 279194)) empIntSet
+  (ite (and (= x!0 279186)) empIntSet
+  (ite (and (= x!0 279195)) empIntSet
+  (ite (and (= x!0 279196)) (insert 279196 empIntSet)
+  (ite (and (= x!0 279205)) empIntSet
+  (ite (and (= x!0 279197)) empIntSet
+  (ite (and (= x!0 279206)) empIntSet
+  (ite (and (= x!0 279220)) empIntSet
+  (ite (and (= x!0 279208)) empIntSet
+  (ite (and (= x!0 279207)) (insert 288064 (insert 288065 (insert 279237 (insert 279207 empIntSet))))
+  (ite (and (= x!0 279221)) (insert 288065 (insert 279237 empIntSet))
+  (ite (and (= x!0 288064)) (insert 288064 (insert 288065 (insert 279237 empIntSet)))
+  (ite (and (= x!0 288067)) (insert 288067 empIntSet)
+  (ite (and (= x!0 288066)) empIntSet
+  (ite (and (= x!0 288081)) (insert 288106 empIntSet)
+  (ite (and (= x!0 288070)) empIntSet
+  (ite (and (= x!0 288084)) empIntSet
+  (ite (and (= x!0 288079)) empIntSet
+  (ite (and (= x!0 288069)) (insert 288069 (insert 288070 empIntSet))
+  (ite (and (= x!0 288085)) (insert 288070 empIntSet)
+  (ite (and (= x!0 288071)) (insert 288106 (insert 288071 empIntSet))
+  (ite (and (= x!0 288068)) (insert 288106 (insert 288068 (insert 288071 empIntSet)))
+  (ite (and (= x!0 288108)) (insert 288107 (insert 288108 empIntSet))
+  (ite (and (= x!0 288107)) empIntSet
+  (ite (and (= x!0 288112)) empIntSet
+  (ite (and (= x!0 288111)) (insert 288107 empIntSet)
+  (ite (and (= x!0 288114)) empIntSet
+  (ite (and (= x!0 288125)) (insert 288113 empIntSet)
+  (ite (and (= x!0 288113)) (insert 288113 (insert 298566 empIntSet))
+  (ite (and (= x!0 288122)) (insert 298566 empIntSet)
+  (ite (and (= x!0 288120)) empIntSet
+  (ite (and (= x!0 288124)) (insert 288152 empIntSet)
+  (ite (and (= x!0 298566)) (insert 288152 (insert 288113 (insert 298566 empIntSet)))
+  (ite (and (= x!0 298565)) (insert 288113 (insert 298565 (insert 298566 empIntSet)))
+  (ite (and (= x!0 298568)) (insert 298568 empIntSet)
+  (ite (and (= x!0 298567)) empIntSet
+  (ite (and (= x!0 298572)) empIntSet
+  (ite (and (= x!0 298571)) empIntSet
+  (ite (and (= x!0 298575)) (insert 298608 (insert 298602 (insert 298575 empIntSet)))
+  (ite (and (= x!0 298573)) empIntSet
+  (ite (and (= x!0 298582)) (insert 298608 empIntSet)
+  (ite (and (= x!0 298574)) (insert 298608 (insert 298602 (insert 298574 (insert 298575 empIntSet))))
+  (ite (and (= x!0 298581)) (insert 298602 empIntSet)
+  (ite (and (= x!0 279172)) (insert 279172 empIntSet)
+  (ite (and (= x!0 37554)) (insert 279172 (insert 279173 (insert 133 (insert 279174 (insert 279178 (insert 279179 (insert 279180 (insert 279181 (insert 37554 (insert 37555 (insert 37556 (insert 37557 (insert 37558 empIntSet)))))))))))))
+  (ite (and (= x!0 37556)) (insert 37554 (insert 37555 (insert 37556 (insert 37557 (insert 279179 (insert 279180 (insert 279181 empIntSet)))))))
+  (ite (and (= x!0 37558)) (insert 279174 (insert 133 (insert 37558 (insert 279173 empIntSet))))
+  (ite (and (= x!0 37555)) (insert 37554 (insert 279179 (insert 133 (insert 37555 empIntSet))))
+  (ite (and (= x!0 279179)) (insert 279173 (insert 133 (insert 279174 (insert 279178 (insert 279179 (insert 279180 (insert 279181 (insert 37554 (insert 37555 (insert 37556 (insert 37557 (insert 37558 empIntSet))))))))))))
+  (ite (and (= x!0 37559)) empIntSet
+  (ite (and (= x!0 37557)) (insert 279173 (insert 133 (insert 279174 (insert 279178 (insert 279179 (insert 279180 (insert 279181 (insert 37554 (insert 37555 (insert 37556 (insert 37557 (insert 37558 empIntSet))))))))))))
+  (ite (and (= x!0 279178)) (insert 279173 (insert 133 (insert 279174 (insert 279178 (insert 279179 (insert 279180 (insert 279181 (insert 37554 (insert 37555 (insert 37556 (insert 37557 (insert 37558 empIntSet))))))))))))
+  empIntSet)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+(define-fun rght ((x!0 Int)) Int
+  (ite (= x!0 279182) 279182
+  (ite (= x!0 279183) 279183
+  (ite (= x!0 279184) 279184
+  (ite (= x!0 279185) 279195
+  (ite (= x!0 279194) 279195
+  (ite (= x!0 279186) 279186
+  (ite (= x!0 279195) 279195
+  (ite (= x!0 279196) 279206
+  (ite (= x!0 279205) 279206
+  (ite (= x!0 279197) 279197
+  (ite (= x!0 279206) 279206
+  (ite (= x!0 279220) 279208
+  (ite (= x!0 279208) 279208
+  (ite (= x!0 279207) 279208
+  (ite (= x!0 279221) 279208
+  (ite (= x!0 288064) 279221
+  (ite (= x!0 288067) 288066
+  (ite (= x!0 288066) 288066
+  (ite (= x!0 288081) 288071
+  (ite (= x!0 288070) 288070
+  (ite (= x!0 288084) 288071
+  (ite (= x!0 288079) 288071
+  (ite (= x!0 288069) 288085
+  (ite (= x!0 288085) 288071
+  (ite (= x!0 288071) 288081
+  (ite (= x!0 288068) 288071
+  (ite (= x!0 288108) 288112
+  (ite (= x!0 288107) 288107
+  (ite (= x!0 288112) 288112
+  (ite (= x!0 288111) 288112
+  (ite (= x!0 288114) 288114
+  (ite (= x!0 288125) 288113
+  (ite (= x!0 288113) 288122
+  (ite (= x!0 288122) 288113
+  (ite (= x!0 288120) 288113
+  (ite (= x!0 288124) 288113
+  (ite (= x!0 298566) 288125
+  (ite (= x!0 298565) 288113
+  (ite (= x!0 298568) 298572
+  (ite (= x!0 298567) 298567
+  (ite (= x!0 298572) 298572
+  (ite (= x!0 298571) 298572
+  (ite (= x!0 298575) 298582
+  (ite (= x!0 298573) 298573
+  (ite (= x!0 298582) 298573
+  (ite (= x!0 298574) 298573
+  (ite (= x!0 298581) 298573
+  (ite (= x!0 279172) 37559
+  (ite (= x!0 37554) 279172
+  (ite (= x!0 37556) 73
+  (ite (= x!0 37558) 45
+  (ite (= x!0 37555) 67
+  (ite (= x!0 279179) 57
+  (ite (= x!0 37559) 37559
+  (ite (= x!0 37557) 37555
+  (ite (= x!0 279178) 37558
+    288071)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+(define-fun minr ((x!0 Int)) Int
+  (ite (= x!0 279182) 100
+  (ite (= x!0 279183) 100
+  (ite (= x!0 279184) 100
+  (ite (= x!0 279185) (- 39)
+  (ite (= x!0 279194) (- 39)
+  (ite (= x!0 279186) 100
+  (ite (= x!0 279195) 0
+  (ite (= x!0 279196) (- 7720)
+  (ite (= x!0 279205) (- 7720)
+  (ite (= x!0 279197) 100
+  (ite (= x!0 279206) 100
+  (ite (= x!0 279220) 2
+  (ite (= x!0 279208) 100
+  (ite (= x!0 279207) 2
+  (ite (= x!0 279221) 2
+  (ite (= x!0 288064) 2
+  (ite (= x!0 288067) 99
+  (ite (= x!0 288066) 100
+  (ite (= x!0 288081) 4
+  (ite (= x!0 288070) 100
+  (ite (= x!0 288084) 0
+  (ite (= x!0 288079) 4
+  (ite (= x!0 288069) 0
+  (ite (= x!0 288085) 1
+  (ite (= x!0 288071) 3
+  (ite (= x!0 288068) 2
+  (ite (= x!0 288108) 0
+  (ite (= x!0 288107) 100
+  (ite (= x!0 288112) 0
+  (ite (= x!0 288111) 0
+  (ite (= x!0 288114) 100
+  (ite (= x!0 288125) 100
+  (ite (= x!0 288113) 45
+  (ite (= x!0 288122) 46
+  (ite (= x!0 288120) 45
+  (ite (= x!0 288124) (- 1)
+  (ite (= x!0 298566) (- 1)
+  (ite (= x!0 298565) 44
+  (ite (= x!0 298568) (- 2437)
+  (ite (= x!0 298567) 100
+  (ite (= x!0 298572) (- 2437)
+  (ite (= x!0 298571) 0
+  (ite (= x!0 298575) 1
+  (ite (= x!0 298573) 100
+  (ite (= x!0 298582) 1
+  (ite (= x!0 298574) 1
+  (ite (= x!0 298581) 1
+  (ite (= x!0 279172) 4
+  (ite (= x!0 37554) 1
+  (ite (= x!0 37556) 1
+  (ite (= x!0 37558) 2
+  (ite (= x!0 37555) 100
+  (ite (= x!0 279179) 99
+  (ite (= x!0 37559) 100
+  (ite (= x!0 37557) 99
+  (ite (= x!0 279178) 1
+    100)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+(define-fun lft ((x!0 Int)) Int
+  (ite (= x!0 279182) 279182
+  (ite (= x!0 279183) 279183
+  (ite (= x!0 279184) 279184
+  (ite (= x!0 279185) 279194
+  (ite (= x!0 279194) 279194
+  (ite (= x!0 279186) 279186
+  (ite (= x!0 279195) 279194
+  (ite (= x!0 279196) 279205
+  (ite (= x!0 279205) 279205
+  (ite (= x!0 279197) 279197
+  (ite (= x!0 279206) 279205
+  (ite (= x!0 279220) 288064
+  (ite (= x!0 279208) 279208
+  (ite (= x!0 279207) 288064
+  (ite (= x!0 279221) 288064
+  (ite (= x!0 288064) 279220
+  (ite (= x!0 288067) 288066
+  (ite (= x!0 288066) 288066
+  (ite (= x!0 288081) 288070
+  (ite (= x!0 288070) 288070
+  (ite (= x!0 288084) 288070
+  (ite (= x!0 288079) 288070
+  (ite (= x!0 288069) 288084
+  (ite (= x!0 288085) 288070
+  (ite (= x!0 288071) 288079
+  (ite (= x!0 288068) 288070
+  (ite (= x!0 288108) 288111
+  (ite (= x!0 288107) 288107
+  (ite (= x!0 288112) 288111
+  (ite (= x!0 288111) 288111
+  (ite (= x!0 288114) 288114
+  (ite (= x!0 288125) 288114
+  (ite (= x!0 288113) 288120
+  (ite (= x!0 288122) 288114
+  (ite (= x!0 288120) 288114
+  (ite (= x!0 288124) 288114
+  (ite (= x!0 298566) 288124
+  (ite (= x!0 298565) 288114
+  (ite (= x!0 298568) 298571
+  (ite (= x!0 298567) 298567
+  (ite (= x!0 298572) 298571
+  (ite (= x!0 298571) 298571
+  (ite (= x!0 298575) 298581
+  (ite (= x!0 298573) 298573
+  (ite (= x!0 298582) 298575
+  (ite (= x!0 298574) 298575
+  (ite (= x!0 298581) 298575
+  (ite (= x!0 279172) 37559
+  (ite (= x!0 37554) 279178
+  (ite (= x!0 37556) 71
+  (ite (= x!0 37558) 46
+  (ite (= x!0 37555) 65
+  (ite (= x!0 279179) 55
+  (ite (= x!0 37559) 37559
+  (ite (= x!0 37557) 279179
+  (ite (= x!0 279178) 37556
+    288070)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+(define-fun key ((x!0 Int)) Int
+  (ite (= x!0 279182) 0
+  (ite (= x!0 279183) (- 2)
+  (ite (= x!0 279184) 101
+  (ite (= x!0 279185) 1
+  (ite (= x!0 279194) 0
+  (ite (= x!0 279186) 0
+  (ite (= x!0 279195) 0
+  (ite (= x!0 279196) (- 1)
+  (ite (= x!0 279205) 0
+  (ite (= x!0 279197) 0
+  (ite (= x!0 279206) 0
+  (ite (= x!0 279220) 3
+  (ite (= x!0 279208) 1
+  (ite (= x!0 279207) 3
+  (ite (= x!0 279221) 3
+  (ite (= x!0 288064) 2
+  (ite (= x!0 288067) 99
+  (ite (= x!0 288066) 1
+  (ite (= x!0 288081) 2
+  (ite (= x!0 288070) 2
+  (ite (= x!0 288084) 2
+  (ite (= x!0 288079) 2
+  (ite (= x!0 288069) 0
+  (ite (= x!0 288085) 2
+  (ite (= x!0 288071) 3
+  (ite (= x!0 288068) 2
+  (ite (= x!0 288108) 0
+  (ite (= x!0 288107) 0
+  (ite (= x!0 288112) 0
+  (ite (= x!0 288111) 0
+  (ite (= x!0 288114) 99
+  (ite (= x!0 288125) 44
+  (ite (= x!0 288113) 46
+  (ite (= x!0 288122) 44
+  (ite (= x!0 288120) 44
+  (ite (= x!0 288124) 44
+  (ite (= x!0 298566) (- 1)
+  (ite (= x!0 298565) 44
+  (ite (= x!0 298568) 21238
+  (ite (= x!0 298567) (- 2438)
+  (ite (= x!0 298572) (- 2438)
+  (ite (= x!0 298571) (- 2438)
+  (ite (= x!0 298575) 1
+  (ite (= x!0 298573) 1
+  (ite (= x!0 298582) 1
+  (ite (= x!0 298574) 2
+  (ite (= x!0 298581) 1
+  (ite (= x!0 279172) 4
+  (ite (= x!0 37554) 3
+  (ite (= x!0 37556) 1
+  (ite (= x!0 37558) 2
+  (ite (= x!0 37555) 102
+  (ite (= x!0 279179) 101
+  (ite (= x!0 37559) 2
+  (ite (= x!0 37557) 100
+  (ite (= x!0 279178) 2
+    0)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+(define-fun maxr ((x!0 Int)) Int
+  (ite (= x!0 279182) (- 1)
+  (ite (= x!0 279183) (- 1)
+  (ite (= x!0 279184) (- 1)
+  (ite (= x!0 279185) 1
+  (ite (= x!0 279194) 1
+  (ite (= x!0 279186) (- 1)
+  (ite (= x!0 279195) 1
+  (ite (= x!0 279196) 38
+  (ite (= x!0 279205) 0
+  (ite (= x!0 279197) (- 1)
+  (ite (= x!0 279206) 38
+  (ite (= x!0 279220) 0
+  (ite (= x!0 279208) (- 1)
+  (ite (= x!0 279207) 3
+  (ite (= x!0 279221) 2
+  (ite (= x!0 288064) 2
+  (ite (= x!0 288067) 99
+  (ite (= x!0 288066) (- 1)
+  (ite (= x!0 288081) 2
+  (ite (= x!0 288070) (- 1)
+  (ite (= x!0 288084) 2
+  (ite (= x!0 288079) 2
+  (ite (= x!0 288069) 3
+  (ite (= x!0 288085) 3
+  (ite (= x!0 288071) 3
+  (ite (= x!0 288068) 3
+  (ite (= x!0 288108) 7719
+  (ite (= x!0 288107) (- 1)
+  (ite (= x!0 288112) 7719
+  (ite (= x!0 288111) 0
+  (ite (= x!0 288114) (- 1)
+  (ite (= x!0 288125) (- 1)
+  (ite (= x!0 288113) 30658
+  (ite (= x!0 288122) 30658
+  (ite (= x!0 288120) 46
+  (ite (= x!0 288124) (- 1)
+  (ite (= x!0 298566) (- 1)
+  (ite (= x!0 298565) 30658
+  (ite (= x!0 298568) 28958
+  (ite (= x!0 298567) (- 1)
+  (ite (= x!0 298572) 28958
+  (ite (= x!0 298571) 21239
+  (ite (= x!0 298575) 1
+  (ite (= x!0 298573) (- 1)
+  (ite (= x!0 298582) 1
+  (ite (= x!0 298574) 2
+  (ite (= x!0 298581) 0
+  (ite (= x!0 279172) 4
+  (ite (= x!0 37554) 4
+  (ite (= x!0 37556) 1
+  (ite (= x!0 37558) 2
+  (ite (= x!0 37555) 103
+  (ite (= x!0 279179) 104
+  (ite (= x!0 37559) (- 1)
+  (ite (= x!0 37557) 104
+  (ite (= x!0 279178) 2
+    (- 1))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+(define-fun bst ((x!0 Int)) Bool
+  (ite (= x!0 279182) true
+  (ite (= x!0 279183) true
+  (ite (= x!0 279184) true
+  (ite (= x!0 279185) false
+  (ite (= x!0 279194) false
+  (ite (= x!0 279186) true
+  (ite (= x!0 279195) false
+  (ite (= x!0 279196) false
+  (ite (= x!0 279205) false
+  (ite (= x!0 279197) true
+  (ite (= x!0 279206) false
+  (ite (= x!0 279220) true
+  (ite (= x!0 279208) true
+  (ite (= x!0 279207) true
+  (ite (= x!0 279221) true
+  (ite (= x!0 288064) true
+  (ite (= x!0 288067) true
+  (ite (= x!0 288066) true
+  (ite (= x!0 288081) true
+  (ite (= x!0 288070) true
+  (ite (= x!0 288084) true
+  (ite (= x!0 288079) true
+  (ite (= x!0 288069) false
+  (ite (= x!0 288085) false
+  (ite (= x!0 288071) true
+  (ite (= x!0 288068) true
+  (ite (= x!0 288108) false
+  (ite (= x!0 288107) true
+  (ite (= x!0 288112) false
+  (ite (= x!0 288111) false
+  (ite (= x!0 288114) true
+  (ite (= x!0 288125) false
+  (ite (= x!0 288113) true
+  (ite (= x!0 288122) true
+  (ite (= x!0 288120) true
+  (ite (= x!0 288124) true
+  (ite (= x!0 298566) false
+  (ite (= x!0 298565) true
+  (ite (= x!0 298568) false
+  (ite (= x!0 298567) true
+  (ite (= x!0 298572) false
+  (ite (= x!0 298571) false
+  (ite (= x!0 298575) true
+  (ite (= x!0 298573) true
+  (ite (= x!0 298582) true
+  (ite (= x!0 298574) true
+  (ite (= x!0 298581) true
+  (ite (= x!0 279172) true
+  (ite (= x!0 37554) true
+  (ite (= x!0 37556) true
+  (ite (= x!0 37558) true
+  (ite (= x!0 37555) false
+  (ite (= x!0 279179) false
+  (ite (= x!0 37559) true
+  (ite (= x!0 37557) false
+  (ite (= x!0 279178) true
+    true)))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+;; lemma to synthesize
+;; TODO: must be generated from problem parameters
+(synth-fun lemma ((x Int) (y Int)) Bool
+           ((Start Bool) (B1 Bool) (S (Set Int)) (I Int) (Loc Int))
+
+           ((Start Bool (B1
+                  (=> B1 B1)))
+           (B1 Bool
+                  ((<= I I)
+                   (member Loc S)))
+           (S (Set Int)
+                  ((hbst Loc)))
+           (I Int (
+                  (key Loc)
+                  (minr Loc)
+                  (maxr Loc)))
+           (Loc Int (x y)))
+)
+
+(synth-fun rswitch () Int
+           ((Start Int))
+           ((Start Int (0)))
+)
+
+;; pfp constraints from counterexample models
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279182) 0)
+                (< (key 279182) 100)
+                (lemma (lft 279182) 279182)
+                (bst (lft 279182))
+                (lemma (rght 279182) 279182)
+                (bst (rght 279182))
+                (<= (maxr (lft 279182)) (key 279182))
+                (<= (key 279182) (minr (rght 279182))))))
+  (=> (ite (= 279182 279182) true a!1) (lemma 279182 279182))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279183) 0)
+                (< (key 279183) 100)
+                (lemma (lft 279183) 279183)
+                (bst (lft 279183))
+                (lemma (rght 279183) 279183)
+                (bst (rght 279183))
+                (<= (maxr (lft 279183)) (key 279183))
+                (<= (key 279183) (minr (rght 279183))))))
+  (=> (ite (= 279183 279183) true a!1) (lemma 279183 279183))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279184) 0)
+                (< (key 279184) 100)
+                (lemma (lft 279184) 279184)
+                (bst (lft 279184))
+                (lemma (rght 279184) 279184)
+                (bst (rght 279184))
+                (<= (maxr (lft 279184)) (key 279184))
+                (<= (key 279184) (minr (rght 279184))))))
+  (=> (ite (= 279184 279184) true a!1) (lemma 279184 279184))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279186) 0)
+                (< (key 279186) 100)
+                (lemma (lft 279186) 279185)
+                (bst (lft 279186))
+                (lemma (rght 279186) 279185)
+                (bst (rght 279186))
+                (<= (maxr (lft 279186)) (key 279186))
+                (<= (key 279186) (minr (rght 279186))))))
+  (=> (ite (= 279186 279186) true a!1) (lemma 279186 279185))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279197) 0)
+                (< (key 279197) 100)
+                (lemma (lft 279197) 279196)
+                (bst (lft 279197))
+                (lemma (rght 279197) 279196)
+                (bst (rght 279197))
+                (<= (maxr (lft 279197)) (key 279197))
+                (<= (key 279197) (minr (rght 279197))))))
+  (=> (ite (= 279197 279197) true a!1) (lemma 279197 279196))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 279207) 0)
+                (< (key 279207) 100)
+                (lemma (lft 279207) 279208)
+                (bst (lft 279207))
+                (lemma (rght 279207) 279208)
+                (bst (rght 279207))
+                (<= (maxr (lft 279207)) (key 279207))
+                (<= (key 279207) (minr (rght 279207))))))
+  (=> (ite (= 279207 279208) true a!1) (lemma 279207 279208))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 288067) 0)
+                (< (key 288067) 100)
+                (lemma (lft 288067) 288066)
+                (bst (lft 288067))
+                (lemma (rght 288067) 288066)
+                (bst (rght 288067))
+                (<= (maxr (lft 288067)) (key 288067))
+                (<= (key 288067) (minr (rght 288067))))))
+  (=> (ite (= 288067 288066) true a!1) (lemma 288067 288066))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 288068) 0)
+                (< (key 288068) 100)
+                (lemma (lft 288068) 288069)
+                (bst (lft 288068))
+                (lemma (rght 288068) 288069)
+                (bst (rght 288068))
+                (<= (maxr (lft 288068)) (key 288068))
+                (<= (key 288068) (minr (rght 288068))))))
+  (=> (ite (= 288068 288070) true a!1) (lemma 288068 288069))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 288107) 0)
+                (< (key 288107) 100)
+                (lemma (lft 288107) 288108)
+                (bst (lft 288107))
+                (lemma (rght 288107) 288108)
+                (bst (rght 288107))
+                (<= (maxr (lft 288107)) (key 288107))
+                (<= (key 288107) (minr (rght 288107))))))
+  (=> (ite (= 288107 288107) true a!1) (lemma 288107 288108))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 298565) 0)
+                (< (key 298565) 100)
+                (lemma (lft 298565) 298566)
+                (bst (lft 298565))
+                (lemma (rght 298565) 298566)
+                (bst (rght 298565))
+                (<= (maxr (lft 298565)) (key 298565))
+                (<= (key 298565) (minr (rght 298565))))))
+  (=> (ite (= 298565 288114) true a!1) (lemma 298565 298566))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 298567) 0)
+                (< (key 298567) 100)
+                (lemma (lft 298567) 298568)
+                (bst (lft 298567))
+                (lemma (rght 298567) 298568)
+                (bst (rght 298567))
+                (<= (maxr (lft 298567)) (key 298567))
+                (<= (key 298567) (minr (rght 298567))))))
+  (=> (ite (= 298567 298567) true a!1) (lemma 298567 298568))))))
+(constraint (and (=> (= rswitch 0) (let ((a!1 (and (> (key 298574) 0)
+                (< (key 298574) 100)
+                (lemma (lft 298574) 298574)
+                (bst (lft 298574))
+                (lemma (rght 298574) 298574)
+                (bst (rght 298574))
+                (<= (maxr (lft 298574)) (key 298574))
+                (<= (key 298574) (minr (rght 298574))))))
+  (=> (ite (= 298574 298573) true a!1) (lemma 298574 298574))))))
+
+
+;; constraints from false model
+(constraint (or (and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279172) (lemma 279172 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279178) (lemma 279178 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 279179) (lemma 279179 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37554) (lemma 37554 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37555) (lemma 37555 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37556) (lemma 37556 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37557) (lemma 37557 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37558) (lemma 37558 37559 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 279172 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 279178 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 279179 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37554 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37555 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37556 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37557 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37558 ))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 37559) (lemma 37559 37559 ))))
+)
+))
+
+;; constraints from true models
+
+(check-synth)
