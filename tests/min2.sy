@@ -1,0 +1,16 @@
+(set-logic ALL)
+
+
+(synth-fun minint ((x Int) (y Int)) Int
+    ((Start Int) (I Int))
+    ((Start Int
+                ((ite (<= I I) I I)))
+     (I Int
+           (x
+            y)))
+)
+
+(constraint (= (minint 0 1) 0))
+(constraint (= (minint 2 1) 1))
+
+(check-synth)
