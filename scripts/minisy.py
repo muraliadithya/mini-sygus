@@ -7,7 +7,7 @@ import argparse
 from solver.engine import solve
 
 
-parser = argparse.ArgumentParser('A minimal SyGuS solver based on constraint solving.')
+parser = argparse.ArgumentParser(description='A minimal SyGuS solver based on constraint solving.')
 parser.add_argument('infile', help='Input file')
 parser.add_argument('--smtsolver', choices=['z3', 'cvc4'], default='z3', 
                     help='Choice of backend SMT solver.')
