@@ -267,6 +267,48 @@ class SyGuSGrammar:
                             workdict[next_nonterminal].add(repl)
             self.admiss = admissible_strings
         return self.admiss
+    
+    def is_admissible(self, lisp, symbol=None, rule=None):
+        """
+        Determine if a parsed lisp-like string is admissible in the SyGuS grammar.
+        The optional parameters specify an enforced starting symbol or replacement rule.
+        :param lisp: lisp-like string (list or string)
+        :param symbol: string
+        :param rule: lisp-like string (list or string)
+        """
+        if rule is None:
+            # If no replacement rule is enforced, then enforce starting symbol.
+            if symbol is None:
+                symbol = self.start_symbol
+            for nested_rule in self.rules[symbol]:
+                if self.is_admissible(lisp, rule=nested_rule):
+                    # If rule admisses lisp, then lisp is admissible.
+                    return True
+            # If no rule admisses lisp, then lisp is inadmissible.
+            return False
+
+        # Auxiliary function to manage direct comparison of lisp content.
+        def is_admissible_aux(lisp, rule):
+            if isinstance(rule, str):
+                if rule in self.typed_nonterminals:
+                    # Rule is a nonterminal symbol.
+                    return self.is_admissible(lisp, symbol=rule)
+                else:
+                    # Rule is a terminal symbol.
+                    return isinstance(lisp, str) and lisp == rule
+            else:
+                # Rule is a nested list; recurse.
+                return self.is_admissible(lisp, rule=rule)
+
+        # Iterate through strings/lists in lisp list, comparing each to the
+        # corresponding element of the given replacement rule.
+        for j in range(len(lisp)):
+            if not is_admissible_aux(lisp[j], rule[j]):
+                # If any nested string/list is inadmissible by the corresponding
+                # replacement rule, then lisp is inadmissible.
+                return False
+        # If all elements of lisp are admissible, then lisp is admissible.
+        return True
 
 
 def load_from_string(synthfun_str):
