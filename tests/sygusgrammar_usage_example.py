@@ -1,5 +1,5 @@
-from minisy.SyGuSGrammar import load_from_string
-from minisy.ConstraintGrammar import ConstraintGrammar
+from solver.SyGuSGrammar import load_from_string
+from solver.ConstraintGrammar import ConstraintGrammar
 
 
 synthfun_str = """

@@ -27,8 +27,8 @@ This relationship can be presented in the form of a constraint to an SMT solver,
 above.  
 """
 
-from minisy.SyGuSGrammar import track_nonterminals_one_step, SyGuSGrammar
-import minisy.lisplike as lisplike
+from solver.SyGuSGrammar import track_nonterminals_one_step, SyGuSGrammar
+import solver.lisplike as lisplike
 
 
 class NonsenseValuationException(Exception):
