@@ -1,4 +1,5 @@
-import functools, re
+import functools
+import re
 
 import solver.lisplike as lisplike
 
@@ -232,8 +233,8 @@ class SyGuSGrammar:
 
     def get_admissible_strings(self):
         """
-        Return a set of admissible strings in the grammar.
-        :return: set of string
+        Return a set of admissible strings in the grammar.  
+        :return: set of string  
         """
         # See if the relevant cahcing attribute holds a valid value
         if self.admiss is None and self.is_finite():
@@ -270,11 +271,11 @@ class SyGuSGrammar:
 
     def is_admissible(self, lisp, symbol=None, rule=None):
         """
-        Determine if a parsed lisp-like string is admissible in the SyGuS grammar.
-        The optional parameters specify an enforced starting symbol or replacement rule.
-        :param lisp: lisp-like string (list or string)
-        :param symbol: string
-        :param rule: lisp-like string (list or string)
+        Determine if a parsed lisp-like string is admissible in the SyGuS grammar.  
+        The optional parameters specify an enforced starting symbol or replacement rule.  
+        :param lisp: lisp-like string (list or string)  
+        :param symbol: string  
+        :param rule: lisp-like string (list or string)  
         """
         if rule is None:
             # If no replacement rule is enforced, then enforce starting symbol.
