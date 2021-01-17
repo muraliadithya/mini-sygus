@@ -4,7 +4,7 @@ Main engine of the minimal SyGuS solver.
 
 import os
 
-from solver.utils import *
+from solver.engine_utils import *
 
 
 def solve(args):

@@ -1,6 +1,11 @@
 """
-Module to handle reading files with SyGuS grammars and writing corresponding files
-with constraint grammars.
+Auxiliary module for engine module.  
+This module implements the two stages of the synthesis engine:  
+(i) Reading a SyGuS file and writing an SMT file representing the synthesis problem.  
+(ii) Calling an SMT solver with appropriate options and returning a pretty printed solution.  
+In a synthesis setup with multiple solutions or quantified constraints these stages will alternate 
+continuously, with counterexample-guided constraints or symmetry reduction constraints 
+being added in each round.  
 """
 
 import subprocess
