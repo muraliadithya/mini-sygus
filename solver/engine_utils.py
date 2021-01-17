@@ -160,8 +160,8 @@ def _extract_smt_model(solver_out_string, options):
         except ValueError:
             open_paren_index = -1
         try:
-            close_paren_index = next(i for i in range(len(line)) if line[i] == ')')
-        except ValueError:
+            close_paren_index = next(i for i in range(len(line)) if line[i] == ')' and i > open_paren_index)
+        except StopIteration:
             close_paren_index = len(line)
         line = line[open_paren_index + 1:close_paren_index]
         line = line.split(' ')
