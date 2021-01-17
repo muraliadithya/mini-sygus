@@ -229,7 +229,7 @@ class SyGuSGrammar:
         nonterminal_heights = get_nonterminal_heights()
         # Obtain list of nonterminals sorted by increasing height
         return sorted(nonterminal_heights, key=nonterminal_heights.get)
-    
+
     def get_admissible_strings(self):
         """
         Return a set of admissible strings in the grammar.
@@ -267,7 +267,7 @@ class SyGuSGrammar:
                             workdict[next_nonterminal].add(repl)
             self.admiss = admissible_strings
         return self.admiss
-    
+
     def is_admissible(self, lisp, symbol=None, rule=None):
         """
         Determine if a parsed lisp-like string is admissible in the SyGuS grammar.
