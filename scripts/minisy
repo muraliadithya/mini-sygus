@@ -1,32 +1,31 @@
 #!/usr/bin/env python3
 
 # Script to call from terminal and run minimal SyGuS engine.  
+if __name__ == '__main__':
+    import argparse
+    import multiprocessing
 
-import argparse
-import multiprocessing
+    from solver.engine import solve
 
-from solver.engine import solve
+    parser = argparse.ArgumentParser(description='A minimal SyGuS solver based on constraint solving.')
+    parser.add_argument('infile', help='Input file')
+    parser.add_argument('--smtsolver', choices=['z3', 'cvc4'], default='z3',
+                        help='Choice of backend SMT solver.')
+    parser.add_argument('--timeout', type=int, default=None,
+                        help='Total timeout in seconds. No timeout given by default.')
+    multiple_solutions_group = parser.add_mutually_exclusive_group()
+    multiple_solutions_group.add_argument('--stream', action='store_true', default=None,
+                                          help='Continuously search for solutions.')
+    multiple_solutions_group.add_argument('--num-solutions', '-N', metavar='num_solutions', type=int, default=1,
+                                          help='Find N solutions to the SyGuS problem.')
 
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser(description='A minimal SyGuS solver based on constraint solving.')
-parser.add_argument('infile', help='Input file')
-parser.add_argument('--smtsolver', choices=['z3', 'cvc4'], default='z3', 
-                    help='Choice of backend SMT solver.')
-parser.add_argument('--timeout', type=int, default=None, 
-                    help='Total timeout in seconds. No timeout given by default.')
-multiple_solutions_group = parser.add_mutually_exclusive_group()
-multiple_solutions_group.add_argument('--stream', action='store_true', default=None,
-                                      help='Continuously search for solutions.')
-multiple_solutions_group.add_argument('--num-solutions', '-N', metavar='num_solutions', type=int, default=1, 
-                                      help='Find N solutions to the SyGuS problem.')
-
-args = parser.parse_args()
-
-# solve(args)
-# Run solver with appropriate timeout
-synth_solver_process = multiprocessing.Process(target=solve, args=(args,))
-synth_solver_process.start()
-synth_solver_process.join(args.timeout)
-synth_solver_process.terminate()
-if synth_solver_process.exitcode is None:
-    print('Timeout')
+    # solve(args)
+    # Run solver with appropriate timeout
+    synth_solver_process = multiprocessing.Process(target=solve, args=(args,))
+    synth_solver_process.start()
+    synth_solver_process.join(args.timeout)
+    synth_solver_process.terminate()
+    if synth_solver_process.exitcode is None:
+        print('Timeout')
