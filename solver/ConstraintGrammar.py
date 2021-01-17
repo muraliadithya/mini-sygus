@@ -61,7 +61,7 @@ class ConstraintGrammar:
         # pointed to by the boolean variable. The order of the copies is the order in which the nonterminals appear 
         # in the SyGuSGrammar.post dictionary.
         self.boolvars = None
-        # Dictionary simlar to self.boolvars representing the catch case of the final replacement rule choice.
+        # Dictionary similar to self.boolvars representing the catch case of the final replacement rule choice.
         # Keys are the names of nonterminal copies whose catch case is contained in the value.
         # Values are the names of nonterminal copies corresponding to the actual nonterminals in the (final)
         # production rule for the nonterminal copy key.
@@ -151,6 +151,14 @@ class ConstraintGrammar:
         :param valuation: dict {string: bool}  
         :return: lisplike.is_lisplike  
         """
+        # TODO (medium-high): rewrite evaluate entirely to use minimised valuations from minimise_valuation. 
+        # That way one does not need to check that all boolean variables have a valuation that is boolean.
+        if not set(self.boolvars.keys()).issubset(set(valuation.keys())):
+            remaining_boolvars = set(self.boolvars.keys()) - set(valuation.keys())
+            raise NonsenseValuationException('The given valuation does not interpret '
+                                             'the following boolean variables: {}'.format(remaining_boolvars))
+        elif not all(isinstance(valuation[boolvar], bool) for boolvar in self.boolvars):
+            raise NonsenseValuationException('Variables must have a boolean valuation.')
         ordered_rule_dict = self._rule_dict
         starting_symbol = self.starting_symbol
         # Construct pairs containing each symbol and the expression it expands to based on the valuation
@@ -310,11 +318,61 @@ class ConstraintGrammar:
         # Return the boolean declarations, function declarations, and the eval function
         return bool_decl_string + '\n\n' + func_decl_string + '\n' + eval_function_string
 
-    def get_synth_function(self, valuation=None):
+    # TODO (medium-high): generalise function to minimise valuation and evaluate 
+    #  the yield simultaneously and get rid of evaluate
+    def minimise_valuation(self, valuation):
         """
-        The synthesized function part of pretty_smt_encoding.
-        :param valuation: dict {string: bool}
-        :return synth_function_string: string
+        Return a minimised valuation such that the values of variables not appearing in the dictionary 
+        do not influence the satisfiability of constraints.  
+        Used to determine the specific boolean variables among those in the given valuation that indicate 
+        the synthesis result. Refer to the module description to understand the encoding and why 
+        only some variables might be essential.  
+        :param valuation: dict {string: bool}  
+        """
+        # Eliminate keys that are not present in boolvars
+        valuation = {k: v for k, v in valuation.items() if k in self.boolvars}
+        # Check that all values are boolean
+        # Using a worklist follow nonterminal copies and look at the boolean variables 
+        # corresponding to them in the order present in self.symbols until one of them is true.
+        # If all of them are present but none of them have their valuation as True, then all the variables 
+        # are relevant.
+        worklist = {self.starting_symbol}
+        relevant_boolvars = set()
+        while worklist:
+            nonterminal_copy = worklist.pop()
+            boolvars_for_nt_copy = self.symbols[nonterminal_copy][1]
+            boolvar_index = 0
+            while boolvar_index < len(boolvars_for_nt_copy):
+                try:
+                    boolvar_valuation = valuation[boolvars_for_nt_copy[boolvar_index]]
+                    if isinstance(boolvar_valuation, bool):
+                        if boolvar_valuation:
+                            # Boolean variable is true. Rule chosen.
+                            break
+                    else:
+                        raise NonsenseValuationException('Given valuation is not sensible: value of {} must be '
+                                                         'boolean.'.format(boolvars_for_nt_copy[boolvar_index]))
+                except KeyError:
+                    raise NonsenseValuationException('Given valuation is not sensible: '
+                                                     'value of {} needed'.format(boolvars_for_nt_copy[boolvar_index]))
+                boolvar_index = boolvar_index + 1
+            # End of loop. All boolvars until and including boolvar_index are relevant.
+            relevant_boolvars.update(boolvars_for_nt_copy[:boolvar_index+1])
+            # Update worklist with all the nonterminal copies belonging to the chosen rule.
+            # The index of the chosen rule is the same as boolvar_index
+            # Case-split depending on whether the copies will be in self.boolvars or self.boolcatch
+            if boolvar_index == len(boolvars_for_nt_copy):
+                worklist.update(self.boolcatch[nonterminal_copy])
+            else:
+                worklist.update(self.boolvars[boolvars_for_nt_copy[boolvar_index]])
+        return {boolvar: valuation[boolvar] for boolvar in relevant_boolvars}
+
+    def valuation_to_definefun_command(self, valuation):
+        """
+        Pretty printer for displaying the result of synthesis.  
+        The given valuation is converted into a define-fun command that is in SMT-Lib format.  
+        :param valuation: dict {string: bool}  
+        :return: string  
         """
         # TODO (medium): simplify with pretty_smt_encoding
         define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
@@ -324,11 +382,10 @@ class ConstraintGrammar:
         typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
         arguments = [arg[0] for arg in typed_params]
         typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
-        if valuation is None:
-            synthfun_body = '({} {})'.format(starting_symbol, 
-                                             ' '.join(arguments)) if arguments != [] else starting_symbol
-        else:
-            synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
+        # if valuation is None:
+        #     synthfun_body = '({} {})'.format(starting_symbol, 
+        #                                      ' '.join(arguments)) if arguments != [] else starting_symbol
+        synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
         synth_function_string = define_fun_format.format(name=synthfun_name, typed_args=typed_param_string, 
                                                          return_type=synthfun_return_type_string, body=synthfun_body)
         return synth_function_string
