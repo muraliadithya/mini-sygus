@@ -26,8 +26,10 @@ def solve(args):
     solver_call_options = dict()
     solver_call_options['smtsolver'] = args.smtsolver
 
-    num_solutions = args.num_solutions
-    for i in range(num_solutions):
+    # Loop until number of solutions is reached
+    # Calculate loop condition based on arguments pertaining to multiple solutions
+    solution_number = 1
+    while args.stream or (solution_number <= args.num_solutions):
         grammars = sygus_to_smt(infile_full_path, outfile_full_path, sygus_to_smt_options)
         solver_result = call_solver(outfile_full_path, grammars, solver_call_options)
         if solver_result in {'unsat', 'unknown'}:
@@ -39,6 +41,7 @@ def solve(args):
             print(pretty_solution_string)
             # Append the negation of the solution in order to dismiss it from the next round of synthesis
             sygus_to_smt_options['additional_constraints'].append('(not {})'.format(solution_as_constraint))
+        solution_number = solution_number + 1
 
 
 def _get_outfile_name(infile_name):
