@@ -89,7 +89,7 @@ def _convert_to_smt(line):
 def call_solver(smtfile_name, grammars, options):
     """
     Call SMT solver on constraint-based encoding of SyGuS problem.  
-    Returns a string containing the solution and an SMT-Lib string encoding the the solution as an SMT-Lib 
+    Returns a string containing the solution and a string encoding the the solution as an SMT-Lib 
     constraint for further rounds of synthesis.  
     :param smtfile_name: string  
     :param grammars: list [solver.ConstraintGrammar]  
@@ -112,9 +112,14 @@ def call_solver(smtfile_name, grammars, options):
             model = _extract_smt_model(solver_out, options)
             # Evaluate and print synthesized lemmas over SMT model
             synth_results = []
+            minimised_valuations = []
             for constraint_grammar in grammars:
-                synth_results.append(constraint_grammar.get_synth_function(model))
-            return '\n'.join(synth_results), _valuation_as_constraint(model)
+                synth_results.append(constraint_grammar.valuation_to_definefun_command(model))
+                # Minimise the valuation before converting it into a constraint
+                # This helps cut down on repeated solutions when multiple solutions are required
+                minimised_valuations.append(constraint_grammar.minimise_valuation(model))
+            return '\n'.join(synth_results), _valuation_as_constraint({k: v for minval in minimised_valuations 
+                                                                       for k, v in minval.items()})
         elif satisfiability_result in {'unsat', 'unknown'}:
             return satisfiability_result
         else:
