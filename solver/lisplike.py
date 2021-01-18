@@ -123,7 +123,7 @@ def _parse_aux(in_str, noerr, end, begin=0):
         # Advance curr by one 
         curr = curr + 1
     # Function should not reach this point at the topmost level.
-    # If that happens, there is probably an extra '('
+    # If so, there are likely unmatched parentheses or no parentheses.
     return partial_result, curr
 
 

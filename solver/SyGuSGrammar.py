@@ -272,7 +272,8 @@ class SyGuSGrammar:
     def is_admissible(self, lisp, symbol=None, rule=None):
         """
         Determine if a parsed lisp-like string is admissible in the SyGuS grammar.  
-        The optional parameters specify an enforced starting symbol or replacement rule.  
+        The optional parameters specify an enforced starting symbol or replacement rule.
+        This function is independent from get_admissible_strings and is more efficient.
         :param lisp: lisp-like string (list or string)  
         :param symbol: string  
         :param rule: lisp-like string (list or string)  
@@ -300,7 +301,13 @@ class SyGuSGrammar:
             else:
                 # Rule is a nested list; recurse.
                 return self.is_admissible(lisp, rule=rule)
-
+        
+        
+        # Cast lisplike structures to list if a single string.
+        if isinstance(lisp, str):
+            lisp = [lisp]
+        if isinstance(rule, str):
+            rule = [rule]
         # Iterate through strings/lists in lisp list, comparing each to the
         # corresponding element of the given replacement rule.
         for j in range(len(lisp)):

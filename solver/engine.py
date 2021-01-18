@@ -3,7 +3,6 @@ Main engine of the minimal SyGuS solver.
 """
 
 import os
-
 from solver.engine_utils import *
 
 

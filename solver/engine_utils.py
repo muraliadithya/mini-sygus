@@ -12,7 +12,7 @@ import subprocess
 
 from solver.SyGuSGrammar import load_from_string
 from solver.ConstraintGrammar import ConstraintGrammar
-
+from solver.lisplike import parse
 
 # Replace SyGuS grammars in file with constraint grammars in SMT-Lib format
 def sygus_to_smt(sygus_file, smt_file, options):
@@ -27,6 +27,9 @@ def sygus_to_smt(sygus_file, smt_file, options):
     grammars = []
     with open(sygus_file) as sygus_file:
         with open(smt_file, 'w') as smt_file:
+            # Manage proposed synth-fun solutions to check satisfiability with constraints
+            proposed_solutions = options.get('proposed_solutions', dict())
+            # Prepare reading/writing variables
             reading_sygus = False
             synthfun_str = ''
             depth = 0
@@ -41,13 +44,22 @@ def sygus_to_smt(sygus_file, smt_file, options):
                     synthfun_str += '\n' + line
                     depth += line.count('(') - line.count(')')
                     if depth <= 0:
-                        # Done reading SyGus grammar
+                        # Done reading SyGuS grammar
                         reading_sygus = False
-                        # Process and write constraint grammar
+                        # Process SyGuS grammar
                         grammar = load_from_string(synthfun_str)
+                        # Process constraint grammar
                         constraint_grammar = ConstraintGrammar(grammar)
                         constraint_grammar.compute_constraint_encoding()
-                        smt_file.write(constraint_grammar.pretty_smt_encoding())
+                        if grammar.name in proposed_solutions:
+                            proposal = proposed_solutions[grammar.name]
+                            # Check admissibility of proposed solution
+                            #admissible = grammar.is_admissible(parse(proposal))
+                            # Write proposed solution
+                            smt_file.write(constraint_grammar.proposal_to_definefun_command(proposal))
+                        else:
+                            # Write constraint grammar
+                            smt_file.write(constraint_grammar.pretty_smt_encoding())
                         # Maintain constraint grammar
                         grammars.append(constraint_grammar)
                         synthfun_str = ''

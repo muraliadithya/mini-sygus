@@ -312,9 +312,8 @@ class ConstraintGrammar:
         synthfun_return_type_string = lisplike.pretty_string(synthfun_return_type, noindent=True)
         starting_symbol = self.starting_symbol
         evalfun_body = '({} {})'.format(starting_symbol, ' '.join(arguments)) if arguments != [] else starting_symbol
-        eval_function_string = (';Function to be synthesised\n' + define_fun_format).format(
-            name=synthfun_name, typed_args=typed_param_string, 
-            return_type=synthfun_return_type_string, body=evalfun_body)
+        eval_function_string = ';Function to be synthesised\n' + _definefun_command(
+            synthfun_name, typed_param_string, synthfun_return_type_string, evalfun_body)
         # Return the boolean declarations, function declarations, and the eval function
         return bool_decl_string + '\n\n' + func_decl_string + '\n' + eval_function_string
 
@@ -374,24 +373,35 @@ class ConstraintGrammar:
         :param valuation: dict {string: bool}  
         :return: string  
         """
-        # TODO (medium): simplify with pretty_smt_encoding
-        define_fun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
         synthfun_name = self.sygus_grammar.get_name()
-        synthfun_return_type_string = lisplike.pretty_string(self.sygus_grammar.get_range_type(), noindent=True)
-        starting_symbol = self.starting_symbol
         typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
-        arguments = [arg[0] for arg in typed_params]
-        typed_param_string = lisplike.pretty_string(typed_params, noindent=True)
-        # if valuation is None:
-        #     synthfun_body = '({} {})'.format(starting_symbol, 
-        #                                      ' '.join(arguments)) if arguments != [] else starting_symbol
+        synthfun_typed_args = lisplike.pretty_string(typed_params, noindent=True)
+        synthfun_return_type = lisplike.pretty_string(self.sygus_grammar.get_range_type(), noindent=True)
         synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
-        synth_function_string = define_fun_format.format(name=synthfun_name, typed_args=typed_param_string, 
-                                                         return_type=synthfun_return_type_string, body=synthfun_body)
-        return synth_function_string
+        return _definefun_command(synthfun_name, synthfun_typed_args, synthfun_return_type, synthfun_body)
+    
+    def proposal_to_definefun_command(self, proposal):
+        """
+        Pretty printer for displaying a proposed solution to synthesis.
+        The given proposal is wrapped into a define-fun command that is in SMT-Lib format.
+        :param proposal: string
+        :return: string
+        """
+        propfun_name = self.sygus_grammar.get_name()
+        typed_params = [[arg, smt_type] for (arg, smt_type) in self.sygus_grammar.get_typed_parameter_list()]
+        propfun_typed_args = lisplike.pretty_string(typed_params, noindent=True)
+        propfun_return_type = lisplike.pretty_string(self.sygus_grammar.get_range_type(), noindent=True)
+        propfun_body = proposal
+        return _definefun_command(propfun_name, propfun_typed_args, propfun_return_type, propfun_body)
 
 
 # Helper functions
+def _definefun_command(name, typed_args, return_type, body):
+    definefun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
+    definefun_string = definefun_format.format(name=name, typed_args=typed_args,
+                                               return_type=return_type, body=body)
+    return definefun_string
+
 def _nonterminal_copy_name(symbol_name, copy_number, synthfun_name):
     return '{}_{}_{}'.format(synthfun_name, symbol_name, copy_number)
 
