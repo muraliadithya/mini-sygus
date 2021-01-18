@@ -130,9 +130,9 @@ Feature summary:
 - Update solver to use either Z3 or CVC4 as the backend
 - Make solver print a help message with usage text and options
 - Multiple solutions
+- Checking for the validity of a given synthesis solution
 
 To do:
-- Checking for the validity of a given synthesis solution
 - Symmetry reduction to eliminate redundant solutions when 
   multiple solutions are being proposed
 - Counterexample generation for quantified constraints
