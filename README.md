@@ -51,7 +51,7 @@ In order to call the solver from anywhere, the `scripts`
 directory is added to `PATH` and the repo toplevel 
 should be added to `PYTHONPATH`.
 On Linux this can be done by adding the 
-following lines to `.bashrc` (`.zshrc` on Mac) :
+following lines to `.bashrc` (`.zshrc` on Mac):
 ```
 export PYTHONPATH="/path/to/repo/mini-sygus/":$PYTHONPATH
 export PATH="/path/to/repo/mini-sygus/scripts/":$PATH
