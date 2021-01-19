@@ -18,7 +18,14 @@ from solver.lisplike import parse
 def sygus_to_smt(sygus_file, smt_file, options):
     """
     Write a copy of input file, replacing each SyGuS grammar by the corresponding
-    constraint grammar in SMT-Lib format.  
+    constraint grammar in SMT-Lib format.
+    If the options parameter contains the key 'additional_constraints', the value should be
+    a list (or similar) of strings to append to the SMT file as additional constraints.
+    If the options parameter contains the key 'proposed_solutions', the value should be
+    a dictionary (or similar) such that each key is a synth-fun string name and each value is
+    the corresponding proposed solution string intended to be the synthesized function body.
+    The proposed solutions are currently not checked for admissibility in the grammar, but
+    rather used here to check for satisfiability alongside the ambient constraints.
     :param sygus_file: string  
     :param smt_file: string  
     :param options: dict of {string: any}  
