@@ -35,6 +35,7 @@ def solve(args):
         grammars = sygus_to_smt(infile_full_path, outfile_full_path, sygus_to_smt_options)
         solver_result = call_solver(outfile_full_path, grammars, solver_call_options)
         if solver_result == 'unsat' and sygus_to_smt_options['grammar_depth'] < MAX_GRAMMAR_DEPTH:
+            # If unsat but grammar depth can be incremented, do so and run again
             sygus_to_smt_options['grammar_depth'] += 1
         elif solver_result in {'unsat','unknown'}:
             print(solver_result)

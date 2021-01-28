@@ -231,8 +231,10 @@ class SyGuSGrammar:
                         if symbol not in terminating_symbols:
                             terminating_symbols = terminable_aux(symbol,seen_nonterminals,terminating_symbols)
                         if symbol not in terminating_symbols:
+                            # If some symbol in rule is interminable, then the rule is considered so
                             rule_terminates = False
                     if rule_terminates:
+                        # If some rule is terminable, then the symbol is considered so
                         nonterminal_terminates = True
                         terminating_symbols.add(nonterminal)
                 return terminating_symbols

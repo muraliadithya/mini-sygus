@@ -377,7 +377,8 @@ class ConstraintGrammar:
                     func_decl, _ = aux_func_declare(nonterminal_copy)
                     func_decl_string += func_decl
         else:
-            # If grammar is infinite, printed order must depend directly on nonterminal dependence.
+            # If grammar is infinite, printed order must depend on nonterminal copy dependence,
+            # since there is no longer a linear ordering on the nonterminal symbols themselves.
             func_decl_string = ''
             worklist = {self.starting_symbol}
             while worklist:

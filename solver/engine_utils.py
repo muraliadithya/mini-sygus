@@ -198,6 +198,10 @@ def _extract_smt_model(solver_out_string, options):
     return model
 
 def _determine_depth(grammar, proposed_depth, show=False):
+    """
+    Ensures that grammar depth is neither too small to achieve at least one admissible string
+    nor too large beyond a finite grammar.
+    """
     depth = proposed_depth
     depth = max(grammar.get_minimum_depth(), depth)
     if grammar.is_finite():
