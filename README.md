@@ -1,8 +1,8 @@
 # mini-sygus
 A minimal constraint-based syntax-guided synthesis (SyGuS) engine  
 The current version of the solver has a very restricted use-case of 
-SyGuS problems where the grammars are finite and the 
-constraints have only ground terms, i.e., quantifier-free.  
+SyGuS problems where the  constraints have only ground terms, i.e.,
+quantifier-free.  
 
 
 ## Requirements
@@ -107,6 +107,8 @@ sat
 (define-fun add2 ((x Int) (y Int)) Int
 (doplus y x)
 )
+
+unsat
 ```
 
 Input files must be written in SyGuS 2.0 format 
@@ -130,6 +132,8 @@ Feature summary:
 - Update solver to use either Z3 or CVC4 as the backend
 - Make solver print a help message with usage text and options
 - Multiple solutions
+- Infinite grammars
+- Find simplest solution first in terms of grammar depth
 - Checking for the validity of a given synthesis solution
 
 To do:
