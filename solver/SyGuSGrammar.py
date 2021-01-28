@@ -164,6 +164,21 @@ class SyGuSGrammar:
             nonterminals = self.get_nonterminal_set()
         return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than)) 
                 for nonterminal in nonterminals}
+    
+    def get_one_step_dict(self):
+        """
+        Compute the set of nonterminals that occur in each production rule for each nonterminal.
+        :return: dict {string: list [string]}
+        """
+        # See if the relevant caching attribute holds a valid value
+        if self.post is None:
+            self.post = track_nonterminals_one_step(self)
+        one_step_dict = dict()
+        nonterminals = self.get_nonterminal_set()
+        for nt in nonterminals:
+            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
+            one_step_dict[nt] = one_step_set
+        return one_step_dict
 
     def is_finite(self):
         """
@@ -172,101 +187,110 @@ class SyGuSGrammar:
         such that B_i has a rule that contains B_i+1 in its expansion, and B_n contains B_1.  
         :return: bool  
         """
-        # Compute the set of nonterminals that occur in each production rule for each nonterminal.
-        # See if the relevant caching attribute holds a valid value
-        if self.post is None:
-            self.post = track_nonterminals_one_step(self)
-        one_step_dict = dict()
-        nonterminals = self.get_nonterminal_set()
-        for nt in nonterminals:
-            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
-            one_step_dict[nt] = one_step_set
+        one_step_dict = self.get_one_step_dict()
 
         # Auxiliary function to recurse on each nonterminal and check for repeated occurrence
-        def is_finite_check_and_recurse(nonterminal=self.get_start_symbol(), seen_nonterminals=None):
-            if seen_nonterminals is None:
-                seen_nonterminals = set()
+        def is_finite_check_and_recurse(nonterminal=self.get_start_symbol(), seen_nonterminals=set()):
             if nonterminal in seen_nonterminals:
                 # Repeated occurrence. Grammar is not finite.
                 return False
             else:
                 # The nonterminal is now a seen symbol.
-                seen_nonterminals = seen_nonterminals | {nonterminal}
+                seen_nonterminals.add(nonterminal)
                 # Recurse on all nonterminals reachable from the current one in one step
                 return all(is_finite_check_and_recurse(symbol, seen_nonterminals) 
                            for symbol in one_step_dict[nonterminal])
+        
         # Call auxiliary function to check for finiteness and return the value
         return is_finite_check_and_recurse()
     
-    def get_nonterminal_least_heights(self):
+    def is_terminable(self):
+        """
+        Check whether the grammar is either finite or has infinite-but-permissible replacement rules.
+        Here, permissible refers to each symbol having a replacement rule path to eliminating all nonterminals.
+        :return bool:
+        """
+        if self.is_finite():
+            return True
+        
+        # Auxiliary function to obtain set of terminating symbols which dependent on the input nonterminal.
+        def terminable_aux(nonterminal=self.get_start_symbol(),
+                           seen_nonterminals=set(), terminating_symbols=set()):
+            if nonterminal in seen_nonterminals:
+                # Repeated occurrence. This particular path is not a termination.
+                return terminating_symbols
+            else:
+                # The nonterminal is now a seen symbol.
+                seen_nonterminals.add(nonterminal)
+                for rule_symbols in self.post[nonterminal]:
+                    rule_terminates = True
+                    for symbol in rule_symbols:
+                        if symbol not in terminating_symbols:
+                            terminating_symbols = terminable_aux(symbol,seen_nonterminals,terminating_symbols)
+                        if symbol not in terminating_symbols:
+                            rule_terminates = False
+                    if rule_terminates:
+                        nonterminal_terminates = True
+                        terminating_symbols.add(nonterminal)
+                return terminating_symbols
+        
+        # Call auxiliary function to check for terminability of all symbols
+        return len(terminable_aux()) == len(self.post)
+                
+    
+    def get_nonterminal_heights(self, least=True):
         """
         Return a dictionary of nonterminals in the grammar with value representing each nonterminal
-        symbol's least height, which denotes the least number of successive replacement rule applications
-        necessary to eliminate nonterminals. This handles infinite grammars.
+        symbol's either least or most height. The least height is the least number of successive replacement
+        rule applications necessary to eliminate nonterminals, which is always finite for a well-defined
+        grammar. The most height is the most such number, and is only necessarily finite for finite grammars
+        (i.e. grammars without self-referential rules).
+        :param least: bool
         :return: dict {string: int}
         """
-        if self.post is None:
-            self.post = track_nonterminals_one_step(self)
-        one_step_dict = dict()
-        nonterminals = self.get_nonterminal_set()
-        for nt in nonterminals:
-            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
-            one_step_dict[nt] = one_step_set
+        if not self.is_finite():
+            if not least:
+                raise ValueError('Grammar is not finite. Nonterminal most heights are possibly infinite.')
+            elif not self.is_terminable():
+                raise ValueError('Grammar contains rule sets which are exclusively self-referential.\n' +
+                                 'Nonterminal least heights are possibly infinite.')
+        one_step_dict = self.get_one_step_dict()
         
         # Auxiliary function to determine nonterminal bottom-up heights from terminals.
-        # The height of a nonterminal is the length of the shortest path of replacement rules
-        # to an admissible string.
-        def aux_least_heights(nonterminal=self.get_start_symbol(), nt_heights=dict(), seen_symbols=set()):
+        # The least height of a nonterminal is the length of the shortest path of replacement
+        # rules to an admissible string, which is always finite. The most height is the longest such path,
+        # which may be infinite if the grammar is infinite.
+        func_rule = min if least else max
+        def aux_heights(nonterminal=self.get_start_symbol(), nt_heights=dict(), seen_symbols=set()):
             seen_symbols.add(nonterminal)
             nt_heights[nonterminal] = 1
             if one_step_dict[nonterminal]:
                 for symbol in one_step_dict[nonterminal]:
                     if symbol not in seen_symbols:
-                        nt_heights.update(aux_least_heights(symbol, nt_heights, seen_symbols))
-                nt_heights[nonterminal] += min([nt_heights[symbol]
-                                                for symbol in one_step_dict[nonterminal]])
+                        nt_heights.update(aux_heights(symbol, nt_heights, seen_symbols))
+                nt_heights[nonterminal] += func_rule(max(nt_heights[symbol] for symbol in rule_symbols)
+                                                     for rule_symbols in self.post[nonterminal]
+                                                     if nonterminal not in rule_symbols)
             return nt_heights
         
-        return aux_least_heights()
-        
+        return aux_heights()
 
     def get_ordered_nonterminal_list(self):
         """
         Return a list of nonterminals in the grammar, ordered by dependence by expansion containment
         such that the nonterminals whose expansions contain no nonterminals are first and the start
         symbol is last.
-        If grammar is infinite, errant behavior may occur.
+        This function requires a finite grammar (without self-referential rules).
         :return: list of string  
         """
-        # Compute the set of nonterminals that occur in each production rule for each nonterminal.
-        # See if the relevant caching attribute holds a valid value
-        if self.post is None:
-            self.post = track_nonterminals_one_step(self)
-        one_step_dict = dict()
-        nonterminals = self.get_nonterminal_set()
-        for nt in nonterminals:
-            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
-            one_step_dict[nt] = one_step_set
-
-        # Auxiliary function to construct ordered list
-        def get_nonterminal_heights(nonterminal=self.get_start_symbol(), nt_heights=None):
-            if nt_heights is None:
-                nt_heights = dict()
-            nt_heights[nonterminal] = 1
-            if one_step_dict[nonterminal]:
-                for symbol in one_step_dict[nonterminal]:
-                    nt_heights.update(get_nonterminal_heights(symbol, nt_heights))
-                nt_heights[nonterminal] += max([nt_heights[symbol]
-                                                for symbol in one_step_dict[nonterminal]])
-            return nt_heights
-        # Call auxiliary function to instruct ordering of nonterminals
-        nonterminal_heights = get_nonterminal_heights()
-        # Obtain list of nonterminals sorted by increasing height
+        nonterminal_heights = self.get_nonterminal_heights(least=False)
+        # Obtain list of nonterminals sorted by increasing most height
         return sorted(nonterminal_heights, key=nonterminal_heights.get)
 
     def get_admissible_strings(self):
         """
-        Return a set of admissible strings in the grammar.  
+        Return a set of admissible strings in the grammar.
+        This assumes the grammar is finite and will do nothing if grammar is infinite.
         :return: set of string  
         """
         # See if the relevant caching attribute holds a valid value

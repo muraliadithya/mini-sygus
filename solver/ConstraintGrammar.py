@@ -54,8 +54,6 @@ class ConstraintGrammar:
     def __init__(self, sygus_grammar):
         if not isinstance(sygus_grammar, SyGuSGrammar):
             raise TypeError('SyGuSGrammar expected.')
-        elif not sygus_grammar.is_finite():
-            raise ValueError('Grammar is not finite. Unsupported.')
         # Preprocessing
         # nonterminals = sygus_grammar.get_nonterminal_set()
 
@@ -114,7 +112,7 @@ class ConstraintGrammar:
         synthfun_name = self.sygus_grammar.get_name()
         
         # Ensure max_depth allows for some admissible string
-        least_heights = self.sygus_grammar.get_nonterminal_least_heights()
+        least_heights = self.sygus_grammar.get_nonterminal_heights(least=True)
         if max_depth is not None and max_depth < least_heights[start_symbol]:
             raise InsufficientDepthException('Insufficient grammar depth.')
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
@@ -278,85 +276,112 @@ class ConstraintGrammar:
         # TODO (medium): refactor code to have each variable with its type. Only boolean variables currently
         boolvar_decls = '\n'.join(['(declare-const {} Bool)'.format(boolvar) for boolvar in self.boolvars])
         bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
-        # Define functions for each nonterminal copy grouped by the original nonterminal
-        func_decl_string = ';Declaring functions corresponding to nonterminals\n'
-        for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
-            func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
+        
+        # Auxiliary function to compute function declaration of a particular nonterminal copy.
+        def aux_func_declare(nonterminal_copy):
+            nonterminal, choice_boolvars = self.symbols[nonterminal_copy]
+            # Aggregate dependent nonterminal copies
+            dependents = set().union(*[self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars])
+            if nonterminal_copy in self.boolcatch:
+                dependents.update(self.boolcatch[nonterminal_copy])
             return_type = typed_nonterminals[nonterminal]
             return_type_string = lisplike.pretty_string(return_type, noindent=True)
-            nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
-            for nonterminal_copy in nonterminal_copies:
-                choice_boolvars = self.symbols[nonterminal_copy][1]
-                post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
-                if nonterminal_copy in self.rulecatch:
-                    post_nonterminals = [self._post[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
-                else:
-                    post_nonterminals = self._post[nonterminal]
-                # Include catch case
-                if nonterminal_copy in self.boolcatch:
-                    post_nonterminal_copies.append(self.boolcatch[nonterminal_copy])
-                if arguments != []:
-                    # If there are arguments, each of the nonterminal copies will need to appear in the form of 
-                    # applications to the arguments.
-                    post_nonterminal_copies_with_args = [[[nt_copy] + arguments 
-                                                          for nt_copy in nt_copy_list] 
-                                                         for nt_copy_list in post_nonterminal_copies]
-                else:
-                    post_nonterminal_copies_with_args = post_nonterminal_copies
-                # Determine the appropriate rule list for nonterminal copy.
-                if nonterminal_copy in self.rulecatch:
-                    rule_list = [ordered_rule_dict[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
-                else:
-                    rule_list = ordered_rule_dict[nonterminal]
-                # If no valid rules are available, no need to write the corresponding function.
-                if len(rule_list) == 0:
-                    continue
-                # Begin replacement
-                substituted_expansions = []
-                for i in range(len(rule_list)):
-                    # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
-                    nonterminal_copy_with_arg_pairs = list(zip(post_nonterminals[i], 
-                                                               post_nonterminal_copies_with_args[i]))
+            post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
+            if nonterminal_copy in self.rulecatch:
+                post_nonterminals = [self._post[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
+            else:
+                post_nonterminals = self._post[nonterminal]
+            # Include catch case
+            if nonterminal_copy in self.boolcatch:
+                post_nonterminal_copies.append(self.boolcatch[nonterminal_copy])
+            if arguments != []:
+                # If there are arguments, each of the nonterminal copies will need to appear in the form of 
+                # applications to the arguments.
+                post_nonterminal_copies_with_args = [[[nt_copy] + arguments 
+                                                      for nt_copy in nt_copy_list] 
+                                                     for nt_copy_list in post_nonterminal_copies]
+            else:
+                post_nonterminal_copies_with_args = post_nonterminal_copies
+            # Determine the appropriate rule list for nonterminal copy.
+            if nonterminal_copy in self.rulecatch:
+                rule_list = [ordered_rule_dict[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
+            else:
+                rule_list = ordered_rule_dict[nonterminal]
+            # If no valid rules are available, no need to write the corresponding function.
+            if len(rule_list) == 0:
+                return '', set()
+            # Begin replacement
+            substituted_expansions = []
+            for i in range(len(rule_list)):
+                # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
+                nonterminal_copy_with_arg_pairs = list(zip(post_nonterminals[i], 
+                                                           post_nonterminal_copies_with_args[i]))
 
-                    # Auxiliary function to compute the hack transform
-                    # Second argument is mutable on purpose in order to retain memory between calls
-                    def _nonterminal_copy_substitute(expr, copy_pairs=nonterminal_copy_with_arg_pairs):
-                        for (nt, nt_copy_with_arg) in copy_pairs:
-                            if expr == nt:
-                                copy_pairs.remove((nt, nt_copy_with_arg))
-                                return nt_copy_with_arg
-                        # No matching substitutions. Return original expression
-                        return expr
-                    
-                    # Add the transformed rule to substituted_expansions
-                    # NOTE: IMPORTANT: The postorder traversal fixes the substitutions in a deterministic way 
-                    # that can be recovered while evaluating valuations from the solver ot get yields from the 
-                    # grammar. Check that the evaluate function uses/maintains this order.
-                    transformed_rule = lisplike.transform(rule_list[i], 
-                                                          [(lambda x: True, 
-                                                            lambda x: _nonterminal_copy_substitute(x))], 
-                                                          traversal_order='postorder')
-                    substituted_expansions.append(transformed_rule)
+                # Auxiliary function to compute the hack transform
+                # Second argument is mutable on purpose in order to retain memory between calls
+                def _nonterminal_copy_substitute(expr, copy_pairs=nonterminal_copy_with_arg_pairs):
+                    for (nt, nt_copy_with_arg) in copy_pairs:
+                        if expr == nt:
+                            copy_pairs.remove((nt, nt_copy_with_arg))
+                            return nt_copy_with_arg
+                    # No matching substitutions. Return original expression
+                    return expr
 
-                # Auxiliary function for computing the body of a function declaration
-                def func_decl_body_aux(boolvars, rules):
-                    # New version of auxiliary function to use ite statements only when choice of rules remains.
-                    # Hack around lisplike pretty printer's lack of customization.
-                    # Putting \n and pretty printing with 'no indent' as a manner of controlling indentation.
-                    # TODO (medium): Eliminate explicit construction of lisplike representations
-                    if len(rules) == 1:
-                        # Base case with single rule; simply apply the replacement
-                        # Boolvars should be [] in this case
-                        return rules[0]
-                    else:
-                        # Structure an ite operator on first boolvar/rule, then recurse
-                        return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
+                # Add the transformed rule to substituted_expansions
+                # NOTE: IMPORTANT: The postorder traversal fixes the substitutions in a deterministic way 
+                # that can be recovered while evaluating valuations from the solver ot get yields from the 
+                # grammar. Check that the evaluate function uses/maintains this order.
+                transformed_rule = lisplike.transform(rule_list[i], 
+                                                      [(lambda x: True, 
+                                                        lambda x: _nonterminal_copy_substitute(x))], 
+                                                      traversal_order='postorder')
+                substituted_expansions.append(transformed_rule)
 
-                func_body = lisplike.pretty_string(func_decl_body_aux(choice_boolvars, substituted_expansions), 
-                                                   noindent=True)
-                func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
-                                                     return_type=return_type_string, body=func_body)
-                func_decl_string = func_decl_string + func_decl
+            # Auxiliary function for computing the body of a function declaration
+            def func_decl_body_aux(boolvars, rules):
+                # New version of auxiliary function to use ite statements only when choice of rules remains.
+                # Hack around lisplike pretty printer's lack of customization.
+                # Putting \n and pretty printing with 'no indent' as a manner of controlling indentation.
+                # TODO (medium): Eliminate explicit construction of lisplike representations
+                if len(rules) == 1:
+                    # Base case with single rule; simply apply the replacement
+                    # Boolvars should be [] in this case
+                    return rules[0]
+                else:
+                    # Structure an ite operator on first boolvar/rule, then recurse
+                    return ['ite', boolvars[0], '\n', rules[0], '\n', func_decl_body_aux(boolvars[1:], rules[1:])]
+
+            func_body = lisplike.pretty_string(func_decl_body_aux(choice_boolvars, substituted_expansions), 
+                                               noindent=True)
+            func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
+                                                 return_type=return_type_string, body=func_body)
+            return func_decl, dependents
+        
+        # Construct function declarations
+        if self.sygus_grammar.is_finite():
+            # Define functions for each nonterminal copy grouped by the original nonterminal.
+            # This ordering is well-defined for finite grammars.
+            func_decl_string = ';Declaring functions corresponding to nonterminals\n'
+            for nonterminal in self.sygus_grammar.get_ordered_nonterminal_list():
+                func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
+                for nonterminal_copy in self.symbols:
+                    # Only move forward with copies whose parent is the nonterminal at hand
+                    if self.symbols[nonterminal_copy][0] != nonterminal:
+                        continue
+                    func_decl, _ = aux_func_declare(nonterminal_copy)
+                    func_decl_string += func_decl
+        else:
+            # If grammar is infinite, printed order must depend directly on nonterminal dependence.
+            func_decl_string = ''
+            worklist = {self.starting_symbol}
+            while worklist:
+                nonterminal_copy = worklist.pop()
+                func_decl, dependents = aux_func_declare(nonterminal_copy)
+                worklist.update(dependents)
+                # Function declarations must be in reverse order of dependence
+                func_decl_string = func_decl + func_decl_string
+            func_decl_string = ';Declaring functions corresponding to nonterminals\n' + func_decl_string
+        
         # Define the replacement for the synth-fun command
         # Must have the same name as the function to be synthesised
         synthfun_return_type = self.sygus_grammar.get_range_type()
