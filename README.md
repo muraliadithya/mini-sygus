@@ -107,6 +107,8 @@ sat
 (define-fun add2 ((x Int) (y Int)) Int
 (doplus y x)
 )
+
+unsat
 ```
 
 Input files must be written in SyGuS 2.0 format 
