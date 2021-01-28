@@ -36,7 +36,8 @@ def solve(args):
             exit(0)
         else:
             pretty_solution_string, solution_as_constraint = solver_result
-            print('sat')
+            if not (args.stream or args.num_solutions > 1):
+                print('sat')
             print(pretty_solution_string)
             # Append the negation of the solution in order to dismiss it from the next round of synthesis
             sygus_to_smt_options['additional_constraints'].append('(not {})'.format(solution_as_constraint))
