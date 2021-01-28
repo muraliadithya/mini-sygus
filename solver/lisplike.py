@@ -261,13 +261,32 @@ def less_than(repr1, repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check first argument.')
     elif not is_lisplike(repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check second argument.')
-    if isinstance(repr1, str) and isinstance(repr2, list):
-        return True
-    elif isinstance(repr1, list) and isinstance(repr2, str):
-        return False
+        
+    if isinstance(repr1, str):
+        if isinstance(repr2, list):
+            # Strings are less than lists
+            return True
+        else:
+            # Both strings; use built-in comparison
+            return repr1 < repr2
     else:
-        # Both strings or both nested lists. Use built-in comparison
-        return repr1 < repr2
+        if isinstance(repr2, list):
+            # Both lists; imitate built-in comparison for lists by comparing elementwise
+            i = 0
+            max_ind = min(len(repr1),len(repr2))
+            while i < max_ind:
+                if less_than(repr1[i],repr2[i]):
+                    return True
+                elif less_than(repr2[i],repr1[i]):
+                    return False
+                else:
+                    i += 1
+            # One list is an 'initial segment' of the other
+            # So repr1 is less than repr2 iff repr1 is strictly shorter
+            return len(repr1) < len(repr2)
+        else:
+            # Lists are not less than strings
+            return False
 
 
 # TODO (medium): write substitute by calling transform instead

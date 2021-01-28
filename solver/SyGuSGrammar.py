@@ -197,12 +197,45 @@ class SyGuSGrammar:
                            for symbol in one_step_dict[nonterminal])
         # Call auxiliary function to check for finiteness and return the value
         return is_finite_check_and_recurse()
+    
+    def get_nonterminal_least_heights(self):
+        """
+        Return a dictionary of nonterminals in the grammar with value representing each nonterminal
+        symbol's least height, which denotes the least number of successive replacement rule applications
+        necessary to eliminate nonterminals. This handles infinite grammars.
+        :return: dict {string: int}
+        """
+        if self.post is None:
+            self.post = track_nonterminals_one_step(self)
+        one_step_dict = dict()
+        nonterminals = self.get_nonterminal_set()
+        for nt in nonterminals:
+            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
+            one_step_dict[nt] = one_step_set
+        
+        # Auxiliary function to determine nonterminal bottom-up heights from terminals.
+        # The height of a nonterminal is the length of the shortest path of replacement rules
+        # to an admissible string.
+        def aux_least_heights(nonterminal=self.get_start_symbol(), nt_heights=dict(), seen_symbols=set()):
+            seen_symbols.add(nonterminal)
+            nt_heights[nonterminal] = 1
+            if one_step_dict[nonterminal]:
+                for symbol in one_step_dict[nonterminal]:
+                    if symbol not in seen_symbols:
+                        nt_heights.update(aux_least_heights(symbol, nt_heights, seen_symbols))
+                nt_heights[nonterminal] += min([nt_heights[symbol]
+                                                for symbol in one_step_dict[nonterminal]])
+            return nt_heights
+        
+        return aux_least_heights()
+        
 
     def get_ordered_nonterminal_list(self):
         """
         Return a list of nonterminals in the grammar, ordered by dependence by expansion containment
         such that the nonterminals whose expansions contain no nonterminals are first and the start
-        symbol is last.  
+        symbol is last.
+        If grammar is infinite, errant behavior may occur.
         :return: list of string  
         """
         # Compute the set of nonterminals that occur in each production rule for each nonterminal.
@@ -236,7 +269,7 @@ class SyGuSGrammar:
         Return a set of admissible strings in the grammar.  
         :return: set of string  
         """
-        # See if the relevant cahcing attribute holds a valid value
+        # See if the relevant caching attribute holds a valid value
         if self.admiss is None and self.is_finite():
             # Ordered list of nonterminals
             nt_list = self.get_ordered_nonterminal_list()[::-1]

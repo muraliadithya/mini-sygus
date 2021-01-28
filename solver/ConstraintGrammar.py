@@ -38,6 +38,13 @@ class NonsenseValuationException(Exception):
     """
     pass
 
+class InsufficientDepthException(Exception):
+    """
+    This exception is raised when the specified maximum depth is too small to yield any admissible strings
+    from the grammar.
+    """
+    pass
+
 
 class ConstraintGrammar:
     """
@@ -69,9 +76,13 @@ class ConstraintGrammar:
         # Dictionary of copies of nonterminals.
         # The keys are the names of the copies as strings. Values are a tuple (parent, list of boolvars)
         # Parent is the original nonterminal for which the key is a copy, and the list is of boolean variables 
-        # corresponding to the choice of each production rule.The order of boolvars is the order in which 
+        # corresponding to the choice of each production rule. The order of boolvars is the order in which 
         # the rules appear in the result of SyGuSGrammar.get_ordered_rule_dict.
         self.symbols = None
+        # Dictionary of copies of exceptional nonterminals (regarding maximum depth of grammar expansion).
+        # The keys are the names of the copies as strings, if rules were excluded due to lack of viability
+        # from max_depth parameter in the constraint encoding. Each value is a list of rule indices which are viable.
+        self.rulecatch = None
         # Starting symbol to traverse the constraint-based representation
         self.starting_symbol = None
 
@@ -82,7 +93,7 @@ class ConstraintGrammar:
         # Attributes for caching useful values
         # self.post = track_nonterminals_one_step(sygus_grammar)
 
-    def compute_constraint_encoding(self):
+    def compute_constraint_encoding(self, max_depth=None):
         """
         Compute the constraint-based representation of the grammar given by the encapsulated SyGuSGrammar object.  
         The computation is entirely internal to the class and the results can only be accessed by getter/printer 
@@ -93,6 +104,7 @@ class ConstraintGrammar:
         # changes to the object fields before needing to compute the constraint-based representation.
         self.boolvars = dict()
         self.boolcatch = dict()
+        self.rulecatch = dict()
         # Counter for creating fresh boolean variable names
         boolcounter = 0
         self.symbols = dict()
@@ -100,7 +112,11 @@ class ConstraintGrammar:
         # Counters for creating fresh nonterminal copy names
         nonterminal_copy_counter = {nonterminal: 0 for nonterminal in self.sygus_grammar.get_nonterminal_set()}
         synthfun_name = self.sygus_grammar.get_name()
-
+        
+        # Ensure max_depth allows for some admissible string
+        least_heights = self.sygus_grammar.get_nonterminal_least_heights()
+        if max_depth is not None and max_depth < least_heights[start_symbol]:
+            raise InsufficientDepthException('Insufficient grammar depth.')
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
@@ -110,24 +126,31 @@ class ConstraintGrammar:
                                                            synthfun_name)
         self.starting_symbol = start_symbol_initial_copy
         nonterminal_copy_counter[start_symbol] = nonterminal_copy_counter[start_symbol] + 1
-        worklist = {(start_symbol, start_symbol_initial_copy)}
-        while worklist:
-            nonterminal, nonterminal_copy = worklist.pop()
+        
+        worklist = {1: {(start_symbol, start_symbol_initial_copy)}}
+        depth = 1
+        while worklist[depth]:
+            nonterminal, nonterminal_copy = worklist[depth].pop()
             # Invent as many new boolean variables as rules (minus one), and add the entry to symbols
-            rule_list = self._rule_dict[nonterminal]
+            # Accept only rules which will lead to admissible strings within max_depth
+            valid_ind = [i for i,rule in enumerate(self._rule_dict[nonterminal]) if
+                         max([0]+[least_heights[sym] for sym in self._post[nonterminal][i]]) <= max_depth-depth]
+            rule_list = [self._rule_dict[nonterminal][i] for i in valid_ind]
             num_rules = len(rule_list)
+            if num_rules < len(self._rule_dict[nonterminal]):
+                # If rules were excluded due to foresight toward max_depth, store the valid rule indices
+                self.rulecatch[nonterminal_copy] = valid_ind
             new_boolvars = []
-            # If there is just one rule, no need for boolean variables
+            # Need one fewer boolean variables than the number of valid rules
             for _ in range(num_rules-1):
                 fresh_boolvar_number = boolcounter
                 fresh_boolvar_name = _boolvar_name(fresh_boolvar_number, synthfun_name)
                 boolcounter = boolcounter + 1
                 new_boolvars = new_boolvars + [fresh_boolvar_name]
             self.symbols[nonterminal_copy] = (nonterminal, new_boolvars)
-
             # For each rule create new nonterminal copies and add the entry to boolvars.
             for i in range(num_rules):
-                post_symbols = self._post[nonterminal][i]
+                post_symbols = self._post[nonterminal][valid_ind[i]]
                 post_symbol_copies = []
                 for symbol in post_symbols:
                     fresh_nonterminal_number = nonterminal_copy_counter[symbol]
@@ -135,21 +158,30 @@ class ConstraintGrammar:
                     nonterminal_copy_counter[symbol] = nonterminal_copy_counter[symbol] + 1
                     post_symbol_copies = post_symbol_copies + [fresh_nonterminal_name]
                     # Add the copies with the original symbols to the worklist.
-                    worklist.add((symbol, fresh_nonterminal_name))
-                if i != num_rules - 1:
+                    if max_depth is None or depth < max_depth:
+                        try:
+                            worklist[depth+1].add((symbol, fresh_nonterminal_name))
+                        except:
+                            worklist[depth+1] = {(symbol, fresh_nonterminal_name)}
+                if i < num_rules-1:
                     boolvar_name = new_boolvars[i]
                     self.boolvars[boolvar_name] = post_symbol_copies
                 else:
                     # Catchall case for symbol copies of last production rule
                     # Same as the entry in the if branch but made in self.boolcatch
                     self.boolcatch[nonterminal_copy] = post_symbol_copies
+            
+            # Increase depth if current depth is exhausted and next depth has work.
+            if not worklist[depth] and depth+1 in worklist:
+                depth += 1
+        
 
     def evaluate(self, valuation):
         """
         Apply the given valuation on boolean variables to the representation. The result is an expression from 
         the grammar.  
         :param valuation: dict {string: bool}  
-        :return: lisplike.is_lisplike  
+        :return: lisplike.is_lisplike
         """
         # TODO (medium-high): rewrite evaluate entirely to use minimised valuations from minimise_valuation. 
         # That way one does not need to check that all boolean variables have a valuation that is boolean.
@@ -168,6 +200,9 @@ class ConstraintGrammar:
             try:
                 chosen_rule_index = next(i for i in range(len(rule_choice_boolvars))
                                          if valuation[rule_choice_boolvars[i]])
+                if symbol in self.rulecatch:
+                    # If exceptional ruleset, adjust index accordingly
+                    chosen_rule_index = self.rulecatch[symbol][chosen_rule_index]
                 chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
                 # Substitute the occurrences of nonterminals in the rule with their copies for further evaluation
                 # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
@@ -176,6 +211,8 @@ class ConstraintGrammar:
             except StopIteration:
                 # All boolvars are False; catchall case
                 # Choose the last expansion rule in the ordered list of rules
+                if symbol in self.rulecatch:
+                    chosen_rule_index = self.rulecatch[symbol][chosen_rule_index]
                 chosen_rule = ordered_rule_dict[original_symbol][-1]
                 nonterminals_in_rule = self._post[original_symbol][-1]
                 nonterminal_copies = self.boolcatch[symbol]
@@ -247,13 +284,17 @@ class ConstraintGrammar:
             func_decl_string = func_decl_string + ';Functions corresponding to {}\n'.format(nonterminal)
             return_type = typed_nonterminals[nonterminal]
             return_type_string = lisplike.pretty_string(return_type, noindent=True)
-            post_nonterminals = self._post[nonterminal]
             nonterminal_copies = [nt_copy for nt_copy in self.symbols if self.symbols[nt_copy][0] == nonterminal]
             for nonterminal_copy in nonterminal_copies:
                 choice_boolvars = self.symbols[nonterminal_copy][1]
                 post_nonterminal_copies = [self.boolvars[choice_boolvar] for choice_boolvar in choice_boolvars]
+                if nonterminal_copy in self.rulecatch:
+                    post_nonterminals = [self._post[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
+                else:
+                    post_nonterminals = self._post[nonterminal]
                 # Include catch case
-                post_nonterminal_copies.append(self.boolcatch[nonterminal_copy])
+                if nonterminal_copy in self.boolcatch:
+                    post_nonterminal_copies.append(self.boolcatch[nonterminal_copy])
                 if arguments != []:
                     # If there are arguments, each of the nonterminal copies will need to appear in the form of 
                     # applications to the arguments.
@@ -262,8 +303,17 @@ class ConstraintGrammar:
                                                          for nt_copy_list in post_nonterminal_copies]
                 else:
                     post_nonterminal_copies_with_args = post_nonterminal_copies
+                # Determine the appropriate rule list for nonterminal copy.
+                if nonterminal_copy in self.rulecatch:
+                    rule_list = [ordered_rule_dict[nonterminal][i] for i in self.rulecatch[nonterminal_copy]]
+                else:
+                    rule_list = ordered_rule_dict[nonterminal]
+                # If no valid rules are available, no need to write the corresponding function.
+                if len(rule_list) == 0:
+                    continue
+                # Begin replacement
                 substituted_expansions = []
-                for i in range(len(ordered_rule_dict[nonterminal])):
+                for i in range(len(rule_list)):
                     # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
                     nonterminal_copy_with_arg_pairs = list(zip(post_nonterminals[i], 
                                                                post_nonterminal_copies_with_args[i]))
@@ -277,11 +327,12 @@ class ConstraintGrammar:
                                 return nt_copy_with_arg
                         # No matching substitutions. Return original expression
                         return expr
+                    
                     # Add the transformed rule to substituted_expansions
                     # NOTE: IMPORTANT: The postorder traversal fixes the substitutions in a deterministic way 
                     # that can be recovered while evaluating valuations from the solver ot get yields from the 
                     # grammar. Check that the evaluate function uses/maintains this order.
-                    transformed_rule = lisplike.transform(ordered_rule_dict[nonterminal][i], 
+                    transformed_rule = lisplike.transform(rule_list[i], 
                                                           [(lambda x: True, 
                                                             lambda x: _nonterminal_copy_substitute(x))], 
                                                           traversal_order='postorder')
