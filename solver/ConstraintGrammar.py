@@ -131,9 +131,13 @@ class ConstraintGrammar:
             nonterminal, nonterminal_copy = worklist[depth].pop()
             # Invent as many new boolean variables as rules (minus one), and add the entry to symbols
             # Accept only rules which will lead to admissible strings within max_depth
-            valid_ind = [i for i,rule in enumerate(self._rule_dict[nonterminal]) if
-                         max([0]+[least_heights[sym] for sym in self._post[nonterminal][i]]) <= max_depth-depth]
-            rule_list = [self._rule_dict[nonterminal][i] for i in valid_ind]
+            if max_depth is not None:
+                valid_ind = [i for i,rule in enumerate(self._rule_dict[nonterminal]) if
+                             max([0]+[least_heights[sym] for sym in self._post[nonterminal][i]]) <= max_depth-depth]
+                rule_list = [self._rule_dict[nonterminal][i] for i in valid_ind]
+            else:
+                valid_ind = list(range(len(self._rule_dict[nonterminal])))
+                rule_list = self._rule_dict[nonterminal]
             num_rules = len(rule_list)
             if num_rules < len(self._rule_dict[nonterminal]):
                 # If rules were excluded due to foresight toward max_depth, store the valid rule indices
