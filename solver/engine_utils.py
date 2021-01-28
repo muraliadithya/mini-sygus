@@ -21,6 +21,12 @@ def sygus_to_smt(sygus_file, smt_file, options):
     constraint grammar in SMT-Lib format.
     If the options parameter contains the key 'additional_constraints', the value should be
     a list (or similar) of strings to append to the SMT file as additional constraints.
+    If the options parameter contains the key 'grammar_depth', the value should be an integer
+    specifying the desired grammar expansion depth for all grammars found. For each grammar,
+    if this value is less than the minimum depth required to obtain an admissible string in the
+    grammar, the depth used for that grammar is this minimum value instead. For each finite
+    grammar, if this value is more than the maximum depth possible to obtain an admissible string
+    in the grammar, the depth used for that grammar is this maximum value instead.
     If the options parameter contains the key 'proposed_solutions', the value should be
     a dictionary (or similar) such that each key is a synth-fun string name and each value is
     the corresponding proposed solution string intended to be the synthesized function body.
@@ -36,10 +42,12 @@ def sygus_to_smt(sygus_file, smt_file, options):
         with open(smt_file, 'w') as smt_file:
             # Manage proposed synth-fun solutions to check satisfiability with constraints
             proposed_solutions = options.get('proposed_solutions', dict())
+            # Manage grammar expansion depth
+            grammar_depth = options.get('grammar_depth', 50)
             # Prepare reading/writing variables
             reading_sygus = False
             synthfun_str = ''
-            depth = 0
+            lisp_depth = 0
             for num, line in enumerate(sygus_file):
                 # Read infile line-by-line
                 if reading_sygus:
@@ -49,15 +57,17 @@ def sygus_to_smt(sygus_file, smt_file, options):
                     if ';' in line:
                         line = line[:line.find(';')]
                     synthfun_str += '\n' + line
-                    depth += line.count('(') - line.count(')')
-                    if depth <= 0:
+                    lisp_depth += line.count('(') - line.count(')')
+                    if lisp_depth <= 0:
                         # Done reading SyGuS grammar
                         reading_sygus = False
                         # Process SyGuS grammar
                         grammar = load_from_string(synthfun_str)
                         # Process constraint grammar
                         constraint_grammar = ConstraintGrammar(grammar)
-                        constraint_grammar.compute_constraint_encoding()
+                        constraint_grammar.compute_constraint_encoding(
+                            max_depth=_determine_depth(grammar,grammar_depth)
+                        )
                         if grammar.name in proposed_solutions:
                             proposal = proposed_solutions[grammar.name]
                             # Check admissibility of proposed solution
@@ -74,7 +84,7 @@ def sygus_to_smt(sygus_file, smt_file, options):
                     # Start reading SyGuS grammar into synthfun_str
                     reading_sygus = True
                     synthfun_str = line
-                    depth = line.count('(') - line.count(')')
+                    lisp_depth = line.count('(') - line.count(')')
                 else:
                     # Aside from grammars, infile and outfile should match
                     smt_file.write(_convert_to_smt(line))
@@ -187,6 +197,14 @@ def _extract_smt_model(solver_out_string, options):
         model[line[0]] = line[1] == 'true'
     return model
 
+def _determine_depth(grammar, proposed_depth, show=False):
+    depth = proposed_depth
+    depth = max(grammar.get_minimum_depth(), depth)
+    if grammar.is_finite():
+        depth = min(grammar.get_maximum_depth(), depth)
+    if show and depth != proposed_depth:
+        print('Increased {} grammar depth from {} to {}.'.format(grammar.name,proposed_depth,depth))
+    return depth
 
 def _valuation_as_constraint(valuation):
     return '(and {})'.format(' '.join(var if value else '(not {})'.format(var) for var, value in valuation.items()))

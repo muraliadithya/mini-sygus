@@ -5,6 +5,7 @@ Main engine of the minimal SyGuS solver.
 import os
 from solver.engine_utils import *
 
+MAX_GRAMMAR_DEPTH = 50
 
 def solve(args):
     """
@@ -22,6 +23,8 @@ def solve(args):
 
     sygus_to_smt_options = dict()
     sygus_to_smt_options['additional_constraints'] = []
+    # Starting grammar_depth value; this will increment on each `unsat` until MAX_GRAMMAR_DEPTH is tried
+    sygus_to_smt_options['grammar_depth'] = 1
     solver_call_options = dict()
     solver_call_options['smtsolver'] = args.smtsolver
 
@@ -31,7 +34,9 @@ def solve(args):
     while args.stream or (solution_number <= args.num_solutions):
         grammars = sygus_to_smt(infile_full_path, outfile_full_path, sygus_to_smt_options)
         solver_result = call_solver(outfile_full_path, grammars, solver_call_options)
-        if solver_result in {'unsat', 'unknown'}:
+        if solver_result == 'unsat' and sygus_to_smt_options['grammar_depth'] < MAX_GRAMMAR_DEPTH:
+            sygus_to_smt_options['grammar_depth'] += 1
+        elif solver_result in {'unsat','unknown'}:
             print(solver_result)
             exit(0)
         else:
@@ -40,7 +45,7 @@ def solve(args):
             print(pretty_solution_string)
             # Append the negation of the solution in order to dismiss it from the next round of synthesis
             sygus_to_smt_options['additional_constraints'].append('(not {})'.format(solution_as_constraint))
-        solution_number = solution_number + 1
+            solution_number = solution_number + 1
 
 
 def _get_outfile_name(infile_name):

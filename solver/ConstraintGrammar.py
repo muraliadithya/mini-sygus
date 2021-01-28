@@ -54,6 +54,8 @@ class ConstraintGrammar:
     def __init__(self, sygus_grammar):
         if not isinstance(sygus_grammar, SyGuSGrammar):
             raise TypeError('SyGuSGrammar expected.')
+        if not sygus_grammar.is_terminable():
+            raise ValueError('Grammar contains rule sets which are exclusively self-referential and not supported.')
         # Preprocessing
         # nonterminals = sygus_grammar.get_nonterminal_set()
 

@@ -32,6 +32,9 @@ class SyGuSGrammar:
         self.post = None
         # Set of admissible strings in the grammar
         self.admiss = None
+        # Minimum and maximum depths required/possible to unpack grammar to some admissible string
+        self.min_depth = None
+        self.max_depth = None
 
     def name_synth_fun(self, name):
         """
@@ -236,7 +239,6 @@ class SyGuSGrammar:
         
         # Call auxiliary function to check for terminability of all symbols
         return len(terminable_aux()) == len(self.post)
-                
     
     def get_nonterminal_heights(self, least=True):
         """
@@ -274,6 +276,24 @@ class SyGuSGrammar:
             return nt_heights
         
         return aux_heights()
+    
+    def get_minimum_depth(self):
+        """
+        Return the minimum required depth to obtain an admissible string.
+        :return: int
+        """
+        if self.min_depth is None:
+            self.min_depth = self.get_nonterminal_heights(least=True)[self.start_symbol]
+        return self.min_depth
+    
+    def get_maximum_depth(self):
+        """
+        Return the maximum possible depth to obtain an admissible string from a finite grammar.
+        :return: int
+        """
+        if self.max_depth is None and self.is_finite():
+            self.max_depth = self.get_nonterminal_heights(least=False)[self.start_symbol]
+        return self.max_depth
 
     def get_ordered_nonterminal_list(self):
         """
