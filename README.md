@@ -42,9 +42,13 @@ optional arguments:
   -h, --help            show this help message and exit
   --smtsolver {z3,cvc4}
                         Choice of backend SMT solver.
+  --timeout TIMEOUT     Total timeout in seconds. No timeout given by default.
+  --stream              Continuously search for solutions.
   --num-solutions num_solutions, -N num_solutions
-                        Find multiple solutions to the SyGuS problem.
-
+                        Find N solutions to the SyGuS problem.
+  --starting-depth starting_depth
+                        [Experts only] Set the starting depth for exploring
+                        infinite grammars.
 ```
 
 In order to call the solver from anywhere, the `scripts` 
