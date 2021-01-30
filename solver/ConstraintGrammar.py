@@ -38,13 +38,6 @@ class NonsenseValuationException(Exception):
     """
     pass
 
-class InsufficientDepthException(Exception):
-    """
-    This exception is raised when the specified maximum depth is too small to yield any admissible strings
-    from the grammar.
-    """
-    pass
-
 
 class ConstraintGrammar:
     """
@@ -116,7 +109,7 @@ class ConstraintGrammar:
         # Ensure max_depth allows for some admissible string
         least_heights = self.sygus_grammar.get_nonterminal_heights(least=True)
         if max_depth is not None and max_depth < least_heights[start_symbol]:
-            raise InsufficientDepthException('Insufficient grammar depth.')
+            raise ValueError('Insufficient grammar depth.')
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
