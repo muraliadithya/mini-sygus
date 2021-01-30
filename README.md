@@ -30,8 +30,10 @@ python3 scripts/minisy -h
 ```
 
 ```
-usage: minisy [-h] [--smtsolver {z3,cvc4}] [--num-solutions num_solutions]
-                 infile
+usage: minisy [-h] [--smtsolver {z3,cvc4}] [--timeout TIMEOUT]
+              [--stream | --num-solutions num_solutions]
+              [--starting-depth starting_depth]
+              infile
 
 A minimal SyGuS solver based on constraint solving.
 
