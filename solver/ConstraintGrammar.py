@@ -110,6 +110,7 @@ class ConstraintGrammar:
         least_heights = self.sygus_grammar.get_nonterminal_heights(least=True)
         if max_depth is not None and max_depth < least_heights[start_symbol]:
             raise ValueError('Insufficient grammar depth.')
+            max_depth = least_heights[start_symbol]
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
@@ -195,24 +196,20 @@ class ConstraintGrammar:
         for symbol in self.symbols:
             original_symbol, rule_choice_boolvars = self.symbols[symbol]
             try:
-                chosen_rule_index = next(i for i in range(len(rule_choice_boolvars))
-                                         if valuation[rule_choice_boolvars[i]])
-                if symbol in self.rulecatch:
-                    # If exceptional ruleset, adjust index accordingly
-                    chosen_rule_index = self.rulecatch[symbol][chosen_rule_index]
-                chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
-                # Substitute the occurrences of nonterminals in the rule with their copies for further evaluation
-                # Order of boolvars and _post have been coordinated with the order of the rules. Refer __init__.
-                nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
+                # Identify first boolvar which is True
+                chosen_rule_index = next(i for i,boolvar in enumerate(rule_choice_boolvars)
+                                         if valuation[boolvar])
                 nonterminal_copies = self.boolvars[rule_choice_boolvars[chosen_rule_index]]
             except StopIteration:
-                # All boolvars are False; catchall case
-                # Choose the last expansion rule in the ordered list of rules
-                if symbol in self.rulecatch:
-                    chosen_rule_index = self.rulecatch[symbol][chosen_rule_index]
-                chosen_rule = ordered_rule_dict[original_symbol][-1]
-                nonterminals_in_rule = self._post[original_symbol][-1]
+                # Boolvars are all False; execute the catch case
+                # Select the last valid expansion rule
+                chosen_rule_index = -1
                 nonterminal_copies = self.boolcatch[symbol]
+            if symbol in self.rulecatch:
+                # If ruleset is exceptional, adjust index accordingly
+                chosen_rule_index = self.rulecatch[symbol][chosen_rule_index]
+            chosen_rule = ordered_rule_dict[original_symbol][chosen_rule_index]
+            nonterminals_in_rule = self._post[original_symbol][chosen_rule_index]
 
             # Hack around lisplike.transform by using a single transformation that substitutes pairs only once
             nonterminal_copy_pairs = list(zip(nonterminals_in_rule, nonterminal_copies))

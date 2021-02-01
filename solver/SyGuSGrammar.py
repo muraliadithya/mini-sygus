@@ -347,8 +347,74 @@ class SyGuSGrammar:
                             workdict[next_nonterminal].add(repl)
             self.admiss = admissible_strings
         return self.admiss
-
+    
     def is_admissible(self, lisp, symbol=None, rule=None):
+        """
+        Determine if a parsed lisp-like string is admissible in the SyGuS grammar.  
+        The optional parameters specify an enforced starting symbol or replacement rule.
+        This function is independent from get_admissible_strings and is more efficient.
+        :param lisp: lisp-like string (list or string)  
+        :param symbol: string  
+        :param rule: lisp-like string (list or string)  
+        """
+        if lisp == []:
+            return None
+        if rule is None:
+            # If no replacement rule is enforced, then enforce starting symbol.
+            if symbol is None:
+                symbol = self.start_symbol
+            for i,nested_rule in enumerate(self.rules[symbol]):
+                model = self.is_admissible(lisp, rule=nested_rule)
+                if model is not None:
+                    # If rule admisses lisp, then return a certifying model.
+                    if model == []:
+                        return i
+                    else:
+                        return [i, model]
+            # If no rule admisses lisp, then return None.
+            return None
+
+        # Auxiliary function to manage direct comparison of lisp content.
+        def is_admissible_aux(lisp, rule):
+            if isinstance(rule, str):
+                if rule in self.typed_nonterminals:
+                    # Rule is a nonterminal symbol.
+                    return self.is_admissible(lisp, symbol=rule)
+                else:
+                    # Rule is a terminal symbol.
+                    if isinstance(lisp, str) and lisp == rule:
+                        return 'terminal'
+                    else:
+                        return None
+            else:
+                # Rule is a nested list; recurse.
+                return self.is_admissible(lisp, rule=rule)
+        
+        
+        # Cast lisplike structures to list if a single string.
+        if isinstance(lisp, str):
+            lisp = [lisp]
+        if isinstance(rule, str):
+            rule = [rule]
+        # Iterate through strings/lists in lisp list, comparing each to the
+        # corresponding element of the given replacement rule.
+        models = []
+        for j in range(len(lisp)):
+            model = is_admissible_aux(lisp[j], rule[j])
+            if model is None:
+                # If any nested string/list is inadmissible by the corresponding
+                # replacement rule, then lisp is inadmissible.
+                return None
+            elif model == 'terminal':
+                # If terminal, then do not contribute toward model
+                pass
+            else:
+                # If nonterminal, contribute certification to model
+                models.append(model)
+        # If all elements of lisp are admissible, then lisp is admissible.
+        return models
+
+    def is_admissible_old(self, lisp, symbol=None, rule=None):
         """
         Determine if a parsed lisp-like string is admissible in the SyGuS grammar.  
         The optional parameters specify an enforced starting symbol or replacement rule.

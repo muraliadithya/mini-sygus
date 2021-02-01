@@ -1,0 +1,79 @@
+(define-fun insert ((x Int) (y (Array Int Bool))) (Array Int Bool)
+(store y x true)
+)
+(define-fun member ((x Int) (y (Array Int Bool))) Bool
+(select y x)
+)
+(define-fun empIntSet () (Array Int Bool)
+((as const (Array Int Bool)) false)
+)
+
+;; combination of true models and false model
+(define-fun prv ((x!0 Int)) Int
+  (ite (= x!0 2) 2
+  (ite (= x!0 0) 2
+  (ite (= x!0 4) 3
+  (ite (= x!0 1) 0
+  (ite (= x!0 3) 1
+    2))))))
+(define-fun nxt ((x!0 Int)) Int
+  (ite (= x!0 2) 2
+  (ite (= x!0 0) 1
+  (ite (= x!0 4) 1
+  (ite (= x!0 1) 3
+  (ite (= x!0 3) 4
+    1))))))
+(define-fun dlst ((x!0 Int)) Bool
+  (ite (= x!0 2) true
+  (ite (= x!0 0) true
+  (ite (= x!0 4) true
+  (ite (= x!0 1) true
+  (ite (= x!0 3) true
+    true))))))
+(define-fun lst ((x!0 Int)) Bool
+  (ite (= x!0 2) true
+  (ite (= x!0 0) false
+  (ite (= x!0 4) false
+  (ite (= x!0 1) false
+  (ite (= x!0 3) false
+    false))))))
+
+(synth-fun lemma ((x Int) (nil Int)) Bool
+
+        ((Start Bool) (Loc Int))
+        
+           ((Start Bool (
+                (=> Start Start)
+                (lst Loc)
+                (dlst Loc)))
+            (Loc Int (x nil)))
+)
+
+(synth-fun rswitch () Int
+
+           ((Start Int))
+           ((Start Int (0 1)))
+
+)
+
+;; pfp constraints from counterexample models
+
+
+;; constraints from false model
+(constraint (or (and (=> (= rswitch 0) (not (=> (dlst 0) (lemma 0 2))))
+(=> (= rswitch 1) (not (=> (lst 0) (lemma 0 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 1) (lemma 1 2))))
+(=> (= rswitch 1) (not (=> (lst 1) (lemma 1 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 2) (lemma 2 2))))
+(=> (= rswitch 1) (not (=> (lst 2) (lemma 2 2))))
+)
+(and (=> (= rswitch 0) (not (=> (dlst 3) (lemma 3 2))))
+(=> (= rswitch 1) (not (=> (lst 3) (lemma 3 2))))
+)
+))
+
+;; constraints from true models
+
+(check-synth)
