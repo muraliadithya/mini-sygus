@@ -1,0 +1,179 @@
+(define-fun insert ((x Int) (y (Array Int Bool))) (Array Int Bool)
+(store y x true)
+)
+(define-fun member ((x Int) (y (Array Int Bool))) Bool
+(select y x)
+)
+(define-fun empIntSet () (Array Int Bool)
+((as const (Array Int Bool)) false)
+)
+
+;; combination of true models and false model
+(define-fun hbst ((x!0 Int)) (Set Int)
+  (ite (and (= x!0 4)) empIntSet
+  (ite (and (= x!0 8950)) (insert 1 (insert 8950 empIntSet))
+  (ite (and (= x!0 1)) (insert 1 empIntSet)
+  (ite (and (= x!0 2)) (insert 1 (insert 2 (insert 8950 empIntSet)))
+  (ite (and (= x!0 3)) (insert 0 (insert 2 (insert 3 empIntSet)))
+  (ite (and (= x!0 0)) (insert 0 (insert 2 empIntSet))
+  empIntSet)))))))
+
+(define-fun rght ((x!0 Int)) Int
+  (ite (= x!0 4) 4
+  (ite (= x!0 8950) 4
+  (ite (= x!0 1) 46
+  (ite (= x!0 2) 8950
+  (ite (= x!0 3) 4
+  (ite (= x!0 0) 36
+    4)))))))
+(define-fun minr ((x!0 Int)) Int
+  (ite (= x!0 4) 100
+  (ite (= x!0 8950) 0
+  (ite (= x!0 1) 1
+  (ite (= x!0 2) 0
+  (ite (= x!0 3) 1
+  (ite (= x!0 0) 1
+    1)))))))
+(define-fun lft ((x!0 Int)) Int
+  (ite (= x!0 4) 4
+  (ite (= x!0 8950) 1
+  (ite (= x!0 1) 45
+  (ite (= x!0 2) 4
+  (ite (= x!0 3) 0
+  (ite (= x!0 0) 34
+    4)))))))
+(define-fun key ((x!0 Int)) Int
+  (ite (= x!0 4) 3
+  (ite (= x!0 8950) 0
+  (ite (= x!0 1) 1
+  (ite (= x!0 2) 3
+  (ite (= x!0 3) 3
+  (ite (= x!0 0) 1
+    3)))))))
+(define-fun maxr ((x!0 Int)) Int
+  (ite (= x!0 4) (- 1)
+  (ite (= x!0 8950) 2
+  (ite (= x!0 1) 2
+  (ite (= x!0 2) 3
+  (ite (= x!0 3) 3
+  (ite (= x!0 0) 1
+    2)))))))
+(define-fun bst ((x!0 Int)) Bool
+  (ite (= x!0 4) true
+  (ite (= x!0 8950) false
+  (ite (= x!0 1) true
+  (ite (= x!0 2) false
+  (ite (= x!0 3) true
+  (ite (= x!0 0) true
+    true)))))))
+
+(synth-fun lemma ((x Int) (y Int) (nil Int)) Bool
+           ((Start Bool) (I Int) (Loc Int))
+
+           ((Start Bool (
+                  (=> Start Start)
+                  (<= I I)
+                  (not (= Loc nil))
+                  (member x (hbst x))
+                  (member x (hbst y))
+                  (member x (hbst nil))
+                  (member y (hbst x))
+                  (member y (hbst y))
+                  (member y (hbst nil))
+                  (member nil (hbst x))
+                  (member nil (hbst y))
+                  (member nil (hbst nil))
+                  (bst Loc)))
+           (I Int (
+                  (key Loc)
+                  (minr Loc)
+                  (maxr Loc)))
+           (Loc Int (x y nil)))
+)
+
+(synth-fun rswitch () Int
+           ((Start Int))
+           ((Start Int (0)))
+)
+
+;; pfp constraints from counterexample models
+
+
+;; constraints from false model
+(constraint (or (and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 0) (lemma 0 8950 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 1) (lemma 1 8950 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 2) (lemma 2 8950 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 3) (lemma 3 8950 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 4) (lemma 4 8950 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 0 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 1 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 2 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 3 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 4 4))))
+)
+(and (=> (= rswitch 0) (not (=> (bst 8950) (lemma 8950 8950 4))))
+)
+))
+
+;; constraints from true models
+
+(check-synth)
