@@ -272,9 +272,11 @@ class SyGuSGrammar:
                 for symbol in one_step_dict[nonterminal]:
                     if symbol not in seen_symbols:
                         nt_heights.update(aux_heights(symbol, nt_heights, seen_symbols))
-                nt_heights[nonterminal] += func_rule((max(nt_heights[symbol] for symbol in rule_symbols)
-                                                      for rule_symbols in self.post[nonterminal]
-                                                      if nonterminal not in rule_symbols and len(rule_symbols) != 0))
+                rule_heights = [max(nt_heights[symbol] for symbol in rule_symbols)
+                                for rule_symbols in self.post[nonterminal]
+                                if nonterminal not in rule_symbols and len(rule_symbols) != 0]
+                if len(rule_heights) > 0:
+                    nt_heights[nonterminal] += func_rule(rule_heights)
             return nt_heights
         
         return aux_heights()
