@@ -39,6 +39,8 @@ def solve(args):
     # Loop until number of solutions is reached
     # Calculate loop condition based on arguments pertaining to multiple solutions
     solution_number = 1
+    # Temporarily disabling streaming by overriding the stream flag
+    args.stream = False
     while args.stream or (solution_number <= args.num_solutions):
         grammars = sygus_to_smt(infile_full_path, outfile_full_path, sygus_to_smt_options)
         solver_result = call_solver(outfile_full_path, grammars, solver_call_options)
@@ -50,7 +52,6 @@ def solve(args):
                 # Raise exception if grammar depth cannot be incremented
                 print(solver_result)
                 raise DepthException('Maximum grammar depth {} exceeded.'.format(MAX_GRAMMAR_DEPTH))
-                exit(0)
         elif solver_result == 'unknown':
             print(solver_result)
             exit(0)

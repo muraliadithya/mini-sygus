@@ -14,8 +14,8 @@ if __name__ == '__main__':
     parser.add_argument('--timeout', type=int, default=None,
                         help='Total timeout in seconds. No timeout given by default.')
     multiple_solutions_group = parser.add_mutually_exclusive_group()
-    multiple_solutions_group.add_argument('--stream', action='store_true', default=None,
-                                          help='Continuously search for solutions.')
+    # multiple_solutions_group.add_argument('--stream', action='store_true', default=None,
+    #                                       help='Continuously search for solutions.')
     multiple_solutions_group.add_argument('--num-solutions', '-N', metavar='num_solutions', type=int, default=1,
                                           help='Find N solutions to the SyGuS problem.')
     parser.add_argument('--starting-depth', metavar='starting_depth', type=int, default=1,
