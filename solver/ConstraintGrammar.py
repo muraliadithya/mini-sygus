@@ -469,7 +469,7 @@ class ConstraintGrammar:
 
 # Helper functions
 def _definefun_command(name, typed_args, return_type, body):
-    definefun_format = '(define-fun {name} {typed_args} {return_type}\n{body}\n)\n'
+    definefun_format = '(define-fun {name} {typed_args} {return_type} {body})'
     definefun_string = definefun_format.format(name=name, typed_args=typed_args,
                                                return_type=return_type, body=body)
     return definefun_string
