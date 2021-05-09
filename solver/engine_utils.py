@@ -12,7 +12,8 @@ import subprocess
 
 from solver.SyGuSGrammar import load_from_string
 from solver.ConstraintGrammar import ConstraintGrammar
-from solver.lisplike import parse
+# from solver.lisplike import parse
+
 
 # Replace SyGuS grammars in file with constraint grammars in SMT-Lib format
 def sygus_to_smt(sygus_file, smt_file, options):
@@ -66,12 +67,12 @@ def sygus_to_smt(sygus_file, smt_file, options):
                         # Process constraint grammar
                         constraint_grammar = ConstraintGrammar(grammar)
                         constraint_grammar.compute_constraint_encoding(
-                            max_depth=_determine_depth(grammar,grammar_depth)
+                            max_depth=_determine_depth(grammar, grammar_depth)
                         )
                         if grammar.name in proposed_solutions:
                             proposal = proposed_solutions[grammar.name]
                             # Check admissibility of proposed solution
-                            #admissible = grammar.is_admissible(parse(proposal))
+                            # admissible = grammar.is_admissible(parse(proposal))
                             # Write proposed solution
                             smt_file.write(constraint_grammar.proposal_to_definefun_command(proposal))
                         else:
@@ -197,6 +198,7 @@ def _extract_smt_model(solver_out_string, options):
         model[line[0]] = line[1] == 'true'
     return model
 
+
 def _determine_depth(grammar, proposed_depth, show=False):
     """
     Ensures that grammar depth is neither too small to achieve at least one admissible string
@@ -207,8 +209,9 @@ def _determine_depth(grammar, proposed_depth, show=False):
     if grammar.is_finite():
         depth = min(grammar.get_maximum_depth(), depth)
     if show and depth != proposed_depth:
-        print('Increased {} grammar depth from {} to {}.'.format(grammar.name,proposed_depth,depth))
+        print('Increased {} grammar depth from {} to {}.'.format(grammar.name, proposed_depth, depth))
     return depth
+
 
 def _valuation_as_constraint(valuation):
     return '(and {})'.format(' '.join(var if value else '(not {})'.format(var) for var, value in valuation.items()))

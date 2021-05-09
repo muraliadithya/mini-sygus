@@ -7,6 +7,7 @@ from solver.engine_utils import *
 
 MAX_GRAMMAR_DEPTH = 50
 
+
 class DepthException(Exception):
     """
     This exception is raised when the maximum grammar depth has been tried and exceeded,
@@ -51,13 +52,13 @@ def solve(args):
             else:
                 # Raise exception if grammar depth cannot be incremented
                 print(solver_result)
-                raise DepthException('Maximum grammar depth {} exceeded.'.format(MAX_GRAMMAR_DEPTH))
+                print('Maximum grammar depth {} exceeded.'.format(MAX_GRAMMAR_DEPTH))
+                exit(0)
         elif solver_result == 'unknown':
             print(solver_result)
             exit(0)
         else:
             pretty_solution_string, solution_as_constraint = solver_result
-            print('sat')
             print(pretty_solution_string)
             # Append the negation of the solution in order to dismiss it from the next round of synthesis
             sygus_to_smt_options['additional_constraints'].append('(not {})'.format(solution_as_constraint))

@@ -105,12 +105,12 @@ class ConstraintGrammar:
         # Counters for creating fresh nonterminal copy names
         nonterminal_copy_counter = {nonterminal: 0 for nonterminal in self.sygus_grammar.get_nonterminal_set()}
         synthfun_name = self.sygus_grammar.get_name()
-        
+
         # Ensure max_depth allows for some admissible string
         least_heights = self.sygus_grammar.get_nonterminal_heights(least=True)
         if max_depth is not None and max_depth < least_heights[start_symbol]:
             raise ValueError('Insufficient grammar depth.')
-            max_depth = least_heights[start_symbol]
+            # max_depth = least_heights[start_symbol]
         # Worklist algorithm to compute self.boolvars and self.symbols such that they are populated with the 
         # intended meaning. Refer to the extensive comments in the __init__ function for what these variables 
         # should contain.
@@ -120,7 +120,7 @@ class ConstraintGrammar:
                                                            synthfun_name)
         self.starting_symbol = start_symbol_initial_copy
         nonterminal_copy_counter[start_symbol] = nonterminal_copy_counter[start_symbol] + 1
-        
+
         worklist = {1: {(start_symbol, start_symbol_initial_copy)}}
         depth = 1
         while worklist[depth]:
@@ -128,7 +128,7 @@ class ConstraintGrammar:
             # Invent as many new boolean variables as rules (minus one), and add the entry to symbols
             # Accept only rules which will lead to admissible strings within max_depth
             if max_depth is not None:
-                valid_ind = [i for i,rule in enumerate(self._rule_dict[nonterminal]) if
+                valid_ind = [i for i, rule in enumerate(self._rule_dict[nonterminal]) if
                              max([0]+[least_heights[sym] for sym in self._post[nonterminal][i]]) <= max_depth-depth]
                 rule_list = [self._rule_dict[nonterminal][i] for i in valid_ind]
             else:
@@ -159,7 +159,7 @@ class ConstraintGrammar:
                     if max_depth is None or depth < max_depth:
                         try:
                             worklist[depth+1].add((symbol, fresh_nonterminal_name))
-                        except:
+                        except Exception:
                             worklist[depth+1] = {(symbol, fresh_nonterminal_name)}
                 if i < num_rules-1:
                     boolvar_name = new_boolvars[i]
@@ -168,11 +168,10 @@ class ConstraintGrammar:
                     # Catchall case for symbol copies of last production rule
                     # Same as the entry in the if branch but made in self.boolcatch
                     self.boolcatch[nonterminal_copy] = post_symbol_copies
-            
+
             # Increase depth if current depth is exhausted and next depth has work.
             if not worklist[depth] and depth+1 in worklist:
                 depth += 1
-        
 
     def evaluate(self, valuation):
         """
@@ -197,7 +196,7 @@ class ConstraintGrammar:
             original_symbol, rule_choice_boolvars = self.symbols[symbol]
             try:
                 # Identify first boolvar which is True
-                chosen_rule_index = next(i for i,boolvar in enumerate(rule_choice_boolvars)
+                chosen_rule_index = next(i for i, boolvar in enumerate(rule_choice_boolvars)
                                          if valuation[boolvar])
                 nonterminal_copies = self.boolvars[rule_choice_boolvars[chosen_rule_index]]
             except StopIteration:
@@ -272,7 +271,7 @@ class ConstraintGrammar:
         # TODO (medium): refactor code to have each variable with its type. Only boolean variables currently
         boolvar_decls = '\n'.join(['(declare-const {} Bool)'.format(boolvar) for boolvar in self.boolvars])
         bool_decl_string = '\n;Declaring boolean variables to encode grammar\n{}'.format(boolvar_decls)
-        
+
         # Auxiliary function to compute function declaration of a particular nonterminal copy.
         def aux_func_declare(nonterminal_copy):
             nonterminal, choice_boolvars = self.symbols[nonterminal_copy]
@@ -352,7 +351,7 @@ class ConstraintGrammar:
             func_decl = define_fun_format.format(name=nonterminal_copy, typed_args=typed_param_string, 
                                                  return_type=return_type_string, body=func_body)
             return func_decl, dependents
-        
+
         # Construct function declarations
         if self.sygus_grammar.is_finite():
             # Define functions for each nonterminal copy grouped by the original nonterminal.
@@ -378,7 +377,7 @@ class ConstraintGrammar:
                 # Function declarations must be in reverse order of dependence
                 func_decl_string = func_decl + func_decl_string
             func_decl_string = ';Declaring functions corresponding to nonterminals\n' + func_decl_string
-        
+
         # Define the replacement for the synth-fun command
         # Must have the same name as the function to be synthesised
         synthfun_return_type = self.sygus_grammar.get_range_type()
@@ -452,7 +451,7 @@ class ConstraintGrammar:
         synthfun_return_type = lisplike.pretty_string(self.sygus_grammar.get_range_type(), noindent=True)
         synthfun_body = lisplike.pretty_string(self.evaluate(valuation), noindent=True)
         return _definefun_command(synthfun_name, synthfun_typed_args, synthfun_return_type, synthfun_body)
-    
+
     def proposal_to_definefun_command(self, proposal):
         """
         Pretty printer for displaying a proposed solution to synthesis.
@@ -474,6 +473,7 @@ def _definefun_command(name, typed_args, return_type, body):
     definefun_string = definefun_format.format(name=name, typed_args=typed_args,
                                                return_type=return_type, body=body)
     return definefun_string
+
 
 def _nonterminal_copy_name(symbol_name, copy_number, synthfun_name):
     return '{}_{}_{}'.format(synthfun_name, symbol_name, copy_number)

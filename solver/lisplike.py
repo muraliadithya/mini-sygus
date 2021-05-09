@@ -179,7 +179,7 @@ def _pretty_string_aux(lisplike_repr, noindent, align=0):
     result = result + ' ' * align + ')'
     # If noindent is true, strip all whitespaces and replace with a single space, respecting alignment.
     if noindent:
-        #result = ' ' * align + ' '.join(result.split())
+        # result = ' ' * align + ' '.join(result.split())
         result = ' ' * align + ' '.join(result[:-1].split()) + ')'
     return result
 
@@ -261,7 +261,7 @@ def less_than(repr1, repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check first argument.')
     elif not is_lisplike(repr2):
         raise NotLispLikeReprException('The arguments need to be a lisp-like representation: check second argument.')
-        
+
     if isinstance(repr1, str):
         if isinstance(repr2, list):
             # Strings are less than lists
@@ -273,11 +273,11 @@ def less_than(repr1, repr2):
         if isinstance(repr2, list):
             # Both lists; imitate built-in comparison for lists by comparing elementwise
             i = 0
-            max_ind = min(len(repr1),len(repr2))
+            max_ind = min(len(repr1), len(repr2))
             while i < max_ind:
-                if less_than(repr1[i],repr2[i]):
+                if less_than(repr1[i], repr2[i]):
                     return True
-                elif less_than(repr2[i],repr1[i]):
+                elif less_than(repr2[i], repr1[i]):
                     return False
                 else:
                     i += 1

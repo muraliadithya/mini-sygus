@@ -167,7 +167,7 @@ class SyGuSGrammar:
             nonterminals = self.get_nonterminal_set()
         return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than)) 
                 for nonterminal in nonterminals}
-    
+
     def get_one_step_dict(self):
         """
         Compute the set of nonterminals that occur in each production rule for each nonterminal.
@@ -203,10 +203,10 @@ class SyGuSGrammar:
                 # Recurse on all nonterminals reachable from the current one in one step
                 return all(is_finite_check_and_recurse(symbol, seen_nonterminals) 
                            for symbol in one_step_dict[nonterminal])
-        
+
         # Call auxiliary function to check for finiteness and return the value
         return is_finite_check_and_recurse()
-    
+
     def is_terminable(self):
         """
         Check whether the grammar is either finite or has infinite-but-permissible replacement rules.
@@ -215,7 +215,7 @@ class SyGuSGrammar:
         """
         if self.is_finite():
             return True
-        
+
         # Auxiliary function to obtain set of terminating symbols which dependent on the input nonterminal.
         def terminable_aux(nonterminal=self.get_start_symbol(),
                            seen_nonterminals=set(), terminating_symbols=set()):
@@ -229,7 +229,7 @@ class SyGuSGrammar:
                     rule_terminates = True
                     for symbol in rule_symbols:
                         if symbol not in terminating_symbols:
-                            terminating_symbols = terminable_aux(symbol,seen_nonterminals,terminating_symbols)
+                            terminating_symbols = terminable_aux(symbol, seen_nonterminals, terminating_symbols)
                         if symbol not in terminating_symbols:
                             # If some symbol in rule is interminable, then the rule is considered so
                             rule_terminates = False
@@ -238,10 +238,10 @@ class SyGuSGrammar:
                         nonterminal_terminates = True
                         terminating_symbols.add(nonterminal)
                 return terminating_symbols
-        
+
         # Call auxiliary function to check for terminability of all symbols
         return len(terminable_aux()) == len(self.post)
-    
+
     def get_nonterminal_heights(self, least=True):
         """
         Return a dictionary of nonterminals in the grammar with value representing each nonterminal
@@ -259,7 +259,7 @@ class SyGuSGrammar:
                 raise ValueError('Grammar contains rule sets which are exclusively self-referential.\n' +
                                  'Nonterminal least heights are possibly infinite.')
         one_step_dict = self.get_one_step_dict()
-        
+
         # Auxiliary function to determine nonterminal bottom-up heights from terminals.
         # The least height of a nonterminal is the length of the shortest path of replacement
         # rules to an admissible string, which is always finite. The most height is the longest such path,
@@ -278,9 +278,8 @@ class SyGuSGrammar:
                 if len(rule_heights) > 0:
                     nt_heights[nonterminal] += func_rule(rule_heights)
             return nt_heights
-        
         return aux_heights()
-    
+
     def get_minimum_depth(self):
         """
         Return the minimum required depth to obtain an admissible string.
@@ -289,7 +288,7 @@ class SyGuSGrammar:
         if self.min_depth is None:
             self.min_depth = self.get_nonterminal_heights(least=True)[self.start_symbol]
         return self.min_depth
-    
+
     def get_maximum_depth(self):
         """
         Return the maximum possible depth to obtain an admissible string from a finite grammar.
@@ -327,13 +326,13 @@ class SyGuSGrammar:
             workdict = {symbol: set() for symbol in nt_list}
             workdict['Start'].add('Start')
             admissible_strings = set()
-            for i,nonterminal in enumerate(nt_list):
+            for i, nonterminal in enumerate(nt_list):
                 # Iterate through nonterminals (in order), pushing toward admissibility
                 while workdict[nonterminal]:
                     string = workdict[nonterminal].pop()
                     for rule in rules[nonterminal]:
                         # Apply rule once to string
-                        repl = string.replace(nonterminal, lisplike.pretty_string(rule,noindent=True), 1)
+                        repl = string.replace(nonterminal, lisplike.pretty_string(rule, noindent=True), 1)
                         repl_split = re.split(' |\(|\)', repl)
                         # Identify the earliest (in order) nonterminal appearing in post-rule string
                         next_nonterminal = None
@@ -349,7 +348,7 @@ class SyGuSGrammar:
                             workdict[next_nonterminal].add(repl)
             self.admiss = admissible_strings
         return self.admiss
-    
+
     def is_admissible(self, lisp, symbol=None, rule=None):
         """
         Determine if a parsed lisp-like string is admissible in the SyGuS grammar.  
@@ -365,10 +364,10 @@ class SyGuSGrammar:
             # If no replacement rule is enforced, then enforce starting symbol.
             if symbol is None:
                 symbol = self.start_symbol
-            for i,nested_rule in enumerate(self.rules[symbol]):
+            for i, nested_rule in enumerate(self.rules[symbol]):
                 model = self.is_admissible(lisp, rule=nested_rule)
                 if model is not None:
-                    # If rule admisses lisp, then return a certifying model.
+                    # If rule admits lisp, then return a certifying model.
                     if model == []:
                         return i
                     else:
@@ -391,7 +390,7 @@ class SyGuSGrammar:
             else:
                 # Rule is a nested list; recurse.
                 return self.is_admissible(lisp, rule=rule)
-        
+
         # Cast lisplike structures to list if a single string.
         if isinstance(lisp, str):
             lisp = [lisp]
@@ -414,7 +413,7 @@ class SyGuSGrammar:
                 models.append(model)
         # If all elements of lisp are admissible, then lisp is admissible.
         return models
-    
+
 
 def load_from_string(synthfun_str):
     """
