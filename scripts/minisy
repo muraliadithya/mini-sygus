@@ -20,6 +20,8 @@ if __name__ == '__main__':
                                           help='Find N solutions to the SyGuS problem.')
     parser.add_argument('--starting-depth', metavar='starting_depth', type=int, default=1,
                         help='[Experts only] Set the starting depth for exploring infinite grammars.')
+    parser.add_argument('--max-depth', metavar='max_depth', type=int, default=50,
+                        help='[Experts only] Set the maximum depth for exploring infinite grammars.')
     args = parser.parse_args()
 
     # solve(args)

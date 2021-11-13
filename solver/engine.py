@@ -36,6 +36,8 @@ def solve(args):
     sygus_to_smt_options['grammar_depth'] = args.starting_depth
     solver_call_options = dict()
     solver_call_options['smtsolver'] = args.smtsolver
+    # Max depth value; this overrides the MAX_GRAMMAR_DEPTH
+    MAX_GRAMMAR_DEPTH = args.max_depth + 1
 
     # Loop until number of solutions is reached
     # Calculate loop condition based on arguments pertaining to multiple solutions
