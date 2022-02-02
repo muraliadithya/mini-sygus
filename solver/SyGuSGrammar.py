@@ -259,24 +259,42 @@ class SyGuSGrammar:
                 raise ValueError('Grammar contains rule sets which are exclusively self-referential.\n' +
                                  'Nonterminal least heights are possibly infinite.')
         one_step_dict = self.get_one_step_dict()
+        empty_nonterminals = [nt for nt, rules in self.rules.items() if len(rules) == 0]
+        if len(empty_nonterminals) != 0:
+            raise ValueError(f'Nonterminals {", ".join(empty_nonterminals)} have no productions. Unsupported.')
 
         # Auxiliary function to determine nonterminal bottom-up heights from terminals.
         # The least height of a nonterminal is the length of the shortest path of replacement
         # rules to an admissible string, which is always finite. The most height is the longest such path,
         # which may be infinite if the grammar is infinite.
         func_rule = min if least else max
+
         def aux_heights(nonterminal=self.get_start_symbol(), nt_heights=dict(), seen_symbols=set()):
             seen_symbols.add(nonterminal)
-            nt_heights[nonterminal] = 1
+            # Initialize height to None
+            nt_heights[nonterminal] = None
+            # Compute heights of all nonterminals that the current one depends on first.
             if one_step_dict[nonterminal]:
                 for symbol in one_step_dict[nonterminal]:
                     if symbol not in seen_symbols:
                         nt_heights.update(aux_heights(symbol, nt_heights, seen_symbols))
-                rule_heights = [max(nt_heights[symbol] for symbol in rule_symbols)
-                                for rule_symbols in self.post[nonterminal]
-                                if nonterminal not in rule_symbols and len(rule_symbols) != 0]
-                if len(rule_heights) > 0:
-                    nt_heights[nonterminal] += func_rule(rule_heights)
+            # The height of a rule (independent of least or most option) is the maximum of the heights of all the
+            # nonterminals appearing in it. A rule without any nonterminals is of height 0.
+            # Rules with symbols higher in the topological order (whose heights may not be computed yet and show up as
+            # None) cause infinite grammars and can therefore be ignored since:
+            # (1) infinite grammars should not reach this point for greatest height computation, and
+            # (2) infinite paths do not contribute to least height computation.
+            rule_heights = [0 if len(nt_symbols) == 0 else max(nt_heights[symbol] for symbol in nt_symbols)
+                            for nt_symbols in self.post[nonterminal]
+                            if all(nt_heights.get(nt, None) is not None for nt in nt_symbols)]
+            # Height of a nonterminal is one more than the rules it has, since it adds a derivation step.
+            try:
+                nt_heights[nonterminal] = 1 + func_rule(rule_heights)
+            except ValueError:
+                # Code should not reach this point. Unless the grammar is infinite (for most) or
+                # not terminable (for least), rule_heights should be a nonempty list.
+                raise Exception(f'Unable to calculate {"least" if least else "greatest"} height of productions from '
+                                f'nonterminal {nonterminal}. Something has gone wrong.')
             return nt_heights
         return aux_heights()
 
