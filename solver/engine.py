@@ -5,8 +5,6 @@ Main engine of the minimal SyGuS solver.
 import os
 from solver.engine_utils import *
 
-MAX_GRAMMAR_DEPTH = 50
-
 
 class DepthException(Exception):
     """
@@ -33,7 +31,7 @@ def solve(args):
     sygus_to_smt_options = dict()
     sygus_to_smt_options['additional_constraints'] = []
     # Starting grammar_depth value; this will increment on each `unsat` until MAX_GRAMMAR_DEPTH is tried
-    sygus_to_smt_options['grammar_depth'] = args.starting_depth
+    sygus_to_smt_options['grammar_depth'] = args.min_depth
     solver_call_options = dict()
     solver_call_options['smtsolver'] = args.smtsolver
     # Max depth value; this overrides the MAX_GRAMMAR_DEPTH
