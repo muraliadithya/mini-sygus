@@ -165,7 +165,7 @@ class SyGuSGrammar:
         if not nonterminals:
             # No nonterminals specified
             nonterminals = self.get_nonterminal_set()
-        return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than)) 
+        return {nonterminal: sorted(self.rules[nonterminal], key=functools.cmp_to_key(lisplike.less_than))
                 for nonterminal in nonterminals}
 
     def get_one_step_dict(self):
@@ -179,7 +179,7 @@ class SyGuSGrammar:
         one_step_dict = dict()
         nonterminals = self.get_nonterminal_set()
         for nt in nonterminals:
-            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule} 
+            one_step_set = {symbol for symbols_per_rule in self.post[nt] for symbol in symbols_per_rule}
             one_step_dict[nt] = one_step_set
         return one_step_dict
 
@@ -201,7 +201,7 @@ class SyGuSGrammar:
                 # The nonterminal is now a seen symbol.
                 seen_nonterminals.add(nonterminal)
                 # Recurse on all nonterminals reachable from the current one in one step
-                return all(is_finite_check_and_recurse(symbol, seen_nonterminals) 
+                return all(is_finite_check_and_recurse(symbol, seen_nonterminals)
                            for symbol in one_step_dict[nonterminal])
 
         # Call auxiliary function to check for finiteness and return the value

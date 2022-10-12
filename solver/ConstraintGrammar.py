@@ -121,7 +121,7 @@ class ConstraintGrammar:
         self.starting_symbol = start_symbol_initial_copy
         nonterminal_copy_counter[start_symbol] = nonterminal_copy_counter[start_symbol] + 1
 
-        worklist = {1: {(start_symbol, start_symbol_initial_copy)}}
+        worklist = {1: [(start_symbol, start_symbol_initial_copy)]}
         depth = 1
         while worklist[depth]:
             nonterminal, nonterminal_copy = worklist[depth].pop()
@@ -158,9 +158,9 @@ class ConstraintGrammar:
                     # Add the copies with the original symbols to the worklist.
                     if max_depth is None or depth < max_depth:
                         try:
-                            worklist[depth+1].add((symbol, fresh_nonterminal_name))
-                        except Exception:
-                            worklist[depth+1] = {(symbol, fresh_nonterminal_name)}
+                            worklist[depth+1].append((symbol, fresh_nonterminal_name))
+                        except KeyError:
+                            worklist[depth+1] = [(symbol, fresh_nonterminal_name)]
                 if i < num_rules-1:
                     boolvar_name = new_boolvars[i]
                     self.boolvars[boolvar_name] = post_symbol_copies
@@ -369,11 +369,11 @@ class ConstraintGrammar:
             # If grammar is infinite, printed order must depend on nonterminal copy dependence,
             # since there is no longer a linear ordering on the nonterminal symbols themselves.
             func_decl_string = ''
-            worklist = {self.starting_symbol}
+            worklist = [self.starting_symbol]
             while worklist:
                 nonterminal_copy = worklist.pop()
                 func_decl, dependents = aux_func_declare(nonterminal_copy)
-                worklist.update(dependents)
+                worklist.extend(sorted(dependents))
                 # Function declarations must be in reverse order of dependence
                 func_decl_string = func_decl + func_decl_string
             func_decl_string = ';Declaring functions corresponding to nonterminals\n' + func_decl_string
